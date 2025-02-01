@@ -12,6 +12,8 @@ To run the Frontend code
 To run the Backend code:
 
 go inside the Step-backend folder
+  
    run "npm install"
+   
    run "node app.js"
 
