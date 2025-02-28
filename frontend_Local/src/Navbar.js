@@ -130,9 +130,9 @@ function Navbar() {
               <Button
                 color="inherit"
                 component={RouterLink}
-                to="https://step.ifas.ufl.edu/news-and-events/"
+                to="https://step.ifas.ufl.edu/team-registration/"
               >
-                NEWS AND EVENTS
+                TEAM REGISTRATION
               </Button>
               <Button
                 color="inherit"
@@ -159,14 +159,11 @@ function Navbar() {
               <Button
                 color="inherit"
                 component={RouterLink}
-                to="https://step.ifas.ufl.edu/education-and-training"
+                to="https://step.ifas.ufl.edu/mobile-menu/education-and-training/"
               >
                 EDUCATION AND TRAINING
               </Button>
 
-              <Button color="inherit" component={RouterLink} to="/login">
-                LOGIN
-              </Button>
             </Container>
           )}
         </Toolbar>
@@ -240,128 +237,3 @@ function Navbar() {
 
 export default Navbar;
 
-// import React from "react";
-// import {
-//   AppBar,
-//   Toolbar,
-//   Typography,
-//   Button,
-//   Link,
-//   Container,
-// } from "@mui/material";
-// import { Link as RouterLink } from "react-router-dom";
-
-// function Navbar() {
-//   const navbarStyle = {
-//     backgroundColor: "#0021A5",
-//   };
-
-//   const imageStyle = {
-//     marginRight: "auto", // Pushes the image to the left end
-//     marginLeft: "20px",
-//     justifyContent: "center",
-//   };
-
-//   const subNavbarStyle = {
-//     backgroundColor: "#f0f0f0", // Background color for the sub-navbar
-//     display: "flex",
-//     // justifyContent: "center",
-//     alignItems: "center",
-//     padding: "10px", // Adjust padding as needed
-//   };
-
-//   return (
-//     <>
-//       <AppBar position="static" style={navbarStyle}>
-//         <Toolbar>
-//           <Link
-//             component={RouterLink}
-//             to="https://ifas.ufl.edu/"
-//             underline="none"
-//             color="inherit"
-//           >
-//             <img
-//               src="https://step.ifas.ufl.edu/media/ifasufledu/white/style-assets/css/images/IFASwhitelogo.svg"
-//               alt="US Step"
-//               width="130px"
-//               height="43px"
-//               style={imageStyle}
-//             />
-//           </Link>
-//           <Container
-//             style={{ display: "flex", justifyContent: "space-between" }}
-//           >
-//             <div style={{ marginLeft: "auto" }}>
-//               <Button
-//                 color="inherit"
-//                 component={RouterLink}
-//                 to="http://step.ifas.ufl.edu"
-//               >
-//                 HOME
-//               </Button>
-
-//               <Button
-//                 color="inherit"
-//                 component={RouterLink}
-//                 to="https://step.ifas.ufl.edu/news-and-events/"
-//               >
-//                 NEWS AND EVENTS
-//               </Button>
-//               <Button color="inherit" component={RouterLink} to="/teams">
-//                 TEAMS
-//               </Button>
-//               <Button
-//                 color="inherit"
-//                 component={RouterLink}
-//                 to="https://step.ifas.ufl.edu/project-management/"
-//               >
-//                 PROJECT MANAGEMENT
-//               </Button>
-//               <Button
-//                 color="inherit"
-//                 component={RouterLink}
-//                 to="https://step.ifas.ufl.edu/sponsors/"
-//               >
-//                 SPONSORS
-//               </Button>
-
-//               <Button
-//                 color="inherit"
-//                 component={RouterLink}
-//                 to="https://step.ifas.ufl.edu/education-and-training"
-//               >
-//                 EDUCATION AND TRAINING
-//               </Button>
-//               {/* ... (Other navigation buttons) */}
-//               <Button color="inherit" component={RouterLink} to="/login">
-//                 LOGIN
-//               </Button>
-//               {/* <Button color="inherit" component={RouterLink} to="/register">
-//                 Register
-//               </Button>
-//               <Button color="inherit" component={RouterLink} to="/logout">
-//                 Logout
-//               </Button> */}
-//             </div>
-//           </Container>
-//         </Toolbar>
-//       </AppBar>
-//       <div style={subNavbarStyle}>
-//         <img
-//           src="https://step.ifas.ufl.edu/media/stepifasufledu/images/uftaps-150x57.png" // Replace with the image URL
-//           alt="FLORIDA STAKEHOLDER ENGAGEMENT PROGRAM (STEP)"
-//           width="140"
-//           height="65"
-//           style={{ marginLeft: "60px", marginRight: "60px" }} // Adjust spacing as needed
-//         />
-//         <strong>
-//           <Typography variant="h4" component="div" color={"#0021A5"}>
-//             FLORIDA STAKEHOLDER ENGAGEMENT PROGRAM (STEP)
-//           </Typography>
-//         </strong>
-//       </div>
-//     </>
-//   );
-// }
-
-// export default Navbar;

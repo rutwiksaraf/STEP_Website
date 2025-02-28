@@ -552,62 +552,63 @@ function Welcome() {
                           </Paper>
                           {cornuser.length > 0 && (
                             <Grid container spacing={3}>
-                              <Grid item xs={12} sm={6}>
-                                <Paper
-                                  elevation={2}
+                            <Grid item xs={12} sm={6}>
+                              <Paper
+                                elevation={2}
+                                style={{
+                                  padding: "20px",
+                                  borderRadius: "10px",
+                                  height: "100%", // Ensures both papers are the same height
+                                  display: "flex", // Enables flexbox
+                                  flexDirection: "column", // Aligns content properly
+                                  justifyContent: "space-between", // Distributes content evenly
+                                }}
+                              >
+                                <Typography
+                                  variant="h6"
                                   style={{
-                                    padding: "20px",
-                                    borderRadius: "10px",
+                                    fontWeight: "bold",
+                                    marginBottom: "10px",
                                   }}
                                 >
-                                  <Typography
-                                    variant="h6"
-                                    style={{
-                                      fontWeight: "bold",
-                                      marginBottom: "10px",
-                                    }}
-                                  >
-                                    Location
-                                  </Typography>
-                                  <Typography>
-                                    {cornuser[0].address1}
-                                  </Typography>
-                                  <Typography>
-                                    {cornuser[0].address2}
-                                  </Typography>
-                                  <Typography>
-                                    {cornuser[0].city}, {cornuser[0].state}{" "}
-                                    {cornuser[0].zipCode}
-                                  </Typography>
-                                  <Typography>{cornuser[0].country}</Typography>
-                                </Paper>
-                              </Grid>
-                              <Grid item xs={12} sm={6}>
-                                <Paper
-                                  elevation={2}
-                                  style={{
-                                    padding: "20px",
-                                    borderRadius: "10px",
-                                  }}
-                                >
-                                  <Typography
-                                    variant="h6"
-                                    style={{
-                                      fontWeight: "bold",
-                                      marginBottom: "10px",
-                                    }}
-                                  >
-                                    Contact Information
-                                  </Typography>
-                                  <Typography>
-                                    Email: {cornuser[0].email}
-                                  </Typography>
-                                  <Typography>
-                                    Phone: {cornuser[0].phone}
-                                  </Typography>
-                                </Paper>
-                              </Grid>
+                                  Location
+                                </Typography>
+                                <Typography>{cornuser[0].address1}</Typography>
+                                <Typography>{cornuser[0].address2}</Typography>
+                                <Typography>
+                                  {cornuser[0].city}, {cornuser[0].state} {cornuser[0].zipCode}
+                                </Typography>
+                                <Typography>{cornuser[0].country}</Typography>
+                              </Paper>
                             </Grid>
+                          
+                            <Grid item xs={12} sm={6}>
+                              <Paper
+                                elevation={2}
+                                style={{
+                                  padding: "20px",
+                                  borderRadius: "10px",
+                                  height: "100%", // Ensures both papers are the same height
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <Typography
+                                  variant="h6"
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  Contact Information
+                                </Typography>
+                                <Typography>Email: {cornuser[0].email}</Typography>
+                                <Typography>Phone: {cornuser[0].phone}</Typography>
+                              </Paper>
+                            </Grid>
+                          </Grid>
+                          
                           )}
 
                           {teamMembers.length > 0 && (
