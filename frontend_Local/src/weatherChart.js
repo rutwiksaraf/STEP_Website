@@ -26,14 +26,16 @@ const PARAMETERS = {
   tsoil: "Soil Temperature (°C)",
   rh: "Humidity (%)",
   ws: "Wind Speed (m/s)",
+  et: "Evapotranspiration (in)", // Added ET parameter
 };
 
 const COLORS = {
-  rain: "#99ccff", // Warm red for Rainfall
-  rfd: "#FF8C00", // Warm orange for Radiation Flux Density
-  tsoil: "#FFD700", // Warm yellow for Soil Temperature
-  rh: "#FF1493", // Warm pink for Humidity
-  ws: "#FF4500", // Warm orange-red for Wind Speed
+  rain: "#99ccff", // Warm blue
+  rfd: "#FF8C00", // Warm orange
+  tsoil: "#FFD700", // Warm yellow 
+  rh: "#FF1493", // Warm pink
+  ws: "#FF4500", // Warm orange-red 
+  et: "#32CD32", // Green for ET
 };
 
 const WeatherGraph = () => {
@@ -66,11 +68,11 @@ const WeatherGraph = () => {
         month: "2-digit",
         day: "2-digit",
       });
-    const sortedData = weatherData.reverse();
-    const labels = sortedData.map((entry) => formatDate(entry.date));
-    const dataPoints = sortedData.map((entry) =>
-      entry[selectedParam].toFixed(2)
-    );
+
+      const labels = weatherData.map((entry) => formatDate(entry.date));
+      const dataPoints = weatherData.map((entry) => entry[selectedParam] != null ? entry[selectedParam].toFixed(2) : 0
+);
+
 
     setChartData({
       labels,
@@ -96,6 +98,7 @@ const WeatherGraph = () => {
     maintainAspectRatio: false,
     scales: {
       x: {
+        reverse: true,
         ticks: {
           font: {
             size: 20,
@@ -135,7 +138,7 @@ const WeatherGraph = () => {
           gap: "10px",
           flexWrap: "wrap",
           marginBottom: "20px",
-          marginTop: "20px"
+          marginTop: "20px",
         }}
       >
         {Object.keys(PARAMETERS).map((param) => (
@@ -162,11 +165,6 @@ const WeatherGraph = () => {
               alignItems: "center",
               textAlign: "center",
               height: "50px",
-              "&:hover": {
-                backgroundColor:
-                  selectedParam === param ? "#d73a12" : "#E0E0E0",
-                transform: "scale(1.05)",
-              },
             }}
           >
             <span>{PARAMETERS[param]}</span>
