@@ -198,7 +198,6 @@ function Welcome() {
       });
   };
 
-
   useEffect(() => {
     if (cornuser.length > 0) {
       // Assuming you have the team ID in cornuser[0].id
@@ -383,13 +382,11 @@ function Welcome() {
               ))}
             </Tabs>
           </Paper>
-         
+
           <div>
-           
             <Container maxWidth="100%">
-              
               <br></br>
-              
+
               <Box
                 display="flex"
                 alignItems="center"
@@ -523,7 +520,7 @@ function Welcome() {
                               padding: "20px",
                               borderRadius: "10px",
                               marginTop: "30px",
-                              marginBottom: "20px"
+                              marginBottom: "20px",
                             }}
                           >
                             <Typography
@@ -552,63 +549,71 @@ function Welcome() {
                           </Paper>
                           {cornuser.length > 0 && (
                             <Grid container spacing={3}>
-                            <Grid item xs={12} sm={6}>
-                              <Paper
-                                elevation={2}
-                                style={{
-                                  padding: "20px",
-                                  borderRadius: "10px",
-                                  height: "100%", // Ensures both papers are the same height
-                                  display: "flex", // Enables flexbox
-                                  flexDirection: "column", // Aligns content properly
-                                  justifyContent: "space-between", // Distributes content evenly
-                                }}
-                              >
-                                <Typography
-                                  variant="h6"
+                              <Grid item xs={12} sm={6}>
+                                <Paper
+                                  elevation={2}
                                   style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "10px",
+                                    padding: "20px",
+                                    borderRadius: "10px",
+                                    height: "100%", // Ensures both papers are the same height
+                                    display: "flex", // Enables flexbox
+                                    flexDirection: "column", // Aligns content properly
+                                    justifyContent: "space-between", // Distributes content evenly
                                   }}
                                 >
-                                  Location
-                                </Typography>
-                                <Typography>{cornuser[0].address1}</Typography>
-                                <Typography>{cornuser[0].address2}</Typography>
-                                <Typography>
-                                  {cornuser[0].city}, {cornuser[0].state} {cornuser[0].zipCode}
-                                </Typography>
-                                <Typography>{cornuser[0].country}</Typography>
-                              </Paper>
-                            </Grid>
-                          
-                            <Grid item xs={12} sm={6}>
-                              <Paper
-                                elevation={2}
-                                style={{
-                                  padding: "20px",
-                                  borderRadius: "10px",
-                                  height: "100%", // Ensures both papers are the same height
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  justifyContent: "space-between",
-                                }}
-                              >
-                                <Typography
-                                  variant="h6"
+                                  <Typography
+                                    variant="h6"
+                                    style={{
+                                      fontWeight: "bold",
+                                      marginBottom: "10px",
+                                    }}
+                                  >
+                                    Location
+                                  </Typography>
+                                  <Typography>
+                                    {cornuser[0].address1}
+                                  </Typography>
+                                  <Typography>
+                                    {cornuser[0].address2}
+                                  </Typography>
+                                  <Typography>
+                                    {cornuser[0].city}, {cornuser[0].state}{" "}
+                                    {cornuser[0].zipCode}
+                                  </Typography>
+                                  <Typography>{cornuser[0].country}</Typography>
+                                </Paper>
+                              </Grid>
+
+                              <Grid item xs={12} sm={6}>
+                                <Paper
+                                  elevation={2}
                                   style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "10px",
+                                    padding: "20px",
+                                    borderRadius: "10px",
+                                    height: "100%", // Ensures both papers are the same height
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between",
                                   }}
                                 >
-                                  Contact Information
-                                </Typography>
-                                <Typography>Email: {cornuser[0].email}</Typography>
-                                <Typography>Phone: {cornuser[0].phone}</Typography>
-                              </Paper>
+                                  <Typography
+                                    variant="h6"
+                                    style={{
+                                      fontWeight: "bold",
+                                      marginBottom: "10px",
+                                    }}
+                                  >
+                                    Contact Information
+                                  </Typography>
+                                  <Typography>
+                                    Email: {cornuser[0].email}
+                                  </Typography>
+                                  <Typography>
+                                    Phone: {cornuser[0].phone}
+                                  </Typography>
+                                </Paper>
+                              </Grid>
                             </Grid>
-                          </Grid>
-                          
                           )}
 
                           {teamMembers.length > 0 && (
@@ -666,11 +671,13 @@ function Welcome() {
                 <Container maxWidth="100%">
                   <div>
                     <p style={{ textAlign: "justify" }}>
-                      Hybrid selection is a critical step in crop management. It
+                      {/* Hybrid selection is a critical step in crop management. It
                       involves choosing the most suitable hybrid varieties for
-                      your farming conditions and goals.
+                      your farming conditions and goals. */}
+                      The 2025 STEP corn contest offer only one Hybrid. All the
+                      plots will be planted using the Pioneer P2042VYHR hybrid.
                     </p>
-                    
+
                     <HybridForm />
                   </div>
                 </Container>
@@ -679,8 +686,11 @@ function Welcome() {
                 <Container component="main" maxWidth="90%">
                   <div>
                     <p style={{ textAlign: "justify" }}>
-                      Choose any plant population (seeding rate per acre)
-                      between 26K and 36K, in increments of 2K.
+                      {/* Choose any plant population (seeding rate per acre)
+                      between 26K and 36K, in increments of 2K. */}
+                      The 2025 STEP corn contest offer only one seeding rate.
+                      All the plots will be planted at 34000 seeds per acres
+                      seeding rate.
                     </p>
                     <SeedingRateForm />
                   </div>
@@ -704,8 +714,6 @@ function Welcome() {
               {selectedTab === 4 && (
                 <Container component="main" maxWidth="90%">
                   <div>
-                    
-
                     <IrrigationManagementForm />
                   </div>
                 </Container>
@@ -720,29 +728,27 @@ function Welcome() {
                       Protection insures against low yields relative to a
                       producer’s historic yields. Revenue Protection insures
                       against low yields and low harvest price relative to
-                      projected price.You can find more information about crop
-                      insurance on the{" "}
-                      <a
-                        href="https://www.usda.gov/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        USDA website
-                      </a>{" "}
-                      or by contacting your local insurance agent.
+                      projected price.
                     </p>
 
                     <p style={{ textAlign: "justify" }}>
-                      Insurance selection must be made by March 31st. If you do
+                      Insurance selection must be made by March 20th. If you do
                       not choose a plan, Yield Protection at the 50% level will
                       be the default. Once your insurance choice has been
                       submitted, it cannot be changed for this year’s contest.
                     </p>
+
+                    <p>
+                      To assist with your decision, please see the Insurance
+                      Premiums document and the Crop Insurance Calculator
+                      available on this website.
+                    </p>
+
+                    <p>Please choose a plan and coverage level below</p>
                     <div style={{ display: "flex", flexWrap: "wrap" }}>
                       <div style={{ flex: 3, minWidth: "400px" }}>
                         <InsuranceSelectionForm />
                       </div>
-                      
 
                       <div
                         style={{
@@ -849,16 +855,17 @@ function Welcome() {
                         <p style={{ textAlign: "justify" }}>
                           Select the type of contract and quantity of bushels
                           below, then click Add Option. Contract quantities must
-                          be between 10,000 and 100,000 bushels (in
-                          10,000-bushel increments). You may contract multiple
+                          be between 20,000 and 200,000 bushels (in
+                          20,000-bushel increments). You may contract multiple
                           times on different dates. The contract price will be
                           the CBOT September Futures closing price on the
                           relevant date plus a local basis posted for the STEP
-                          competition.
+                          contest. The maximum number of total bushels you may
+                          contract for the season is 200,000.
                         </p>
 
                         <p style={{ textAlign: "justify" }}>
-                          For a flat-price contract, select that contract type
+                          § For a flat-price contract, select that contract type
                           and the quantity of bushels to contract, then click
                           Add Option. The contract price will be the CBOT
                           September Futures closing price on the date you select
@@ -867,7 +874,7 @@ function Welcome() {
                         </p>
 
                         <p style={{ textAlign: "justify" }}>
-                          For a basis contract, initiate the contract by
+                          § For a basis contract, initiate the contract by
                           selecting that contract type and the quantity of
                           bushels, then click Add Option. That will lock in the
                           local basis posted for that week for the STEP
@@ -890,10 +897,27 @@ function Welcome() {
                         </p>
 
                         <p style={{ textAlign: "justify" }}>
+                          The local basis will be posted on this website weekly,
+                          along with daily September Futures prices.
+                        </p>
+                        <p>
+                          Any uncontracted bushels from your simulated
+                          1,000-acre harvest will be sold at the average spot
+                          price during the week of harvest.
+                        </p>
+                        <p>
+                          If you contract more bushels than your simulated
+                          1,000-acre harvest yields, you will be charged a
+                          $0.20/bushel handling fee, plus the difference between
+                          the harvest spot price and highest contract price (if
+                          the spot price is higher), on the number of bushels
+                          over-contracted.
+                        </p>
+                        <p>
                           A weighted average price will be calculated for each
-                          team based on their contract and spot sales. The
-                          weighted average price will be used to calculate each
-                          team’s crop sales revenue and gross profit.
+                          team based on both their contracted and spot sales.
+                          The weighted average price will be used to calculate
+                          each team’s crop sales revenue and gross profit.
                         </p>
                       </div>
                       <p style={{ textAlign: "justify" }}></p>
