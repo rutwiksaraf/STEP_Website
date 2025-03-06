@@ -209,7 +209,7 @@ function Navbar() {
             }}
           >
             <img
-              src="/uploads/UF_TAPS_Logo.png"
+              src="/UF_TAPS_Logo.png"
               alt="Florida Stakeholder Engagement Program (STEP)"
               width="200"
               height="100"
