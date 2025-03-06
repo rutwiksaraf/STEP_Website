@@ -54,10 +54,22 @@ function NitrogenManagementForm({ sectionData, hintText }) {
     setApplicationType,
     isApplicationTypeConfirmed,
     setIsApplicationTypeConfirmed,
+    productOption,
+    setProductOption,
+    isProductOptionConfirmed,
+    setIsProductOptionConfirmed,
   } = useApplication();
 
   const handleApplicationTypeConfirmation = (event) => {
     setIsApplicationTypeConfirmed(event.target.checked);
+  };
+
+  const handleProductOptionConfirmation = (event) => {
+  };
+
+  const handleOptionProductType = () => {
+    setIsProductOptionConfirmed(true);
+    // saveApplicationTypeConfirmationToBackend();
   };
 
   const handleConfirmApplicationType = () => {
@@ -582,6 +594,8 @@ function NitrogenManagementForm({ sectionData, hintText }) {
               their decision at least three days in advance.
             </p>
 
+            
+
             <Grid item xs={12}>
               <Typography variant="h5">
                 Controlled Release Fertilizer Product Options:
@@ -623,6 +637,21 @@ function NitrogenManagementForm({ sectionData, hintText }) {
                 ))}
               </div>
             </Grid>
+
+            <FormControlLabel
+          control={
+            <Checkbox
+              checked={isApplicationTypeConfirmed}
+              onChange={(event) => {
+                handleProductOptionConfirmation(event);
+                if (event.target.checked) {
+                  handleOptionProductType();
+                }
+              }}
+            />
+          }
+          label="Confirm application type by ticking the checkbox (application type cannot be changed later once check box is ticked)"
+        />
             
             <Grid item xs={12}>
               <Typography variant="h5">

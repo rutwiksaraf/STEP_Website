@@ -10,6 +10,8 @@ export const ApplicationProvider = ({ children }) => {
   const [applicationType, setApplicationType] = useState(null);
   const [isApplicationTypeConfirmed, setIsApplicationTypeConfirmed] =
     useState(false);
+  const [isProductOptionConfirmed, setIsProductOptionConfirmed] =
+    useState(false);
 
   return (
     <ApplicationContext.Provider
@@ -18,6 +20,8 @@ export const ApplicationProvider = ({ children }) => {
         setApplicationType,
         isApplicationTypeConfirmed,
         setIsApplicationTypeConfirmed,
+        isProductOptionConfirmed,
+        setIsProductOptionConfirmed
       }}
     >
       {children}

@@ -125,12 +125,14 @@ function App() {
           // Set the registration message
           setRegistrationMessage("Registration successful!");
 
+          alert("Registration successful!");
+
           // Handle success or show a success message
           setTimeout(() => {
             setRedirecting(true);
             // Redirect to the login page after a delay
             window.location.href = "/login";
-          }, 2500);
+          }, 1500);
         }
       })
       .catch((error) => {

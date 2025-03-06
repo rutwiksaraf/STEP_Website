@@ -97,7 +97,8 @@ function RegistrationForm({
                   <Grid item xs={12} sm={field.includes("FirstName") || field.includes("LastName") || field.includes("city") || field.includes("state") || field.includes("zipCode") ? 6 : 12} key={field}>
                     <TextField
                       fullWidth
-                      label={field.replace(/([A-Z])/g, " $1")}
+                      label={field.replace(/([A-Z])/g, " $1").replace(/^./, (char) => char.toUpperCase())}
+
                       name={field}
                       type={field === "password" ? "password" : "text"}
                       value={formData[field]}

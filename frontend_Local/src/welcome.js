@@ -690,7 +690,7 @@ function Welcome() {
                       All the plots will receive 13 gals/ac (30 lbs/ac of N) of
                       startup fertilizer (23-9-0) at the time of planting. You
                       can choose in-season fertilizer applications of dry
-                      ammonium nitrate (34-0-0) and UAN 28% (28-0-0-5), or a
+                      ammonium nitrate (30-0-0-7) and UAN 28% (28-0-0-5), or a
                       controlled release fertilizer program.
                     </p>
 
