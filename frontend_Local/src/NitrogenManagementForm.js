@@ -604,7 +604,7 @@ function NitrogenManagementForm({ sectionData, hintText }) {
                 {controlledreleaseProductOptions.map((option) => (
                   <Card
                   key={option}
-                  onClick={() => handleClick(option)}
+                  
                   sx={{
                     cursor: "pointer",
                     margin: "4px",
@@ -641,13 +641,8 @@ function NitrogenManagementForm({ sectionData, hintText }) {
             <FormControlLabel
           control={
             <Checkbox
-              checked={isApplicationTypeConfirmed}
-              onChange={(event) => {
-                handleProductOptionConfirmation(event);
-                if (event.target.checked) {
-                  handleOptionProductType();
-                }
-              }}
+              
+              
             />
           }
           label="Confirm application type by ticking the checkbox (application type cannot be changed later once check box is ticked)"

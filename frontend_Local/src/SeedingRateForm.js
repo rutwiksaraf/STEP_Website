@@ -31,7 +31,7 @@ function SeedingRateForm() {
   const token = localStorage.getItem("token");
 
   const seedingOptions = [
-    "34,000",
+    "32,000",
   ];
 
   const handleSeedingClick = (selectedSeeding) => {

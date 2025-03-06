@@ -27,6 +27,7 @@ function HybridForm() {
 
   const hybridOptions = [
     "Pioneer P2042VYHR /MSRP $372",
+    "Other: (Enter your hybrid name here)"
   ];
 
   const hybridCosts = {
