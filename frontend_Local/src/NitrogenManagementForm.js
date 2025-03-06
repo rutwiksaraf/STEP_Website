@@ -99,6 +99,7 @@ function NitrogenManagementForm({ sectionData, hintText }) {
 
   //const controlledreleaseOptions = ["Broadcast", "Banding", "Incorporated"];
   const controlledreleaseOptions = ["Broadcast", "Banding"];
+  const controlledreleaseProductOptions = ["Harrell's: 43-0-0", "Pursell: 44.5-0-0", "Florikan: 44-0-0"];
 
   const handleClick = (selected) => {
     if (selected === "Broadcast") setSubApplicationType("Broadcast");
@@ -397,7 +398,7 @@ function NitrogenManagementForm({ sectionData, hintText }) {
               }}
             >
               <CardContent>
-                <Typography variant="body2" sx={{ textAlign: "center" }}>
+                <Typography variant="h6" sx={{ textAlign: "center" }}>
                   In-season Fertilizer Application
                 </Typography>
               </CardContent>
@@ -451,7 +452,7 @@ function NitrogenManagementForm({ sectionData, hintText }) {
               }}
             >
               <CardContent>
-                <Typography variant="body2" sx={{ textAlign: "center" }}>
+                <Typography variant="h6" sx={{ textAlign: "center" }}>
                   Controlled-Release Fertilizer
                 </Typography>
               </CardContent>
@@ -580,6 +581,49 @@ function NitrogenManagementForm({ sectionData, hintText }) {
               be allowed. Participating teams will be responsible to communicate
               their decision at least three days in advance.
             </p>
+
+            <Grid item xs={12}>
+              <Typography variant="h5">
+                Controlled Release Fertilizer Product Options:
+              </Typography>
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {controlledreleaseProductOptions.map((option) => (
+                  <Card
+                  key={option}
+                  onClick={() => handleClick(option)}
+                  sx={{
+                    cursor: "pointer",
+                    margin: "4px",
+                    padding: "10px 16px",
+                    backgroundColor: selectedCard === option ? "#fa4616" : "#F5F5F5",
+                    border: selectedCard === option
+                      ? "2px solid rgb(255, 255, 255)"
+                      : "2px solid rgb(37, 106, 185)",
+                    borderRadius: "12px",
+                    color: selectedCard === option ? "white" : "#333",
+                    boxShadow: selectedCard === option
+                      ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                      : "none",
+                    transition: "all 0.3s ease-in-out",
+                    display: "flex",
+                    justifyContent: "center", // Center horizontally
+                    alignItems: "center", // Center vertically
+                    textAlign: "center", // Ensures text stays centered
+                    height: "50px", // Fixed height for better alignment
+                    "&:hover": {
+                      backgroundColor: selectedCard === option ? "#d73a12" : "#E0E0E0",
+                      transform: "scale(1.05)",
+                    },
+                  }}
+                >
+                    <CardContent>
+                      <Typography variant="body2">{option}</Typography>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </Grid>
+            
             <Grid item xs={12}>
               <Typography variant="h5">
                 Controlled Release application methods:

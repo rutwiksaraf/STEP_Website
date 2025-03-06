@@ -123,20 +123,7 @@ function Welcome() {
       fetchProfileImage();
     }
   }, [cornuser]);
-  // const fetchProfileImage = () => {
-  //   const imageUrl = `/uploads/${cornuser[0].cropType}/${cornuser[0].teamName}/profile.jpg`;
-  //   fetch(imageUrl)
-  //     .then((response) => {
-  //       if (response.ok) {
-  //         setProfileImageUrl(imageUrl);
-  //       } else {
-  //         setProfileImageUrl("./profile.jpg"); // Path to your generic image
-  //       }
-  //     })
-  //     .catch(() => {
-  //       setProfileImageUrl("./profile.jpg"); // Path to your generic image
-  //     });
-  // };
+
 
   const fetchProfileImage = () => {
     const profileImageUrlEndpoint = `/api/getProfileImageUrl/${cornuser[0].cropType}/${cornuser[0].teamName}`;
@@ -864,42 +851,28 @@ function Welcome() {
                           contract for the season is 200,000.
                         </p>
 
-                        <p style={{ textAlign: "justify" }}>
-                          § For a flat-price contract, select that contract type
-                          and the quantity of bushels to contract, then click
-                          Add Option. The contract price will be the CBOT
-                          September Futures closing price on the date you select
-                          the contract plus the local basis posted for that week
-                          for the STEP competition.
-                        </p>
+                        <ul style={{ textAlign: "justify" }}>
+                          <li>
+                            For a flat-price contract, select that contract type
+                            and the quantity of bushels to contract, then click
+                            Add Option. The contract price will be the CBOT
+                            September Futures closing price on the date you
+                            select the contract plus the local basis posted for
+                            that week for the STEP competition.
+                          </li>
+                          <li>
+                            For a basis contract, initiate the contract by
+                            selecting that contract type and the quantity of
+                            bushels, then click Add Option. That will lock in
+                            the local basis posted for that week for the STEP
+                            competition. Then you must decide when to complete
+                            the contract. To complete the contract, go to your
+                            contract list (below Add Option) and click on the X
+                            button below Status. That will lock in the CBOT
+                            September Futures price on that date.
+                          </li>
+                        </ul>
 
-                        <p style={{ textAlign: "justify" }}>
-                          § For a basis contract, initiate the contract by
-                          selecting that contract type and the quantity of
-                          bushels, then click Add Option. That will lock in the
-                          local basis posted for that week for the STEP
-                          competition. Then you must decide when to complete the
-                          contract. To complete the contract, go to your
-                          contract list (below Add Option) and click on the X
-                          button below Status. That will lock in the CBOT
-                          September Futures price on that date.
-                        </p>
-
-                        <p style={{ textAlign: "justify" }}>
-                          Any uncontracted bushels from your simulated
-                          1,000-acre harvest will be sold at the spot price
-                          during the week of harvest. If you contract more
-                          bushels than your simulated 1,000-acre harvest, you
-                          will be charged a $0.20/bu fee, plus the difference
-                          between the harvest spot price and highest contract
-                          price (if the spot price is higher), on the number of
-                          bushels over contracted.
-                        </p>
-
-                        <p style={{ textAlign: "justify" }}>
-                          The local basis will be posted on this website weekly,
-                          along with daily September Futures prices.
-                        </p>
                         <p>
                           Any uncontracted bushels from your simulated
                           1,000-acre harvest will be sold at the average spot

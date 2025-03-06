@@ -121,12 +121,12 @@ function Navbar() {
                 />
               </Link>
               <Button
-                  color="inherit"
-                  component={RouterLink}
-                  to="http://step.ifas.ufl.edu"
-                >
-                  HOME
-                </Button>
+                color="inherit"
+                component={RouterLink}
+                to="http://step.ifas.ufl.edu"
+              >
+                HOME
+              </Button>
               <Button
                 color="inherit"
                 component={RouterLink}
@@ -163,7 +163,6 @@ function Navbar() {
               >
                 EDUCATION AND TRAINING
               </Button>
-
             </Container>
           )}
         </Toolbar>
@@ -203,23 +202,26 @@ function Navbar() {
         >
           <Box
             sx={{
-              marginLeft: { sm: "60px", xs: "0" },   
+              marginLeft: { sm: "60px", xs: "0" },
               marginRight: { sm: "60px", xs: "0" },
               // marginBottom: { xs: "100px", sm: "0px" }, // Add margin bottom on small devices
               textAlign: { xs: "center", sm: "left" }, // Center text on small devices
             }}
           >
             <img
-              src="https://step.ifas.ufl.edu/media/stepifasufledu/images/uftaps-150x57.png"
+              src="/uploads/UF_TAPS_Logo.png"
               alt="Florida Stakeholder Engagement Program (STEP)"
-              width="140"
-              height="65"
+              width="200"
+              height="100"
             />
           </Box>
           <Typography
             variant="h4"
             sx={{
               color: "#0021A5",
+              fontFamily: "'Poppins', sans-serif", // Change font to a more modern and elegant one
+              fontWeight: 600, // Make it bold for emphasis
+              letterSpacing: "1px", // Add slight spacing for better readability
               fontSize: {
                 xs: "1.5rem", // Smaller devices
                 sm: "2rem", // Slightly larger screens
@@ -227,7 +229,7 @@ function Navbar() {
               },
             }}
           >
-            FLORIDA STAKEHOLDER ENGAGEMENT PROGRAM (STEP)
+            Florida Stakeholder Engagement Program (STEP)
           </Typography>
         </Box>
       </div>
@@ -236,4 +238,3 @@ function Navbar() {
 }
 
 export default Navbar;
-

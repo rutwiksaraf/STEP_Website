@@ -32,9 +32,9 @@ const PARAMETERS = {
 const COLORS = {
   rain: "#99ccff", // Warm blue
   rfd: "#FF8C00", // Warm orange
-  tsoil: "#FFD700", // Warm yellow 
+  tsoil: "#FFD700", // Warm yellow
   rh: "#FF1493", // Warm pink
-  ws: "#FF4500", // Warm orange-red 
+  ws: "#FF4500", // Warm orange-red
   et: "#32CD32", // Green for ET
 };
 
@@ -69,10 +69,10 @@ const WeatherGraph = () => {
         day: "2-digit",
       });
 
-      const labels = weatherData.map((entry) => formatDate(entry.date));
-      const dataPoints = weatherData.map((entry) => entry[selectedParam] != null ? entry[selectedParam].toFixed(2) : 0
-);
-
+    const labels = weatherData.map((entry) => formatDate(entry.date));
+    const dataPoints = weatherData.map((entry) =>
+      entry[selectedParam] != null ? entry[selectedParam].toFixed(2) : 0
+    );
 
     setChartData({
       labels,
@@ -96,6 +96,12 @@ const WeatherGraph = () => {
 
   const chartOptions = {
     maintainAspectRatio: false,
+    responsive: true,
+    layout: {
+      padding: {
+        right: 20, // Ensures last x-axis label isn't cut off
+      },
+    },
     scales: {
       x: {
         reverse: true,
@@ -103,6 +109,9 @@ const WeatherGraph = () => {
           font: {
             size: 20,
           },
+          autoSkip: false, // Ensures all labels are shown
+          maxRotation: 0, // Keeps labels horizontal
+          padding: 10, // Adds spacing so labels don’t get cut
         },
         title: {
           display: true,
@@ -172,8 +181,15 @@ const WeatherGraph = () => {
         ))}
       </div>
 
-      <div style={{ display: "flex", alignItems: "start", gap: "20px" }}>
-        <div style={{ width: "800px", height: "500px" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "start",
+          gap: "20px",
+          width: "100%",
+        }}
+      >
+        <div style={{ flexGrow: 1, minWidth: "800px", height: "500px" }}>
           {chartData ? (
             selectedParam === "rain" ? (
               <Bar data={chartData} options={chartOptions} />
@@ -184,6 +200,7 @@ const WeatherGraph = () => {
             <p>Loading...</p>
           )}
         </div>
+
         <div
           style={{
             width: "400px",

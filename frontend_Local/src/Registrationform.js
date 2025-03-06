@@ -93,15 +93,16 @@ function RegistrationForm({
                 </Grid>
 
                 {["teamName", "password", "captainFirstName", "captainLastName", "address1", "address2", "city", "state", "zipCode", "country", "email", "phone"].map((field) => (
+                  
                   <Grid item xs={12} sm={field.includes("FirstName") || field.includes("LastName") || field.includes("city") || field.includes("state") || field.includes("zipCode") ? 6 : 12} key={field}>
                     <TextField
                       fullWidth
-                      label={field.replace(/([A-Z])/g, " $1").trim()}
+                      label={field.replace(/([A-Z])/g, " $1")}
                       name={field}
                       type={field === "password" ? "password" : "text"}
                       value={formData[field]}
                       onChange={handleChange}
-                      required
+                      required = {field !== "address2"}
                       variant="outlined"
                       sx={{ marginBottom: 2 }}
                     />

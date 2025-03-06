@@ -38,7 +38,6 @@ function MarketingOptionsForm() {
   };
 
   const bushels = [
-    "10k",
     "20k",
     "30k",
     "40k",
@@ -48,6 +47,16 @@ function MarketingOptionsForm() {
     "80k",
     "90k",
     "100k",
+    "110k",
+    "120k",
+    "130k",
+    "140k",
+    "150k",
+    "160k",
+    "170k",
+    "180k",
+    "190k",
+    "200k",
   ];
 
   const handleDeleteMarketingApplication = (appId) => {
@@ -281,67 +290,75 @@ function MarketingOptionsForm() {
           </div>
           <br></br>
 
-          <div style={{ display: "flex", flexWrap: "wrap" }}>
-            {/* Cards for selecting amount */}
-            <Card
-              sx={{
-                cursor: "pointer",
-                padding: "8px",
-                backgroundColor: "white",
-                marginBottom: "8px",
-                marginRight: "2px",
-                textAlign: "center",
-                fontWeight: "bold",
-                //border: "2px solid #fa4616",
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "start",
+            }}
+          >
+            {/* Quantity Heading */}
+            <Typography
+              variant="subtitle1"
+              sx={{ marginBottom: "8px" }}
+            >
+              Quantity
+            </Typography>
+
+            {/* Container for Quantity Options */}
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "start",
+                
               }}
             >
-              <CardContent>
-                <Typography variant="body2">Quantity</Typography>
-              </CardContent>
-            </Card>
-
-            {bushels.map((option) => (
-              <Card
-                key={option}
-                onClick={() => handleQuantityCardClick(option)}
-                sx={{
-                  cursor: "pointer",
-                  margin: "4px",
-                  padding: "10px 16px",
-                  backgroundColor:
-                    quantityBushels === option ? "#fa4616" : "#F5F5F5",
-                  border:
-                    quantityBushels === option
-                      ? "2px solid rgb(255, 255, 255)"
-                      : "2px solid rgb(37, 106, 185)",
-                  borderRadius: "12px",
-                  color: quantityBushels === option ? "white" : "#333",
-                  boxShadow:
-                    quantityBushels === option
-                      ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
-                      : "none",
-                  transition: "all 0.3s ease-in-out",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  textAlign: "center",
-                  height: "50px",
-                  fontWeight: "bold",
-                  "&:hover": {
+              {bushels.map((option) => (
+                <Card
+                  key={option}
+                  onClick={() => handleQuantityCardClick(option)}
+                  sx={{
+                    cursor: "pointer",
+                    margin: "4px",
+                    padding: "10px 16px",
                     backgroundColor:
-                      quantityBushels === option ? "#d73a12" : "#E0E0E0",
-                    transform: "scale(1.05)",
-                  },
-                }}
-              >
-                <CardContent>
-                  <Typography variant="body2" sx={{ textAlign: "center" }}>
-                    {option}
-                  </Typography>
-                </CardContent>
-              </Card>
-            ))}
+                      quantityBushels === option ? "#fa4616" : "#F5F5F5",
+                    border:
+                      quantityBushels === option
+                        ? "2px solid rgb(255, 255, 255)"
+                        : "2px solid rgb(37, 106, 185)",
+                    borderRadius: "12px",
+                    color: quantityBushels === option ? "white" : "#333",
+                    boxShadow:
+                      quantityBushels === option
+                        ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                        : "none",
+                    transition: "all 0.3s ease-in-out",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    textAlign: "center",
+                    height: "50px",
+                    width: "70px",
+                    fontWeight: "bold",
+                    "&:hover": {
+                      backgroundColor:
+                        quantityBushels === option ? "#d73a12" : "#E0E0E0",
+                      transform: "scale(1.05)",
+                    },
+                  }}
+                >
+                  <CardContent>
+                    <Typography variant="body2" sx={{ textAlign: "center" }}>
+                      {option}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
+
           <br></br>
 
           <div className="control">
