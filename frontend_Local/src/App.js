@@ -125,7 +125,7 @@ function App() {
           // Set the registration message
           setRegistrationMessage("Registration successful!");
 
-          alert("Registration successful!");
+          alert("Registration successful! Redirecting to Login Page.");
 
           // Handle success or show a success message
           setTimeout(() => {

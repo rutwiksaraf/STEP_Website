@@ -1983,7 +1983,7 @@ function CornAdminPage() {
                             <Card key={index} sx={{ marginBottom: 2 }}>
                               <CardContent>
                                 <Typography variant="body1">
-                                  Seeding Rate: {form.seedingRate} Rate/Acre
+                                  Seeding Rate: {form.seedingRate} Seeds/Acre
                                 </Typography>
                                 <Typography variant="body2">
                                   Notes: {form.notes}

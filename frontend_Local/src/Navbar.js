@@ -216,10 +216,10 @@ function Navbar() {
             />
           </Box>
           <Typography
-            variant="h4"
+            variant="h5"
             sx={{
               color: "#0021A5",
-              fontFamily: "'Poppins', sans-serif", // Change font to a more modern and elegant one
+              fontFamily: "'gentona_medium', Arial, sans-serif", // Change font to a more modern and elegant one
               fontWeight: 600, // Make it bold for emphasis
               letterSpacing: "1px", // Add slight spacing for better readability
               fontSize: {

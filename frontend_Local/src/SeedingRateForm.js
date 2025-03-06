@@ -242,7 +242,7 @@ function SeedingRateForm() {
                 {submittedForms.map((form, index) => (
                   <TableRow key={index}>
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell>{form.seedingRate} Rate/Acre</TableCell>
+                    <TableCell>{form.seedingRate} Seeds/Acre</TableCell>
                     <TableCell>{form.notes}</TableCell>
                     {/* <TableCell>{form.teamName}</TableCell> */}
                   </TableRow>

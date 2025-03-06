@@ -124,7 +124,6 @@ function Welcome() {
     }
   }, [cornuser]);
 
-
   const fetchProfileImage = () => {
     const profileImageUrlEndpoint = `/api/getProfileImageUrl/${cornuser[0].cropType}/${cornuser[0].teamName}`;
 
@@ -661,8 +660,11 @@ function Welcome() {
                       {/* Hybrid selection is a critical step in crop management. It
                       involves choosing the most suitable hybrid varieties for
                       your farming conditions and goals. */}
-                      The 2025 STEP corn contest offer only one Hybrid. All the
-                      plots will be planted using the Pioneer P2042VYHR hybrid.
+                      The 2025 STEP corn contest will offer the Pioneer
+                      P2042VYHR hybrid as a default hybrid. The participating
+                      teams are allowed to bring their Hybrid. In case the
+                      participating team selects their hybrid, they will be
+                      responsible for supplying the seed by - March 13th, 2025.
                     </p>
 
                     <HybridForm />
@@ -676,7 +678,7 @@ function Welcome() {
                       {/* Choose any plant population (seeding rate per acre)
                       between 26K and 36K, in increments of 2K. */}
                       The 2025 STEP corn contest offer only one seeding rate.
-                      All the plots will be planted at 34000 seeds per acres
+                      All the plots will be planted at 32,000 seeds per acres
                       seeding rate.
                     </p>
                     <SeedingRateForm />
