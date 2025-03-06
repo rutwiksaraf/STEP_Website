@@ -92,7 +92,7 @@ function RegistrationForm({
                   </Box>
                 </Grid>
 
-                {["teamName", "password", "captainFirstName", "captainLastName", "address1", "address2", "city", "state", "zipCode", "country", "email", "phone"].map((field) => (
+                {["teamName", "password", "captainFirstName", "captainLastName", "address1","address2", "city", "state", "zipCode", "country", "email", "phone"].map((field) => (
                   
                   <Grid item xs={12} sm={field.includes("FirstName") || field.includes("LastName") || field.includes("city") || field.includes("state") || field.includes("zipCode") ? 6 : 12} key={field}>
                     <TextField
