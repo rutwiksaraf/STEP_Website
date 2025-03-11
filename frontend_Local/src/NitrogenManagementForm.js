@@ -46,6 +46,9 @@ function NitrogenManagementForm({ sectionData, hintText }) {
   const [subapplicationType, setSubApplicationType] = useState("");
   const [dateToday, setDateToday] = useState(new Date().toISOString());
   const token = localStorage.getItem("token");
+  const [productOption, setProductOption] = useState("");
+  const [isProductOptionConfirmed, setIsProductOptionConfirmed] =
+    useState(false);
   // const [ApplicationType, setApplicationType] = useState("None");
   // const [isApplicationTypeConfirmed, setIsApplicationTypeConfirmed] =
   //   useState(false);
@@ -54,21 +57,10 @@ function NitrogenManagementForm({ sectionData, hintText }) {
     setApplicationType,
     isApplicationTypeConfirmed,
     setIsApplicationTypeConfirmed,
-    productOption,
-    setProductOption,
-    isProductOptionConfirmed,
-    setIsProductOptionConfirmed,
   } = useApplication();
 
   const handleApplicationTypeConfirmation = (event) => {
     setIsApplicationTypeConfirmed(event.target.checked);
-  };
-
-  const handleProductOptionConfirmation = (event) => {};
-
-  const handleOptionProductType = () => {
-    setIsProductOptionConfirmed(true);
-    // saveApplicationTypeConfirmationToBackend();
   };
 
   const handleConfirmApplicationType = () => {
@@ -97,13 +89,48 @@ function NitrogenManagementForm({ sectionData, hintText }) {
       });
   };
 
+  const handleProductOptionChange = (option) => {
+    if (!isProductOptionConfirmed) {
+      setProductOption(option);
+      handleClick(option)
+      
+    }
+  };
+
+  const handleProductOptionConfirmation = (event) => {
+    setIsProductOptionConfirmed(event.target.checked);
+    if (event.target.checked) {
+      saveProductOptionConfirmationToBackend();
+    }
+  };
+
+  const saveProductOptionConfirmationToBackend = () => {
+    const data = {
+      teamName: teamName,
+      productOption: productOption,
+      isConfirmed: true,
+    };
+    axios
+      .post("/api/saveProductOptionConfirmation", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log("Product option confirmation saved:", response);
+      })
+      .catch((error) => {
+        console.error("Error saving product option confirmation:", error);
+      });
+  };
+
   const handleCardClick = (value) => {
     setApplicationType(value);
   };
 
   const inseasonOptions = [
     "Broadcast",
-    "Side-Dressed",
+    "Banding",
     "Liquidside-Dressing",
     // "Fertigation",
   ];
@@ -116,25 +143,33 @@ function NitrogenManagementForm({ sectionData, hintText }) {
     "Florikan: 44-0-0",
   ];
 
+  
+
   const handleClick = (selected) => {
-    if (selected === "Broadcast") setSubApplicationType("Broadcast");
-    if (selected === "Banding") setSubApplicationType("banding");
-    if (selected === "Incorporated") setSubApplicationType("incorporated");
-    if (selected === "Side-Dressed") setSubApplicationType("side-dressed");
-    if (selected === "Liquidside-Dressing")
-      setSubApplicationType("liquidside-dressing");
-    if (selected === "Fertigation") setSubApplicationType("fertigation");
-    if (selectedCard === selected) {
-      setSelectedCard(null);
-      setSubApplicationType("None");
-    } else setSelectedCard(selected);
+    const subApplicationMapping = {
+      "Broadcast": "Broadcast",
+      "Banding": "Banding",
+      "Incorporated": "Incorporated",
+      "Liquidside-Dressing": "liquidside-dressing",
+      "Fertigation": "fertigation",
+    };
+
+    if (subApplicationMapping[selected]) {
+      setSubApplicationType(subApplicationMapping[selected]);
+    }
+
+    setSelectedCard(selectedCard === selected ? null : selected);
   };
 
-  useEffect(() => {
-    // Fetch data from the backend when the component mounts
-    fetchApplicationTypeConfirmation();
-    fetchDataFromBackend();
-  }, [applicationType]); // Fetch data whenever applicationType changes
+  useEffect(
+    () => {
+      // Fetch data from the backend when the component mounts
+      fetchApplicationTypeConfirmation();
+      fetchDataFromBackend();
+    },
+    [applicationType],
+    [productOption]
+  ); // Fetch data whenever applicationType changes
 
   const fetchApplicationTypeConfirmation = () => {
     axios
@@ -240,6 +275,7 @@ function NitrogenManagementForm({ sectionData, hintText }) {
         teamName,
         applied: "no",
         dateToday: dateToday,
+        productOption: productOption,
       };
     }
 
@@ -608,9 +644,8 @@ function NitrogenManagementForm({ sectionData, hintText }) {
                 {controlledreleaseProductOptions.map((option) => (
                   <Card
                     key={option}
-                    onClick = {() => setSelectedCard(option)}
+                    onClick={() => handleProductOptionChange(option)}
                     sx={{
-                      
                       cursor: "pointer",
                       margin: "4px",
                       padding: "10px 16px",
@@ -648,7 +683,13 @@ function NitrogenManagementForm({ sectionData, hintText }) {
             </Grid>
 
             <FormControlLabel
-              control={<Checkbox sx={{ paddingBottom: 2 }} />}
+              control={
+                <Checkbox
+                  sx={{ paddingBottom: 2 }}
+                  checked={isProductOptionConfirmed}
+                  onChange={handleProductOptionConfirmation}
+                />
+              }
               label="Confirm application type by ticking the checkbox (application type cannot be changed later once check box is ticked)"
             />
 
