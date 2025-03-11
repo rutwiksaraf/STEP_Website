@@ -90,9 +90,10 @@ function NitrogenManagementForm({ sectionData, hintText }) {
   };
 
   const handleProductOptionChange = (option) => {
+    console.log(option);
+
     if (!isProductOptionConfirmed) {
       setProductOption(option);
-      handleClick(option)
       
     }
   };
@@ -152,7 +153,12 @@ function NitrogenManagementForm({ sectionData, hintText }) {
       "Incorporated": "Incorporated",
       "Liquidside-Dressing": "liquidside-dressing",
       "Fertigation": "fertigation",
+      "Harrell's: 43-0-0" : "Harrell's: 43-0-0",
+      "Pursell: 44.5-0-0" : "Pursell: 44.5-0-0",
+      "Florikan: 44-0-0" : "Florikan: 44-0-0",
     };
+
+    
 
     if (subApplicationMapping[selected]) {
       setSubApplicationType(subApplicationMapping[selected]);
@@ -166,10 +172,29 @@ function NitrogenManagementForm({ sectionData, hintText }) {
       // Fetch data from the backend when the component mounts
       fetchApplicationTypeConfirmation();
       fetchDataFromBackend();
+      fetchProductOptionConfirmation();
     },
     [applicationType],
     [productOption]
   ); // Fetch data whenever applicationType changes
+
+  const fetchProductOptionConfirmation = () => {
+    axios
+      .get("/api/getProductOptionConfirmation", {
+        params: { teamName },
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        if (response.status === 200 && response.data) {
+          setProductOption(response.data.productOption);
+          setIsProductOptionConfirmed(response.data.isConfirmed);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching product option confirmation:", error);
+      });
+  };
+  
 
   const fetchApplicationTypeConfirmation = () => {
     axios
@@ -253,6 +278,7 @@ function NitrogenManagementForm({ sectionData, hintText }) {
         teamName,
         applied: "no",
         dateToday: dateToday,
+        productOption: ""
       };
 
       // Add placement options to the array if they are true
@@ -645,20 +671,21 @@ function NitrogenManagementForm({ sectionData, hintText }) {
                   <Card
                     key={option}
                     onClick={() => handleProductOptionChange(option)}
+                    disabled={isProductOptionConfirmed}
                     sx={{
                       cursor: "pointer",
                       margin: "4px",
                       padding: "10px 16px",
                       backgroundColor:
-                        selectedCard === option ? "#fa4616" : "#F5F5F5",
+                        productOption === option ? "#fa4616" : "#F5F5F5",
                       border:
-                        selectedCard === option
+                      productOption === option
                           ? "2px solid rgb(255, 255, 255)"
                           : "2px solid rgb(37, 106, 185)",
                       borderRadius: "12px",
-                      color: selectedCard === option ? "white" : "#333",
+                      color: productOption === option ? "white" : "#333",
                       boxShadow:
-                        selectedCard === option
+                      productOption === option
                           ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
                           : "none",
                       transition: "all 0.3s ease-in-out",
@@ -669,7 +696,7 @@ function NitrogenManagementForm({ sectionData, hintText }) {
                       height: "50px", // Fixed height for better alignment
                       "&:hover": {
                         backgroundColor:
-                          selectedCard === option ? "#d73a12" : "#E0E0E0",
+                        productOption === option ? "#d73a12" : "#E0E0E0",
                         transform: "scale(1.05)",
                       },
                     }}
@@ -688,6 +715,7 @@ function NitrogenManagementForm({ sectionData, hintText }) {
                   sx={{ paddingBottom: 2 }}
                   checked={isProductOptionConfirmed}
                   onChange={handleProductOptionConfirmation}
+                  disabled={isProductOptionConfirmed}
                 />
               }
               label="Confirm application type by ticking the checkbox (application type cannot be changed later once check box is ticked)"
@@ -830,6 +858,7 @@ function NitrogenManagementForm({ sectionData, hintText }) {
               <TableCell>Application Date</TableCell>
               <TableCell>Amount</TableCell>
               <TableCell>placement</TableCell>
+              <TableCell>Product Option</TableCell>
               <TableCell>Applied</TableCell>
               <TableCell>
                 <EditIcon />
@@ -852,6 +881,7 @@ function NitrogenManagementForm({ sectionData, hintText }) {
                     <TableCell>{app.date.substring(0, 10)}</TableCell>
                     <TableCell>{app.amount}</TableCell>
                     <TableCell>{app.placement}</TableCell>
+                    <TableCell>{app.productOption}</TableCell>
                     <TableCell>
                       <button
                         style={{

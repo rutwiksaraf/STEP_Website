@@ -2996,6 +2996,7 @@ function AdminPage() {
                                     <TableCell>Submitted Date</TableCell>
                                     <TableCell>Amount</TableCell>
                                     <TableCell>placement</TableCell>
+                                    <TableCell>Product Option</TableCell>
                                     <TableCell>Applied</TableCell>
                                     <TableCell>
                                       <EditIcon />
@@ -3024,6 +3025,7 @@ function AdminPage() {
                                         </TableCell>
                                         <TableCell>{app.amount}</TableCell>
                                         <TableCell>{app.placement}</TableCell>
+                                        <TableCell>{app.productOption}</TableCell>
                                         <TableCell>
                                           <button
                                             style={{
