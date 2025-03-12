@@ -2615,12 +2615,34 @@ function AdminPage() {
               {cornUsers.map((user, index) => (
                 <ListItemButton
                   button
-                  key={index}
-                  style={{
-                    backgroundColor:
-                      selectedUser === user ? "#fa4616" : "white",
-                  }}
                   onClick={() => handleUserClick(user)}
+                  key={index}
+                  sx={{
+                    my: 1, // Adds top and bottom padding (equivalent to 12px)
+                    mx: 1.5, // Adds left and right padding                    backgroundColor: selectedUser === user ? "#fa4616" : "#F5F5F5",
+                    border:
+                      selectedUser === user
+                        ? "2px solid rgb(255, 255, 255)"
+                        : "2px solid rgb(37, 106, 185)",
+                    backgroundColor:
+                      selectedUser === user ? "#fa4616" : "#F5F5F5",
+                    borderRadius: "8px",
+                    color: selectedUser === user ? "white" : "#333",
+                    boxShadow:
+                      selectedUser === user
+                        ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                        : "none",
+                    transition: "all 0.3s ease-in-out",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    textAlign: "center",
+                    "&:hover": {
+                      backgroundColor:
+                        selectedUser === user ? "#d73a12" : "#E0E0E0",
+                      transform: "scale(1.05)",
+                    },
+                  }}
                 >
                   <ListItemText primary={user.teamName} />{" "}
                   {/* Change to teamName */}
@@ -2848,7 +2870,8 @@ function AdminPage() {
                                 <Card key={index} sx={{ marginBottom: 2 }}>
                                   <CardContent>
                                     <Typography variant="body1">
-                                      Seeding Rate: {form.seedingRate} Seeds/Acre
+                                      Seeding Rate: {form.seedingRate}{" "}
+                                      Seeds/Acre
                                     </Typography>
                                     <Typography variant="body2">
                                       Notes: {form.notes}
@@ -3025,7 +3048,9 @@ function AdminPage() {
                                         </TableCell>
                                         <TableCell>{app.amount}</TableCell>
                                         <TableCell>{app.placement}</TableCell>
-                                        <TableCell>{app.productOption}</TableCell>
+                                        <TableCell>
+                                          {app.productOption}
+                                        </TableCell>
                                         <TableCell>
                                           <button
                                             style={{
