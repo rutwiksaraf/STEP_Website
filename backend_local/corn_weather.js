@@ -101,9 +101,12 @@ const aggregateWeatherData = async () => {
 };
 
 router.post("/saveweatherdatatodb", async (req, res) => {
+
+  const pool = await setupDatabase(); // Obtain a connection pool
+  const transaction = new sql.Transaction(pool);
+  
   try {
-    const pool = await setupDatabase(); // Obtain a connection pool
-    const transaction = new sql.Transaction(pool); // Create a transaction
+     // Create a transaction
     await transaction.begin(); // Begin transaction
 
     const aggregatedData = await aggregateWeatherData(); // Aggregate weather data

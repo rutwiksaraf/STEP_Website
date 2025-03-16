@@ -42,23 +42,11 @@ server.on("clientError", (err, socket) => {
 server.listen(port, "localhost", function () {
     debug("Express server listening on http://localhost:" + server.address().port);
     console.log("Server running at http://localhost:" + server.address().port);
-    triggerSaveWeatherData();
+
   });
   
 
-async function triggerSaveWeatherData() {
-  try {
-    const response = await fetch("https://step-app.ifas.ufl.edu/api/saveweatherdatatodb", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    });
 
-    const data = await response.json();
-    console.log("Weather data save response:", data);
-  } catch (error) {
-    console.error("Error triggering saveweatherdatatodb:", error);
-  }
-}
 
 server.on("error", onError);
 server.on("listening", onListening);
