@@ -1,4 +1,4 @@
-// backend/routes/corn_hybrid_form.js
+// backend/routes/[2025_corn_hybrid_form].js
 const express = require("express");
 const router = express.Router();
 const { setupDatabase } = require("./database");
@@ -88,18 +88,18 @@ router.post("/cottonhybridsubmit", async (req, res) => {
 
     // Check if a row with the same teamName already exists
     const checkResult = await request.query(
-      "SELECT * FROM cotton_hybrid_form WHERE teamName = @teamName"
+      "SELECT * FROM [2025_cotton_hybrid_form] WHERE teamName = @teamName"
     );
 
     if (checkResult.recordset.length === 0) {
       // No existing row found, insert a new row
       await request.query(
-        "INSERT INTO cotton_hybrid_form (teamName, hybrid, cost, notes) VALUES (@teamName, @hybrid, @cost, @notes)"
+        "INSERT INTO [2025_cotton_hybrid_form] (teamName, hybrid, cost, notes) VALUES (@teamName, @hybrid, @cost, @notes)"
       );
     } else {
       // Existing row found, update the row with new details
       await request.query(
-        "UPDATE cotton_hybrid_form SET hybrid = @hybrid, cost = @cost, notes = @notes WHERE teamName = @teamName"
+        "UPDATE [2025_cotton_hybrid_form] SET hybrid = @hybrid, cost = @cost, notes = @notes WHERE teamName = @teamName"
       );
     }
 
@@ -156,7 +156,7 @@ router.post("/getCottonHybridSubmittedForms", async (req, res) => {
 
     // Define the SQL query to fetch submitted forms data for the specified user
     const result = await request.query(
-      "SELECT * FROM cotton_hybrid_form WHERE teamName = @teamName"
+      "SELECT * FROM [2025_cotton_hybrid_form] WHERE teamName = @teamName"
     );
 
     // Send the fetched data as a JSON response
@@ -171,7 +171,7 @@ router.post("/getCottonHybridSubmittedForms", async (req, res) => {
 //   setupDatabase()
 //     .then((db) => {
 //       // Define the SQL query to fetch all submitted forms data for corn
-//       const fetchQuery = "SELECT * FROM cotton_hybrid_form";
+//       const fetchQuery = "SELECT * FROM [2025_cotton_hybrid_form]";
 
 //       // Execute the query to fetch data
 //       db.query(fetchQuery, (error, result) => {
@@ -197,7 +197,7 @@ router.get("/getAllCottonSubmittedHybridForms", async (req, res) => {
     const request = pool.request(); // Create a new request object
 
     // Execute the query to fetch all submitted hybrid forms for corn
-    const result = await request.query("SELECT * FROM cotton_hybrid_form");
+    const result = await request.query("SELECT * FROM 2025_cotton_hybrid_form");
 
     // Send the fetched data as a JSON response
     res.status(200).json(result.recordset);

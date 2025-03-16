@@ -1,4 +1,4 @@
-// backend/routes/nitrogen_management_form.js
+// backend/routes/[2025_nitrogen_management_form].js
 const express = require("express");
 const router = express.Router();
 const { setupDatabase } = require("./database");
@@ -13,62 +13,6 @@ let transporter = nodemailer.createTransport({
   },
 });
 
-// Define a route for handling nitrogen management form submissions
-// router.post("/cottonnitrogenmanagementsubmit", (req, res) => {
-//   setupDatabase()
-//     .then((db) => {
-//       try {
-//         // Extract data from the request body and session
-//         const {
-//           applicationType,
-//           placement,
-//           date,
-//           amount,
-//           teamName,
-//           applied,
-//           dateToday,
-//         } = req.body;
-
-//         // Insert a new row without checking for duplicates
-//         const insertQuery =
-//           "INSERT INTO cotton_nitrogen_management_form (teamName, applicationType, placement, date, amount,applied, dateToday) VALUES (?, ?, ?, ?, ?,?,?)";
-//         db.query(
-//           insertQuery,
-//           [
-//             teamName,
-//             applicationType,
-//             placement,
-//             date,
-//             amount,
-//             applied,
-//             dateToday,
-//           ], // Updated parameter list
-//           (insertError, insertResult) => {
-//             if (insertError) {
-//               console.error(
-//                 "Error inserting form data into the database:",
-//                 insertError
-//               );
-//               res.status(500).json({ message: "Form submission failed" });
-//             } else {
-//               res.status(200).json({
-//                 message: "Form submitted successfully",
-//               });
-//             }
-//           }
-//         );
-//         db.release();
-//       } catch (error) {
-//         console.error("Error handling form submission:", error);
-//         res.status(500).json({ message: "Internal server error" });
-//         db.release();
-//       }
-//     })
-//     .catch((err) => {
-//       console.error("Database setup error: " + err.message);
-//       res.status(500).json({ message: "Database setup error" });
-//     });
-// });
 
 router.post("/cottonnitrogenmanagementsubmit", async (req, res) => {
   const {
@@ -98,7 +42,7 @@ router.post("/cottonnitrogenmanagementsubmit", async (req, res) => {
 
     // Insert a new row without checking for duplicates
     await request.query(`
-      INSERT INTO cotton_nitrogen_management_form 
+      INSERT INTO [2025_cotton_nitrogen_management_form]
       (teamName, applicationType, placement, date, amount, applied, dateToday,product) 
       VALUES 
       (@teamName, @applicationType, @placement, @date, @amount, @applied, @dateToday,@product)
@@ -120,7 +64,7 @@ router.post("/cottonnitrogenmanagementsubmit", async (req, res) => {
 
 //         // Query the database based on the applicationType
 //         const query =
-//           "SELECT * FROM cotton_nitrogen_management_form WHERE applicationType = ? and teamName = ?";
+//           "SELECT * FROM [2025_cotton_nitrogen_management_form]WHERE applicationType = ? and teamName = ?";
 //         db.query(query, [applicationType, teamName], (error, results) => {
 //           if (error) {
 //             console.error("Error fetching data from the database:", error);
@@ -163,7 +107,7 @@ router.get("/cottonfetchNitrogenManagementData", async (req, res) => {
 
     // Query the database based on the applicationType and teamName
     const result = await request.query(`
-      SELECT * FROM cotton_nitrogen_management_form WHERE applicationType = @applicationType AND teamName = @teamName
+      SELECT * FROM [2025_cotton_nitrogen_management_form]WHERE applicationType = @applicationType AND teamName = @teamName
     `);
 
     // Send the fetched data as a JSON response
@@ -181,7 +125,7 @@ router.get("/cottonfetchNitrogenManagementData", async (req, res) => {
 //         // Extract the applicationType from the query parameters
 
 //         // Query the database based on the applicationType
-//         const query = "SELECT * FROM cotton_nitrogen_management_form";
+//         const query = "SELECT * FROM 2025_cotton_[2025_nitrogen_management_form]";
 //         db.query(query, (error, results) => {
 //           if (error) {
 //             console.error("Error fetching data from the database:", error);
@@ -211,7 +155,7 @@ router.get("/cottonfetchAllNitrogenManagementData", async (req, res) => {
 
     // Execute the query to fetch all nitrogen management data
     const result = await request.query(
-      "SELECT * FROM cotton_nitrogen_management_form"
+      "SELECT * FROM 2025_cotton_[2025_nitrogen_management_form]"
     );
 
     // Send the fetched data as a JSON response
@@ -231,7 +175,7 @@ router.get("/cottonfetchAllNitrogenManagementData", async (req, res) => {
 
 //         // Perform the database delete operation based on the appId
 //         const deleteQuery =
-//           "DELETE FROM cotton_nitrogen_management_form WHERE id = ?";
+//           "DELETE FROM [2025_cotton_nitrogen_management_form]WHERE id = ?";
 //         db.query(deleteQuery, [appId], (deleteError, deleteResult) => {
 //           if (deleteError) {
 //             console.error("Error deleting the application:", deleteError);
@@ -271,7 +215,7 @@ router.delete("/deletecottonnitrogenApplication/:appId", async (req, res) => {
 
     // Perform the database delete operation based on the appId
     await request.query(
-      "DELETE FROM cotton_nitrogen_management_form WHERE id = @appId"
+      "DELETE FROM [2025_cotton_nitrogen_management_form]WHERE id = @appId"
     );
 
     res.status(200).json({ message: "Application deleted successfully" });
@@ -292,7 +236,7 @@ router.delete("/deletecottonnitrogenApplication/:appId", async (req, res) => {
 //         const newAppliedValue = "yes";
 
 //         const fetchTeamNameQuery =
-//           "SELECT teamName FROM cotton_nitrogen_management_form WHERE id = ?";
+//           "SELECT teamName FROM [2025_cotton_nitrogen_management_form]WHERE id = ?";
 //         db.query(fetchTeamNameQuery, [appId], (fetchError, fetchResult) => {
 //           if (fetchError) {
 //             console.error("Error fetching team name:", fetchError);
@@ -304,7 +248,7 @@ router.delete("/deletecottonnitrogenApplication/:appId", async (req, res) => {
 
 //             // Perform the database update operation
 //             const updateQuery =
-//               "UPDATE cotton_nitrogen_management_form SET applied = ? WHERE id = ?";
+//               "UPDATE [2025_cotton_nitrogen_management_form]SET applied = ? WHERE id = ?";
 //             db.query(
 //               updateQuery,
 //               [newAppliedValue, appId],
@@ -319,7 +263,7 @@ router.delete("/deletecottonnitrogenApplication/:appId", async (req, res) => {
 //                     .json({ message: "Error updating the applied field" });
 //                 } else {
 //                   const fetchEmailQuery =
-//                     "SELECT email FROM cotton_registration_data WHERE teamName = ?";
+//                     "SELECT email FROM 2025_cotton_registration_data WHERE teamName = ?";
 //                   db.query(
 //                     fetchEmailQuery,
 //                     [teamName],
@@ -337,7 +281,7 @@ router.delete("/deletecottonnitrogenApplication/:appId", async (req, res) => {
 //                         const recipientEmail = emailResult[0].email;
 //                         let emailText = `The application with ID ${appId} has been marked as applied.`;
 //                         const fetchApplicationDetailsQuery =
-//                           "SELECT * FROM cotton_nitrogen_management_form WHERE id = ?";
+//                           "SELECT * FROM [2025_cotton_nitrogen_management_form]WHERE id = ?";
 //                         await db.query(
 //                           fetchApplicationDetailsQuery,
 //                           [appId],
@@ -429,7 +373,7 @@ router.post("/updateCottonNitrogenApplied/:appId", async (req, res) => {
     const fetchTeamNameRequest = new sql.Request(transaction);
     fetchTeamNameRequest.input("appId", sql.Int, appId);
     const fetchTeamNameResult = await fetchTeamNameRequest.query(
-      "SELECT teamName,date FROM cotton_nitrogen_management_form WHERE id = @appId"
+      "SELECT teamName,date FROM [2025_cotton_nitrogen_management_form]WHERE id = @appId"
     );
 
     if (fetchTeamNameResult.recordset.length === 0) {
@@ -444,13 +388,13 @@ router.post("/updateCottonNitrogenApplied/:appId", async (req, res) => {
     updateRequest.input("newAppliedValue", sql.VarChar, newAppliedValue);
     updateRequest.input("appId", sql.Int, appId);
     await updateRequest.query(
-      "UPDATE cotton_nitrogen_management_form SET applied = @newAppliedValue WHERE id = @appId"
+      "UPDATE [2025_cotton_nitrogen_management_form]SET applied = @newAppliedValue WHERE id = @appId"
     );
 
     const fetchEmailRequest = new sql.Request(transaction);
     fetchEmailRequest.input("teamName", sql.VarChar, teamName);
     const fetchEmailResult = await fetchEmailRequest.query(
-      "SELECT email FROM cotton_registration_data WHERE teamName = @teamName"
+      "SELECT email FROM [2025_cotton_registration_data] WHERE teamName = @teamName"
     );
 
     if (fetchEmailResult.recordset.length === 0) {
@@ -494,7 +438,7 @@ router.post("/updateCottonNitrogenApplied/:appId", async (req, res) => {
 //     const { teamName, applicationType, isConfirmed } = req.body;
 
 //     // Replace this SQL with the correct SQL for your database schema
-//     const sql = `INSERT INTO CottonApplicationConfirmations (teamName, applicationType, isConfirmed) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE isConfirmed = ?`;
+//     const sql = `INSERT INTO 2025_CottonApplicationConfirmations (teamName, applicationType, isConfirmed) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE isConfirmed = ?`;
 
 //     db.query(
 //       sql,
@@ -528,7 +472,7 @@ router.post("/saveCottonApplicationTypeConfirmation", async (req, res) => {
 
     // Use the MERGE statement for an upsert operation
     const mergeSql = `
-      MERGE INTO CottonApplicationConfirmations WITH (HOLDLOCK) AS target
+      MERGE INTO [2025_CottonApplicationConfirmations] WITH (HOLDLOCK) AS target
       USING (VALUES (@teamName, @applicationType, @isConfirmed)) 
       AS source (teamName, applicationType, isConfirmed)
       ON target.teamName = source.teamName AND target.applicationType = source.applicationType
@@ -548,32 +492,6 @@ router.post("/saveCottonApplicationTypeConfirmation", async (req, res) => {
   }
 });
 
-// router.get("/getCottonApplicationTypeConfirmation", (req, res) => {
-//   setupDatabase().then((db) => {
-//     const teamName = req.query.teamName; // Assume teamName is passed as a query parameter
-
-//     const sql = `SELECT applicationType, isConfirmed FROM CottonApplicationConfirmations WHERE teamName = ?`;
-
-//     db.query(sql, [teamName], (err, result) => {
-//       if (err) {
-//         res.status(500).send("Error fetching application type confirmation");
-//       } else {
-//         if (result.length === 0) {
-//           // No records found
-//           res
-//             .status(404)
-//             .send(
-//               "No application type confirmation found for the specified team"
-//             );
-//         } else {
-//           // Assuming you want to return the first result if multiple entries exist
-//           res.status(200).json(result[0]);
-//         }
-//       }
-//     });
-//     db.release();
-//   });
-// });
 
 router.get("/getCottonApplicationTypeConfirmation", async (req, res) => {
   const teamName = req.query.teamName; // Assume teamName is passed as a query parameter
@@ -591,7 +509,7 @@ router.get("/getCottonApplicationTypeConfirmation", async (req, res) => {
 
     // Execute the query
     const result = await request.query(
-      `SELECT applicationType, isConfirmed FROM CottonApplicationConfirmations WHERE teamName = @teamName`
+      `SELECT applicationType, isConfirmed FROM [2025_CottonApplicationConfirmations] WHERE teamName = @teamName`
     );
 
     if (result.recordset.length === 0) {
@@ -618,8 +536,8 @@ router.post("/cottonnitrogenstarter", async (req, res) => {
   }
 
   try {
-    const pool = await poolPromise;
-    const request = new sql.Request(pool);
+    const pool = await setupDatabase();
+    const request = pool.request();
 
     // Add parameters to your SQL query
     request.input("teamName", sql.VarChar, teamName);
@@ -627,12 +545,15 @@ router.post("/cottonnitrogenstarter", async (req, res) => {
     request.input("amount", sql.VarChar, amount);
 
     // Insert a new row into the nitrogenstarter table
-    const sqlQuery = `
-      INSERT INTO nitrogenstarter (teamName, starter, amount)
-      VALUES (@teamName, @starter, @amount)
-    `;
+    // const sqlQuery = `
+    //   INSERT INTO nitrogenstarter (teamName, starter, amount)
+    //   VALUES (@teamName, @starter, @amount)
+    // `;
 
-    await request.query(sqlQuery);
+    await request.query(`
+    INSERT INTO nitrogenstarter (teamName, starter, amount)
+    VALUES (@teamName, @starter, @amount)
+  `);
 
     res.status(200).json({ message: "Data submitted successfully" });
   } catch (error) {
@@ -641,7 +562,7 @@ router.post("/cottonnitrogenstarter", async (req, res) => {
   }
 });
 
-router.get("/api/cottonfetchStarterData", async (req, res) => {
+router.get("/cottonfetchStarterData", async (req, res) => {
   const teamName = req.query.teamName; // Retrieve teamName from query parameters
 
   if (!teamName) {
@@ -651,8 +572,8 @@ router.get("/api/cottonfetchStarterData", async (req, res) => {
   }
 
   try {
-    const pool = await poolPromise;
-    const request = new sql.Request(pool);
+    const pool = await setupDatabase();
+    const request = pool.request();
 
     // Prepare the SQL query using teamName
     request.input("teamName", sql.VarChar, teamName);
@@ -665,6 +586,24 @@ router.get("/api/cottonfetchStarterData", async (req, res) => {
         .status(404)
         .json({ message: "No data found for the specified team" });
     }
+
+    res.status(200).json(result.recordset);
+  } catch (error) {
+    console.error("Error fetching starter data from backend:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error while fetching data" });
+  }
+});
+
+router.get("/cottonfetchAllStarterData", async (req, res) => {
+  try {
+    const pool = await setupDatabase();
+    const request = pool.request();
+
+    const result = await request.query(
+      `SELECT * FROM nitrogenstarter` // Adjust the table name and fields as necessary
+    );
 
     res.status(200).json(result.recordset);
   } catch (error) {

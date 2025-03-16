@@ -24,7 +24,7 @@ router.post("/insurancesubmit", async (req, res) => {
 
     // Check if a row with the same teamName already exists
     const checkResult = await checkRequest.query(
-      "SELECT * FROM insurance_selection_form WHERE teamName = @teamName"
+      "SELECT * FROM [2025_insurance_selection_form] WHERE teamName = @teamName"
     );
 
     if (checkResult.recordset.length > 0) {
@@ -35,7 +35,7 @@ router.post("/insurancesubmit", async (req, res) => {
       updateRequest.input("level", sql.VarChar, level);
 
       await updateRequest.query(
-        "UPDATE insurance_selection_form SET coverage = @coverage, level = @level WHERE teamName = @teamName"
+        "UPDATE [2025_insurance_selection_form] SET coverage = @coverage, level = @level WHERE teamName = @teamName"
       );
       res.status(200).json({ message: "Insurance form updated successfully" });
     } else {
@@ -46,7 +46,7 @@ router.post("/insurancesubmit", async (req, res) => {
       insertRequest.input("level", sql.VarChar, level);
 
       await insertRequest.query(
-        "INSERT INTO insurance_selection_form (teamName, coverage, level) VALUES (@teamName, @coverage, @level)"
+        "INSERT INTO [2025_insurance_selection_form] (teamName, coverage, level) VALUES (@teamName, @coverage, @level)"
       );
       res
         .status(200)
@@ -83,7 +83,7 @@ router.post("/getInsuranceSelectionForms", async (req, res) => {
 
     // Execute the query to fetch data
     const result = await request.query(
-      "SELECT * FROM insurance_selection_form WHERE teamName = @username"
+      "SELECT * FROM [2025_insurance_selection_form] WHERE teamName = @username"
     );
 
     // Send the fetched data as a JSON response
@@ -101,7 +101,7 @@ router.get("/getAllInsuranceSelectionForms", async (req, res) => {
 
     // Execute the query to fetch all insurance selection data
     const result = await request.query(
-      "SELECT * FROM insurance_selection_form"
+      "SELECT * FROM [2025_insurance_selection_form]"
     );
 
     // Send the fetched data as a JSON response

@@ -22,6 +22,7 @@ const adminuserdata = require("./admin_fetch_user_details");
 const session = require("express-session");
 const fileUploadRoutes = require("./fileUploadRoutes"); // Import the file upload routes
 const bulletin = require("./corn_bulletin");
+const weather = require("./corn_weather")
 const cottonbulletin = require("./cotton_bulletin");
 const admindata = require("./admin_data");
 const fetchadmin = require("./fetch_admin");
@@ -30,7 +31,7 @@ const authenticateToken = require("./authenticateToken");
 const sql = require("mssql");
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3002;
 
 app.use(
   session({
@@ -39,7 +40,6 @@ app.use(
     saveUninitialized: true,
   })
 );
-
 setupDatabase()
   .then(() => {
     console.log("Database tables created successfully");
@@ -52,33 +52,43 @@ setupDatabase()
 // Middleware
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Use the registration route
 app.use("/api", registrationRoute);
 app.use("/api", loginRoute);
 // app.use(authenticateToken);
-app.use("/api", cornHybridFormRoute);
-app.use("/api", cottonHybridFormRoute);
-app.use("/api", seedingRateFormRouter);
-app.use("/api", cottonSeedingRateFormRouter);
-app.use("/api", nitrogenmanagementRoute);
-app.use("/api", cottonnitrogenmanagementRoute);
-app.use("/api", irrigationmanagementroute);
-app.use("/api", cottonirrigationmanagementroute);
-app.use("/api", insuranceselectionroute);
-app.use("/api", cottoninsuranceselectionroute);
-app.use("/api", marketingoptionsroute);
-app.use("/api", cottonmarketingoptionsroute);
-app.use("/api", cottongrowthregulationroute);
-app.use("/api", adminuserdata);
-app.use("/api", fileUploadRoutes);
-app.use("/api", bulletin);
-app.use("/api", cottonbulletin);
-app.use("/api", admindata);
-app.use("/api", fetchadmin);
+app.use("/api", authenticateToken, cornHybridFormRoute);
+app.use("/api", authenticateToken, cottonHybridFormRoute);
+app.use("/api", authenticateToken, seedingRateFormRouter);
+app.use("/api", authenticateToken, cottonSeedingRateFormRouter);
+app.use("/api", authenticateToken, nitrogenmanagementRoute);
+app.use("/api", authenticateToken, cottonnitrogenmanagementRoute);
+app.use("/api", authenticateToken, irrigationmanagementroute);
+app.use("/api", authenticateToken, cottonirrigationmanagementroute);
+app.use("/api", authenticateToken, insuranceselectionroute);
+app.use("/api", authenticateToken, cottoninsuranceselectionroute);
+app.use("/api", authenticateToken, marketingoptionsroute);
+app.use("/api", authenticateToken, cottonmarketingoptionsroute);
+app.use("/api", authenticateToken, cottongrowthregulationroute);
+app.use("/api", authenticateToken, adminuserdata);
+app.use("/api", authenticateToken, fileUploadRoutes);
+app.use("/api", authenticateToken, bulletin);
+app.use("/api", authenticateToken, weather);
+app.use("/api", authenticateToken, cottonbulletin);
+app.use("/api", authenticateToken, admindata);
+app.use("/api", authenticateToken, fetchadmin);
+
+if (process.env.NODE_ENV !== "development") {
+  const clientpath = require("path");
+
+  app.use(express.static(clientpath.join(__dirname, "build/"))); //path to your build directory
+  // Handles any requests that don't match the ones above and send them to react client build
+  app.get("*", (req, res) => {
+    res.sendFile(clientpath.join(__dirname + "/build/index.html"));
+  });
+}
+
 // Start the server
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+module.exports = app;

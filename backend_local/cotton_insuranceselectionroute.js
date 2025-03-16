@@ -97,7 +97,7 @@ router.post("/cottoninsurancesubmit", async (req, res) => {
 
     // Check if a row with the same teamName already exists
     const checkResult = await checkRequest.query(
-      "SELECT * FROM cotton_insurance_selection_form WHERE teamName = @teamName"
+      "SELECT * FROM [2025_cotton_insurance_selection_form] WHERE teamName = @teamName"
     );
 
     if (checkResult.recordset.length > 0) {
@@ -108,7 +108,7 @@ router.post("/cottoninsurancesubmit", async (req, res) => {
       updateRequest.input("level", sql.VarChar, level);
 
       await updateRequest.query(
-        "UPDATE cotton_insurance_selection_form SET coverage = @coverage, level = @level WHERE teamName = @teamName"
+        "UPDATE [2025_cotton_insurance_selection_form] SET coverage = @coverage, level = @level WHERE teamName = @teamName"
       );
       res.status(200).json({ message: "Insurance form updated successfully" });
     } else {
@@ -184,7 +184,7 @@ router.post("/cottongetInsuranceSelectionForms", async (req, res) => {
 
     // Execute the query to fetch data
     const result = await request.query(
-      "SELECT * FROM cotton_insurance_selection_form WHERE teamName = @username"
+      "SELECT * FROM [2025_cotton_insurance_selection_form] WHERE teamName = @username"
     );
 
     // Send the fetched data as a JSON response
@@ -228,7 +228,7 @@ router.get("/cottongetAllInsuranceSelectionForms", async (req, res) => {
 
     // Execute the query to fetch all insurance selection data
     const result = await request.query(
-      "SELECT * FROM cotton_insurance_selection_form"
+      "SELECT * FROM [2025_cotton_insurance_selection_form]"
     );
 
     // Send the fetched data as a JSON response

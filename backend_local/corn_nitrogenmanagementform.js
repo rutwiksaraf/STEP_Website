@@ -1,4 +1,4 @@
-// backend/routes/nitrogen_management_form.js
+// backend/routes/[2025_nitrogen_management_form].js
 const express = require("express");
 const router = express.Router();
 const { setupDatabase } = require("./database");
@@ -8,7 +8,7 @@ const sql = require("mssql");
 let transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "stepnotification2024@gmail.com", // Replace with your email
+    user: "floridastepcontest@gmail.com", // Replace with your email
     pass: "lirn kwvh quri agrk", // Replace with your email password or app password
   },
 });
@@ -23,6 +23,7 @@ router.post("/nitrogenmanagementsubmit", async (req, res) => {
     teamName,
     applied,
     dateToday,
+    productOption
   } = req.body;
 
   try {
@@ -37,13 +38,14 @@ router.post("/nitrogenmanagementsubmit", async (req, res) => {
     request.input("amount", sql.VarChar, amount); // Use sql.Decimal if 'amount' is a decimal value
     request.input("applied", sql.VarChar, applied);
     request.input("dateToday", sql.Date, dateToday);
+    request.input("productOption", sql.VarChar, productOption);
 
     // Insert a new row without checking for duplicates
     await request.query(`
-      INSERT INTO nitrogen_management_form 
-      (teamName, applicationType, placement, date, amount, applied, dateToday) 
+      INSERT INTO [2025_nitrogen_management_form] 
+      (teamName, applicationType, placement, date, amount, applied, dateToday, productOption) 
       VALUES 
-      (@teamName, @applicationType, @placement, @date, @amount, @applied, @dateToday)
+      (@teamName, @applicationType, @placement, @date, @amount, @applied, @dateToday, @productOption)
     `);
 
     res.status(200).json({ message: "Form submitted successfully" });
@@ -73,7 +75,7 @@ router.get("/fetchNitrogenManagementData", async (req, res) => {
 
     // Query the database based on the applicationType and teamName
     const result = await request.query(`
-      SELECT * FROM nitrogen_management_form WHERE applicationType = @applicationType AND teamName = @teamName
+      SELECT * FROM [2025_nitrogen_management_form] WHERE applicationType = @applicationType AND teamName = @teamName
     `);
 
     // Send the fetched data as a JSON response
@@ -91,7 +93,7 @@ router.get("/fetchAllNitrogenManagementData", async (req, res) => {
 
     // Execute the query to fetch all nitrogen management data
     const result = await request.query(
-      "SELECT * FROM nitrogen_management_form"
+      "SELECT * FROM [2025_nitrogen_management_form]"
     );
 
     // Send the fetched data as a JSON response
@@ -118,7 +120,7 @@ router.delete("/deletenitrogenApplication/:appId", async (req, res) => {
 
     // Perform the database delete operation based on the appId
     await request.query(
-      "DELETE FROM nitrogen_management_form WHERE id = @appId"
+      "DELETE FROM [2025_nitrogen_management_form] WHERE id = @appId"
     );
 
     res.status(200).json({ message: "Application deleted successfully" });
@@ -128,47 +130,7 @@ router.delete("/deletenitrogenApplication/:appId", async (req, res) => {
   }
 });
 
-// router.post("/updateNitrogenApplied/:appId", (req, res) => {
-//   setupDatabase()
-//     .then((db) => {
-//       try {
-//         // Extract the application ID from the request parameters
-//         const appId = req.params.appId;
 
-//         // Define the new value for the "applied" field (e.g., "yes")
-//         const newAppliedValue = "yes";
-
-//         // Perform the database update operation
-//         const updateQuery =
-//           "UPDATE nitrogen_management_form SET applied = ? WHERE id = ?";
-//         db.query(
-//           updateQuery,
-//           [newAppliedValue, appId],
-//           (updateError, updateResult) => {
-//             if (updateError) {
-//               console.error("Error updating the applied field:", updateError);
-//               res
-//                 .status(500)
-//                 .json({ message: "Error updating the applied field" });
-//             } else {
-//               res
-//                 .status(200)
-//                 .json({ message: "Applied field updated successfully" });
-//             }
-//           }
-//         );
-//       } catch (error) {
-//         console.error("Error handling update of the applied field:", error);
-//         res.status(500).json({ message: "Internal server error" });
-//       }
-//     })
-//     .catch((err) => {
-//       console.error("Database setup error: " + err.message);
-//       res.status(500).json({ message: "Database setup error" });
-//     });
-// });
-
-// ... Other imports and route setup ...
 
 router.post("/updateNitrogenApplied/:appId", async (req, res) => {
   const appId = req.params.appId; // Extract the application ID from the request parameters
@@ -191,7 +153,7 @@ router.post("/updateNitrogenApplied/:appId", async (req, res) => {
     const fetchTeamNameRequest = new sql.Request(transaction);
     fetchTeamNameRequest.input("appId", sql.Int, appId);
     const fetchTeamNameResult = await fetchTeamNameRequest.query(
-      "SELECT teamName,date FROM nitrogen_management_form WHERE id = @appId"
+      "SELECT teamName,date FROM [2025_nitrogen_management_form] WHERE id = @appId"
     );
 
     if (fetchTeamNameResult.recordset.length === 0) {
@@ -206,13 +168,13 @@ router.post("/updateNitrogenApplied/:appId", async (req, res) => {
     updateRequest.input("newAppliedValue", sql.VarChar, newAppliedValue);
     updateRequest.input("appId", sql.Int, appId);
     await updateRequest.query(
-      "UPDATE nitrogen_management_form SET applied = @newAppliedValue WHERE id = @appId"
+      "UPDATE [2025_nitrogen_management_form] SET applied = @newAppliedValue WHERE id = @appId"
     );
 
     const fetchEmailRequest = new sql.Request(transaction);
     fetchEmailRequest.input("teamName", sql.VarChar, teamName);
     const fetchEmailResult = await fetchEmailRequest.query(
-      "SELECT email FROM corn_registration_data WHERE teamName = @teamName"
+      "SELECT email FROM [2025_corn_registration_data] WHERE teamName = @teamName"
     );
 
     if (fetchEmailResult.recordset.length === 0) {
@@ -228,7 +190,7 @@ router.post("/updateNitrogenApplied/:appId", async (req, res) => {
     // Send an email after successful database operations
     const emailText = `Hello ${teamName},\n\nYour nitrogen application dated ${dateOfApplication} has been marked as applied`;
     const mailOptions = {
-      from: "stepnotification2024@gmail.com", // Use your configured email
+      from: "floridastepcontest@gmail.com", // Use your configured email
       to: recipientEmail,
       subject: "Nitrogen Application Status Update",
       text: emailText,
@@ -265,7 +227,7 @@ router.post("/saveApplicationTypeConfirmation", async (req, res) => {
 
     // Use the MERGE statement for an upsert operation
     const mergeSql = `
-      MERGE INTO ApplicationConfirmations WITH (HOLDLOCK) AS target
+      MERGE INTO [2025_ApplicationConfirmations] WITH (HOLDLOCK) AS target
       USING (VALUES (@teamName, @applicationType, @isConfirmed)) 
       AS source (teamName, applicationType, isConfirmed)
       ON target.teamName = source.teamName AND target.applicationType = source.applicationType
@@ -301,7 +263,7 @@ router.get("/getApplicationTypeConfirmation", async (req, res) => {
 
     // Execute the query
     const result = await request.query(
-      `SELECT applicationType, isConfirmed FROM ApplicationConfirmations WHERE teamName = @teamName`
+      `SELECT applicationType, isConfirmed FROM [2025_ApplicationConfirmations] WHERE teamName = @teamName`
     );
 
     if (result.recordset.length === 0) {

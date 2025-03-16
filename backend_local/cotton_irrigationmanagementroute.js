@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { setupDatabase } = require("./database");
+const sql = require("mssql");
 
 // Define a route for handling soil moisture sensor submissions
 // router.post("/cottonsoilmoisturesensorsubmit", (req, res) => {
@@ -20,7 +21,7 @@ const { setupDatabase } = require("./database");
 
 //         // Insert a new row without checking for duplicates
 //         const insertQuery =
-//           "INSERT INTO cotton_soil_moisture_sensor_data (teamName, sensorType, date, reading,options,applied, dateToday) VALUES (?, ?, ?, ?,?,?,?)";
+//           "INSERT INTO [2025_cotton_soil_moisture_sensor_data] (teamName, sensorType, date, reading,options,applied, dateToday) VALUES (?, ?, ?, ?,?,?,?)";
 //         db.query(
 //           insertQuery,
 //           [teamName, sensorType, date, reading, options, applied, dateToday],
@@ -72,7 +73,7 @@ router.post("/cottonsoilmoisturesensorsubmit", async (req, res) => {
 
     // Insert a new row without checking for duplicates
     await request.query(
-      "INSERT INTO cotton_soil_moisture_sensor_data (teamName, sensorType, date, reading, options, applied, dateToday) VALUES (@teamName, @sensorType, @date, @reading, @options, @applied, @dateToday)"
+      "INSERT INTO [2025_cotton_soil_moisture_sensor_data] (teamName, sensorType, date, reading, options, applied, dateToday) VALUES (@teamName, @sensorType, @date, @reading, @options, @applied, @dateToday)"
     );
 
     res.status(200).json({
@@ -92,7 +93,7 @@ router.post("/cottonsoilmoisturesensorsubmit", async (req, res) => {
 //         const { teamName } = req.query;
 //         // Query the database to fetch all soil moisture sensor data
 //         const query =
-//           "SELECT * FROM cotton_soil_moisture_sensor_data WHERE teamName = ?";
+//           "SELECT * FROM [2025_cotton_soil_moisture_sensor_data] WHERE teamName = ?";
 //         db.query(query, [teamName], (error, results) => {
 //           if (error) {
 //             console.error(
@@ -136,7 +137,7 @@ router.get("/cottonfetchSoilMoistureSensorData", async (req, res) => {
 
     // Query the database to fetch all soil moisture sensor data for the specified team
     const result = await request.query(
-      "SELECT * FROM cotton_soil_moisture_sensor_data WHERE teamName = @teamName"
+      "SELECT * FROM [2025_cotton_soil_moisture_sensor_data] WHERE teamName = @teamName"
     );
 
     // Send the fetched data as a JSON response
@@ -152,7 +153,7 @@ router.get("/cottonfetchSoilMoistureSensorData", async (req, res) => {
 //     .then((db) => {
 //       try {
 //         // Query the database to fetch all soil moisture sensor data
-//         const query = "SELECT * FROM cotton_soil_moisture_sensor_data";
+//         const query = "SELECT * FROM [2025_cotton_soil_moisture_sensor_data]";
 //         db.query(query, (error, results) => {
 //           if (error) {
 //             console.error(
@@ -185,7 +186,7 @@ router.get("/cottonfetchAllSoilMoistureSensorData", async (req, res) => {
 
     // Execute the query to fetch all soil moisture sensor data
     const result = await request.query(
-      "SELECT * FROM cotton_soil_moisture_sensor_data"
+      "SELECT * FROM [2025_cotton_soil_moisture_sensor_data]"
     );
 
     // Send the fetched data as a JSON response
@@ -205,7 +206,7 @@ router.get("/cottonfetchAllSoilMoistureSensorData", async (req, res) => {
 
 //         // Perform the database delete operation
 //         const deleteQuery =
-//           "DELETE FROM cotton_soil_moisture_sensor_data WHERE id = ?";
+//           "DELETE FROM [2025_cotton_soil_moisture_sensor_data] WHERE id = ?";
 //         db.query(deleteQuery, [appId], (deleteError, deleteResult) => {
 //           if (deleteError) {
 //             console.error(
@@ -250,7 +251,7 @@ router.delete("/deletecottonirrigationApplication/:appId", async (req, res) => {
 
     // Perform the database delete operation
     await request.query(
-      "DELETE FROM cotton_soil_moisture_sensor_data WHERE id = @appId"
+      "DELETE FROM [2025_cotton_soil_moisture_sensor_data] WHERE id = @appId"
     );
 
     res
@@ -276,7 +277,7 @@ router.delete("/deletecottonirrigationApplication/:appId", async (req, res) => {
 
 //         // Perform the database update operation
 //         const updateQuery =
-//           "UPDATE cotton_soil_moisture_sensor_data SET applied = ? WHERE id = ?";
+//           "UPDATE [2025_cotton_soil_moisture_sensor_data] SET applied = ? WHERE id = ?";
 //         db.query(
 //           updateQuery,
 //           [newAppliedValue, appId],
@@ -324,7 +325,7 @@ router.post("/updateCottonApplied/:appId", async (req, res) => {
 
     // Perform the database update operation
     await request.query(
-      "UPDATE cotton_soil_moisture_sensor_data SET applied = @newAppliedValue WHERE id = @appId"
+      "UPDATE [2025_cotton_soil_moisture_sensor_data] SET applied = @newAppliedValue WHERE id = @appId"
     );
 
     res.status(200).json({ message: "Applied field updated successfully" });
@@ -334,135 +335,151 @@ router.post("/updateCottonApplied/:appId", async (req, res) => {
   }
 });
 
-// router.post("/saveIrrigationApplicationTypeConfirmation", async (req, res) => {
-//   const { teamName, applicationType, isConfirmed } = req.body;
+router.post(
+  "/saveIrrigationApplicationTypeConfirmationCotton",
+  async (req, res) => {
+    const { teamName, applicationType, isConfirmed } = req.body;
 
-//   try {
-//     const pool = await setupDatabase(); // Obtain a connection pool
-//     const request = pool.request(); // Create a new request object
+    try {
+      const pool = await setupDatabase(); // Obtain a connection pool
+      const request = pool.request(); // Create a new request object
 
-//     // Add parameters to your SQL query
-//     request.input("teamName", sql.VarChar, teamName);
-//     request.input("applicationType", sql.VarChar, applicationType);
-//     request.input("isConfirmed", sql.Bit, isConfirmed);
+      // Add parameters to your SQL query
+      request.input("teamName", sql.VarChar, teamName);
+      request.input("applicationType", sql.VarChar, applicationType);
+      request.input("isConfirmed", sql.Bit, isConfirmed);
 
-//     // Check if a record already exists and update it, or insert a new one
-//     const sqlQuery = `
-//       IF EXISTS (SELECT 1 FROM IrrigationApplicationConfirmations WHERE teamName = @teamName AND applicationType = @applicationType)
-//         UPDATE IrrigationApplicationConfirmations SET isConfirmed = @isConfirmed WHERE teamName = @teamName AND applicationType = @applicationType;
-//       ELSE
-//         INSERT INTO IrrigationApplicationConfirmations (teamName, applicationType, isConfirmed) VALUES (@teamName, @applicationType, @isConfirmed);
-//     `;
+      // Check if a record already exists and update it, or insert a new one
+      const sqlQuery = `
+      IF EXISTS (SELECT 1 FROM [2025_CottonApplicationConfirmations] WHERE teamName = @teamName AND applicationType = @applicationType)
+        UPDATE [2025_CottonApplicationConfirmations] SET isConfirmed = @isConfirmed WHERE teamName = @teamName AND applicationType = @applicationType;
+      ELSE
+        INSERT INTO [2025_CottonApplicationConfirmations] (teamName, applicationType, isConfirmed) VALUES (@teamName, @applicationType, @isConfirmed);
+    `;
 
-//     await request.query(sqlQuery);
+      await request.query(sqlQuery);
 
-//     res.status(200).send("Application type confirmation saved successfully");
-//   } catch (err) {
-//     console.error("Error saving data:", err);
-//     res.status(500).send("Error saving application type confirmation");
-//   }
-// });
+      res.status(200).send("Application type confirmation saved successfully");
+    } catch (err) {
+      console.error("Error saving data:", err);
+      res.status(500).send("Error saving application type confirmation");
+    }
+  }
+);
 
-// router.get("/getIrrigationApplicationTypeConfirmation", async (req, res) => {
-//   const { teamName } = req.query; // Assume teamName is passed as a query parameter
+router.get(
+  "/getIrrigationApplicationTypeConfirmationCotton",
+  async (req, res) => {
+    const { teamName } = req.query; // Assume teamName is passed as a query parameter
 
-//   if (!teamName) {
-//     return res.status(400).send("Team name is required as a query parameter");
-//   }
+    if (!teamName) {
+      return res.status(400).send("Team name is required as a query parameter");
+    }
 
-//   try {
-//     const pool = await setupDatabase(); // Obtain a connection pool
-//     const request = pool.request(); // Create a new request object
+    try {
+      const pool = await setupDatabase(); // Obtain a connection pool
+      const request = pool.request(); // Create a new request object
 
-//     // Add parameters to your SQL query
-//     request.input("teamName", sql.VarChar, teamName);
+      // Add parameters to your SQL query
+      request.input("teamName", sql.VarChar, teamName);
 
-//     // Execute the query
-//     const result = await request.query(
-//       `SELECT applicationType, isConfirmed FROM IrrigationApplicationConfirmations WHERE teamName = @teamName`
-//     );
+      // Execute the query
+      const result = await request.query(
+        `SELECT applicationType, isConfirmed FROM [2025_CottonApplicationConfirmations] WHERE teamName = @teamName`
+      );
 
-//     if (result.recordset.length === 0) {
-//       // No records found
-//       res
-//         .status(404)
-//         .send("No application type confirmation found for the specified team");
-//     } else {
-//       // Assuming you want to return the first result if multiple entries exist
-//       res.status(200).json(result.recordset[0]);
-//     }
-//   } catch (err) {
-//     console.error("Error fetching application type confirmation:", err);
-//     res.status(500).send("Error fetching application type confirmation");
-//   }
-// });
+      if (result.recordset.length === 0) {
+        // No records found
+        res
+          .status(404)
+          .send(
+            "No application type confirmation found for the specified team"
+          );
+      } else {
+        // Assuming you want to return the first result if multiple entries exist
+        res.status(200).json(result.recordset[0]);
+      }
+    } catch (err) {
+      console.error("Error fetching application type confirmation:", err);
+      res.status(500).send("Error fetching application type confirmation");
+    }
+  }
+);
 
-// router.post("/saveMoistureApplicationTypeConfirmation", async (req, res) => {
-//   const { teamName, applicationType, isConfirmed } = req.body;
+router.post(
+  "/saveMoistureApplicationTypeConfirmationCotton",
+  async (req, res) => {
+    const { teamName, applicationType, isConfirmed } = req.body;
 
-//   try {
-//     const pool = await setupDatabase(); // Obtain a connection pool
-//     const request = pool.request(); // Create a new request object
+    try {
+      const pool = await setupDatabase(); // Obtain a connection pool
+      const request = pool.request(); // Create a new request object
 
-//     // Add parameters to your SQL query
-//     request.input("teamName", sql.VarChar, teamName);
-//     request.input("applicationType", sql.VarChar, applicationType);
-//     request.input("isConfirmed", sql.Bit, isConfirmed);
+      // Add parameters to your SQL query
+      request.input("teamName", sql.VarChar, teamName);
+      request.input("applicationType", sql.VarChar, applicationType);
+      request.input("isConfirmed", sql.Bit, isConfirmed);
 
-//     // Use the MERGE statement to insert or update as necessary
-//     const sqlQuery = `
-//       MERGE INTO MoistureApplicationConfirmations AS target
-//       USING (SELECT @teamName AS teamName, @applicationType AS applicationType) AS source
-//       ON target.teamName = source.teamName AND target.applicationType = source.applicationType
-//       WHEN MATCHED THEN
-//         UPDATE SET isConfirmed = @isConfirmed
-//       WHEN NOT MATCHED THEN
-//         INSERT (teamName, applicationType, isConfirmed)
-//         VALUES (@teamName, @applicationType, @isConfirmed);
-//     `;
+      // Use the MERGE statement to insert or update as necessary
+      const sqlQuery = `
+      MERGE INTO Cotton[2025_MoistureApplicationConfirmations] AS target
+      USING (SELECT @teamName AS teamName, @applicationType AS applicationType) AS source
+      ON target.teamName = source.teamName AND target.applicationType = source.applicationType
+      WHEN MATCHED THEN
+        UPDATE SET isConfirmed = @isConfirmed
+      WHEN NOT MATCHED THEN
+        INSERT (teamName, applicationType, isConfirmed)
+        VALUES (@teamName, @applicationType, @isConfirmed);
+    `;
 
-//     await request.query(sqlQuery);
+      await request.query(sqlQuery);
 
-//     res.status(200).send("Application type confirmation saved successfully");
-//   } catch (err) {
-//     console.error("Error saving data:", err);
-//     res.status(500).send("Error saving application type confirmation");
-//   }
-// });
+      res.status(200).send("Application type confirmation saved successfully");
+    } catch (err) {
+      console.error("Error saving data:", err);
+      res.status(500).send("Error saving application type confirmation");
+    }
+  }
+);
 
-// router.get("/getMoistureApplicationTypeConfirmation", async (req, res) => {
-//   const { teamName } = req.query; // Assume teamName is passed as a query parameter
+router.get(
+  "/getMoistureApplicationTypeConfirmationCotton",
+  async (req, res) => {
+    const { teamName } = req.query; // Assume teamName is passed as a query parameter
 
-//   if (!teamName) {
-//     return res.status(400).send("Team name is required as a query parameter");
-//   }
+    if (!teamName) {
+      return res.status(400).send("Team name is required as a query parameter");
+    }
 
-//   try {
-//     const pool = await setupDatabase(); // Obtain a connection pool
-//     const request = pool.request(); // Create a new request object
+    try {
+      const pool = await setupDatabase(); // Obtain a connection pool
+      const request = pool.request(); // Create a new request object
 
-//     // Add parameters to your SQL query
-//     request.input("teamName", sql.VarChar, teamName);
+      // Add parameters to your SQL query
+      request.input("teamName", sql.VarChar, teamName);
 
-//     // Execute the query
-//     const result = await request.query(
-//       `SELECT applicationType, isConfirmed FROM MoistureApplicationConfirmations WHERE teamName = @teamName`
-//     );
+      // Execute the query
+      const result = await request.query(
+        `SELECT applicationType, isConfirmed FROM Cotton2025_MoistureApplicationConfirmations WHERE teamName = @teamName`
+      );
 
-//     if (result.recordset.length === 0) {
-//       // No records found
-//       res
-//         .status(404)
-//         .send("No application type confirmation found for the specified team");
-//     } else {
-//       // Assuming you want to return the first result if multiple entries exist
-//       res.status(200).json(result.recordset[0]);
-//     }
-//   } catch (err) {
-//     console.error("Error fetching application type confirmation:", err);
-//     res.status(500).send("Error fetching application type confirmation");
-//   }
-// });
+      if (result.recordset.length === 0) {
+        // No records found
+        res
+          .status(404)
+          .send(
+            "No application type confirmation found for the specified team"
+          );
+      } else {
+        // Assuming you want to return the first result if multiple entries exist
+        res.status(200).json(result.recordset[0]);
+      }
+    } catch (err) {
+      console.error("Error fetching application type confirmation:", err);
+      res.status(500).send("Error fetching application type confirmation");
+    }
+  }
+);
 
 // Export the router for use in your main Express app
 module.exports = router;

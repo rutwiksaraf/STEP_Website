@@ -10,14 +10,14 @@ router.get("/getAdmin", async (req, res) => {
     // Query to fetch admin data
     const adminResults = await pool
       .request()
-      .query("SELECT * FROM admin_registration_data");
+      .query("SELECT * FROM [2025_admin_registration_data]");
 
     // Loop through each admin to fetch their crops
     const fetchCropsPromises = adminResults.recordset.map(async (admin) => {
       const cropsResult = await pool
         .request()
         .input("userId", sql.Int, admin.id)
-        .query("SELECT * FROM admin_crops WHERE userId = @userId");
+        .query("SELECT * FROM [2025_admin_crops] WHERE userId = @userId");
       return { ...admin, crops: cropsResult.recordset };
     });
 

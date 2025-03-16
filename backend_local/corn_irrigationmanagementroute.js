@@ -23,7 +23,7 @@ router.post("/soilmoisturesensorsubmit", async (req, res) => {
 
     // Insert a new row without checking for duplicates
     await request.query(
-      "INSERT INTO soil_moisture_sensor_data (teamName, sensorType, date, reading, options, applied, dateToday) VALUES (@teamName, @sensorType, @date, @reading, @options, @applied, @dateToday)"
+      "INSERT INTO [2025_soil_moisture_sensor_data] (teamName, sensorType, date, reading, options, applied, dateToday) VALUES (@teamName, @sensorType, @date, @reading, @options, @applied, @dateToday)"
     );
 
     res.status(200).json({
@@ -54,7 +54,7 @@ router.get("/fetchSoilMoistureSensorData", async (req, res) => {
 
     // Query the database to fetch all soil moisture sensor data for the specified team
     const result = await request.query(
-      "SELECT * FROM soil_moisture_sensor_data WHERE teamName = @teamName"
+      "SELECT * FROM [2025_soil_moisture_sensor_data] WHERE teamName = @teamName"
     );
 
     // Send the fetched data as a JSON response
@@ -72,7 +72,7 @@ router.get("/fetchAllSoilMoistureSensorData", async (req, res) => {
 
     // Execute the query to fetch all soil moisture sensor data
     const result = await request.query(
-      "SELECT * FROM soil_moisture_sensor_data"
+      "SELECT * FROM [2025_soil_moisture_sensor_data]"
     );
 
     // Send the fetched data as a JSON response
@@ -100,7 +100,7 @@ router.delete("/deleteirrigationApplication/:appId", async (req, res) => {
 
     // Perform the database delete operation
     await request.query(
-      "DELETE FROM soil_moisture_sensor_data WHERE id = @appId"
+      "DELETE FROM [2025_soil_moisture_sensor_data] WHERE id = @appId"
     );
 
     res
@@ -132,7 +132,7 @@ router.post("/updateApplied/:appId", async (req, res) => {
 
     // Perform the database update operation
     await request.query(
-      "UPDATE soil_moisture_sensor_data SET applied = @newAppliedValue WHERE id = @appId"
+      "UPDATE [2025_soil_moisture_sensor_data] SET applied = @newAppliedValue WHERE id = @appId"
     );
 
     res.status(200).json({ message: "Applied field updated successfully" });
@@ -156,10 +156,10 @@ router.post("/saveIrrigationApplicationTypeConfirmation", async (req, res) => {
 
     // Check if a record already exists and update it, or insert a new one
     const sqlQuery = `
-      IF EXISTS (SELECT 1 FROM IrrigationApplicationConfirmations WHERE teamName = @teamName AND applicationType = @applicationType)
-        UPDATE IrrigationApplicationConfirmations SET isConfirmed = @isConfirmed WHERE teamName = @teamName AND applicationType = @applicationType;
+      IF EXISTS (SELECT 1 FROM [2025_IrrigationApplicationConfirmations] WHERE teamName = @teamName AND applicationType = @applicationType)
+        UPDATE [2025_IrrigationApplicationConfirmations] SET isConfirmed = @isConfirmed WHERE teamName = @teamName AND applicationType = @applicationType;
       ELSE
-        INSERT INTO IrrigationApplicationConfirmations (teamName, applicationType, isConfirmed) VALUES (@teamName, @applicationType, @isConfirmed);
+        INSERT INTO [2025_IrrigationApplicationConfirmations] (teamName, applicationType, isConfirmed) VALUES (@teamName, @applicationType, @isConfirmed);
     `;
 
     await request.query(sqlQuery);
@@ -187,7 +187,7 @@ router.get("/getIrrigationApplicationTypeConfirmation", async (req, res) => {
 
     // Execute the query
     const result = await request.query(
-      `SELECT applicationType, isConfirmed FROM IrrigationApplicationConfirmations WHERE teamName = @teamName`
+      `SELECT applicationType, isConfirmed FROM [2025_IrrigationApplicationConfirmations] WHERE teamName = @teamName`
     );
 
     if (result.recordset.length === 0) {
@@ -219,7 +219,7 @@ router.post("/saveMoistureApplicationTypeConfirmation", async (req, res) => {
 
     // Use the MERGE statement to insert or update as necessary
     const sqlQuery = `
-      MERGE INTO MoistureApplicationConfirmations AS target
+      MERGE INTO [2025_MoistureApplicationConfirmations] AS target
       USING (SELECT @teamName AS teamName, @applicationType AS applicationType) AS source
       ON target.teamName = source.teamName AND target.applicationType = source.applicationType
       WHEN MATCHED THEN
@@ -254,7 +254,7 @@ router.get("/getMoistureApplicationTypeConfirmation", async (req, res) => {
 
     // Execute the query
     const result = await request.query(
-      `SELECT applicationType, isConfirmed FROM MoistureApplicationConfirmations WHERE teamName = @teamName`
+      `SELECT applicationType, isConfirmed FROM [2025_MoistureApplicationConfirmations] WHERE teamName = @teamName`
     );
 
     if (result.recordset.length === 0) {

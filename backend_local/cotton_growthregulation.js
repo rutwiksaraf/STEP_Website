@@ -3,7 +3,7 @@ const router = express.Router();
 const { setupDatabase } = require("./database");
 const sql = require("mssql");
 
-// Create the cotton_growth_regulation table if it doesn't exist
+// Create the [2025_cotton_growth_regulation] table if it doesn't exist
 // router.get("/createCottonGrowthRegulationTable", (req, res) => {
 //   setupDatabase()
 //     .then((db) => {
@@ -33,7 +33,7 @@ const sql = require("mssql");
 
 //         // Insert a new growth regulation record
 //         const insertQuery =
-//           "INSERT INTO cotton_growth_regulation (teamName, date, regulator, rate) VALUES (?, ?, ?, ?)";
+//           "INSERT INTO [2025_cotton_growth_regulation] (teamName, date, regulator, rate) VALUES (?, ?, ?, ?)";
 //         db.query(
 //           insertQuery,
 //           [teamName, date, regulator, rate],
@@ -78,7 +78,7 @@ router.post("/cottonInsertGrowthRegulation", async (req, res) => {
     request.input("rate", sql.VarChar, rate);
 
     await request.query(`
-      INSERT INTO cotton_growth_regulation (teamName, date, regulator, rate)
+      INSERT INTO 2025_[2025_cotton_growth_regulation] (teamName, date, regulator, rate)
       VALUES (@teamName, @date, @regulator, @rate)
     `);
     res.status(200).json({ message: "Data inserted successfully" });
@@ -98,7 +98,7 @@ router.post("/cottonInsertGrowthRegulation", async (req, res) => {
 
 //         // Query the database to fetch all growth regulation data for the specified teamName
 //         const query =
-//           "SELECT * FROM cotton_growth_regulation WHERE teamName = ?";
+//           "SELECT * FROM [2025_cotton_growth_regulation] WHERE teamName = ?";
 //         db.query(query, [teamName], (error, results) => {
 //           if (error) {
 //             console.error("Error fetching growth regulation data:", error);
@@ -129,7 +129,7 @@ router.get("/cottonFetchGrowthRegulation", async (req, res) => {
     request.input("teamName", sql.VarChar, teamName);
 
     const result = await request.query(`
-      SELECT * FROM cotton_growth_regulation WHERE teamName = @teamName
+      SELECT * FROM 2025_[2025_cotton_growth_regulation] WHERE teamName = @teamName
     `);
     res.status(200).json(result.recordset);
   } catch (error) {
@@ -145,7 +145,7 @@ router.get("/cottonFetchGrowthRegulation", async (req, res) => {
 //         // Extract the teamName from the query parameters
 
 //         // Query the database to fetch all growth regulation data for the specified teamName
-//         const query = "SELECT * FROM cotton_growth_regulation";
+//         const query = "SELECT * FROM [2025_cotton_growth_regulation]";
 //         db.query(query, (error, results) => {
 //           if (error) {
 //             console.error("Error fetching growth regulation data:", error);
@@ -172,7 +172,7 @@ router.get("/cottonFetchAllGrowthRegulation", async (req, res) => {
   try {
     const pool = await setupDatabase();
     const result = await pool.request().query(`
-      SELECT * FROM cotton_growth_regulation
+      SELECT * FROM 2025_[2025_cotton_growth_regulation]
     `);
     res.status(200).json(result.recordset);
   } catch (error) {

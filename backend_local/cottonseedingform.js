@@ -94,18 +94,18 @@ router.post("/cottonseedingratesubmit", async (req, res) => {
 
     // Check if a row with the same teamName already exists
     const checkResult = await request.query(
-      "SELECT * FROM cotton_seeding_rate_form WHERE teamName = @teamName"
+      "SELECT * FROM [2025_cotton_seeding_rate_form] WHERE teamName = @teamName"
     );
 
     if (checkResult.recordset.length === 0) {
       // No existing row found, insert a new row
       await request.query(
-        "INSERT INTO cotton_seeding_rate_form (teamName, seedingRate, notes) VALUES (@teamName, @seedingRate, @notes)"
+        "INSERT INTO [2025_cotton_seeding_rate_form] (teamName, seedingRate, notes) VALUES (@teamName, @seedingRate, @notes)"
       );
     } else {
       // Existing row found, update the row with new details
       await request.query(
-        "UPDATE cotton_seeding_rate_form SET seedingRate = @seedingRate, notes = @notes WHERE teamName = @teamName"
+        "UPDATE [2025_cotton_seeding_rate_form] SET seedingRate = @seedingRate, notes = @notes WHERE teamName = @teamName"
       );
     }
 
@@ -124,7 +124,7 @@ router.post("/cottonseedingratesubmit", async (req, res) => {
 
 //       // Define the SQL query to fetch submitted forms data for the specified user
 //       const fetchQuery =
-//         "SELECT * FROM cotton_seeding_rate_form WHERE teamName = ?";
+//         "SELECT * FROM [2025_cotton_seeding_rate_form] WHERE teamName = ?";
 
 //       // Execute the query to fetch data
 //       db.query(fetchQuery, [username], (error, result) => {
@@ -160,7 +160,7 @@ router.post("/getCottonseedingForms", async (req, res) => {
 
     // Define the SQL query to fetch submitted forms data for the specified user
     const result = await request.query(
-      "SELECT * FROM cotton_seeding_rate_form WHERE teamName = @teamName"
+      "SELECT * FROM [2025_cotton_seeding_rate_form] WHERE teamName = @teamName"
     );
 
     // Send the fetched data as a JSON response
@@ -177,7 +177,7 @@ router.post("/getCottonseedingForms", async (req, res) => {
 //       // Extract the username from the request body
 
 //       // Define the SQL query to fetch submitted forms data for the specified user
-//       const fetchQuery = "SELECT * FROM cotton_seeding_rate_form";
+//       const fetchQuery = "SELECT * FROM [2025_cotton_seeding_rate_form]";
 
 //       // Execute the query to fetch data
 //       db.query(fetchQuery, (error, result) => {
@@ -204,7 +204,7 @@ router.get("/getAllCottonseedingForms", async (req, res) => {
 
     // Execute the query to fetch all submitted seeding forms
     const result = await request.query(
-      "SELECT * FROM cotton_seeding_rate_form"
+      "SELECT * FROM 2025_cotton_seeding_rate_form"
     );
 
     // Send the fetched data as a JSON response

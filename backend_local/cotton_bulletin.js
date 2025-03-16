@@ -209,19 +209,19 @@ router.get("/latestcottonmarketingFiles", (req, res) => {
       files.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
 
       // Get the latest date
-      const latestDate =
-        files.length > 0 ? files[0].uploadDate.split("T")[0] : null;
+      // const latestDate =
+      //   files.length > 0 ? files[0].uploadDate.split("T")[0] : null;
 
-      if (!latestDate) {
-        return res.status(404).json({ message: "No files found" });
-      }
+      // if (!latestDate) {
+      //   return res.status(404).json({ message: "No files found" });
+      // }
 
-      // Filter files to include only those from the latest date
-      const latestFiles = files.filter((file) =>
-        file.uploadDate.startsWith(latestDate)
-      );
+      // // Filter files to include only those from the latest date
+      // const latestFiles = files.filter((file) =>
+      //   file.uploadDate.startsWith(latestDate)
+      // );
 
-      res.json({ files: latestFiles });
+      res.json({ files: files });
     } catch (parseError) {
       console.error("Error parsing metadata file:", parseError);
       res.status(500).json({ message: "Error parsing metadata file" });

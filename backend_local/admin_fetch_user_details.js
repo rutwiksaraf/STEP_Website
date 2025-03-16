@@ -8,7 +8,7 @@ router.get("/get_corn_users", async (req, res) => {
     const pool = await setupDatabase(); // Obtain a connection pool
     const request = pool.request(); // Create a new request object
 
-    const result = await request.query("SELECT * FROM corn_registration_data"); // Execute the query
+    const result = await request.query("SELECT * FROM [2025_corn_registration_data]"); // Execute the query
 
     res.json(result.recordset); // Send the query results
   } catch (err) {
@@ -36,7 +36,7 @@ router.post("/get_corn_user", async (req, res) => {
 
     // Execute the query with a parameter
     const result = await request.query(
-      "SELECT * FROM corn_registration_data WHERE teamName = @teamName"
+      "SELECT * FROM [2025_corn_registration_data] WHERE teamName = @teamName"
     );
 
     if (result.recordset.length > 0) {
@@ -57,7 +57,7 @@ router.get("/get_cotton_users", async (req, res) => {
     const request = pool.request(); // Create a new request object
 
     const result = await request.query(
-      "SELECT * FROM cotton_registration_data"
+      "SELECT * FROM [2025_cotton_registration_data]"
     ); // Execute the query
 
     res.json(result.recordset); // Send the query results
@@ -83,7 +83,7 @@ router.post("/cornTeamMembers", async (req, res) => {
 
     // Execute the query with a parameter
     const result = await request.query(
-      "SELECT * FROM corn_team_members WHERE teamId = @teamId"
+      "SELECT * FROM [2025_corn_team_members] WHERE teamId = @teamId"
     );
 
     // Send the fetched team members data as a JSON response
@@ -113,7 +113,7 @@ router.post("/get_cotton_user", async (req, res) => {
 
     // Execute the query with a parameter
     const result = await request.query(
-      "SELECT * FROM cotton_registration_data WHERE teamName = @teamName"
+      "SELECT * FROM [2025_cotton_registration_data] WHERE teamName = @teamName"
     );
 
     if (result.recordset.length > 0) {
@@ -143,7 +143,7 @@ router.post("/cottonTeamMembers", async (req, res) => {
 
     // Execute the query with a parameter
     const result = await request.query(
-      "SELECT * FROM cotton_team_members WHERE teamId = @teamId"
+      "SELECT * FROM [2025_cotton_team_members] WHERE teamId = @teamId"
     );
 
     // Send the fetched team members data as a JSON response
@@ -165,13 +165,13 @@ router.delete("/deleteCornUser/:id", async (req, res) => {
     const deleteTeamMembersRequest = new sql.Request(transaction);
     deleteTeamMembersRequest.input("userId", sql.Int, userId);
     await deleteTeamMembersRequest.query(
-      "DELETE FROM corn_team_members WHERE teamId = @userId"
+      "DELETE FROM [2025_corn_team_members] WHERE teamId = @userId"
     );
 
     const deleteUserRequest = new sql.Request(transaction);
     deleteUserRequest.input("userId", sql.Int, userId);
     await deleteUserRequest.query(
-      "DELETE FROM corn_registration_data WHERE id = @userId"
+      "DELETE FROM [2025_corn_registration_data] WHERE id = @userId"
     );
 
     await transaction.commit();
@@ -196,13 +196,13 @@ router.delete("/deleteCottonUser/:id", async (req, res) => {
     const deleteTeamMembersRequest = new sql.Request(transaction);
     deleteTeamMembersRequest.input("userId", sql.Int, userId);
     await deleteTeamMembersRequest.query(
-      "DELETE FROM cotton_team_members WHERE teamId = @userId"
+      "DELETE FROM [2025_cotton_team_members] WHERE teamId = @userId"
     );
 
     const deleteUserRequest = new sql.Request(transaction);
     deleteUserRequest.input("userId", sql.Int, userId);
     await deleteUserRequest.query(
-      "DELETE FROM cotton_registration_data WHERE id = @userId"
+      "DELETE FROM [2025_cotton_registration_data] WHERE id = @userId"
     );
 
     await transaction.commit();

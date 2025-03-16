@@ -24,7 +24,7 @@ router.post("/insertMarketingOption", async (req, res) => {
 
     // Insert a new marketing option
     await request.query(`
-      INSERT INTO marketing_options (teamName, date, contractType, quantityBushels, complete, submitteddate, completedon)
+      INSERT INTO [2025_marketing_options] (teamName, date, contractType, quantityBushels, complete, submitteddate, completedon)
       VALUES (@teamName, @date, @contractType, @quantityBushels, @complete, @submitteddate, @today)
     `);
 
@@ -57,7 +57,7 @@ router.get("/fetchMarketingOptions", async (req, res) => {
 
     // Query the database to fetch all marketing options for the specified teamName
     const result = await request.query(
-      "SELECT * FROM marketing_options WHERE teamName = @teamName"
+      "SELECT * FROM [2025_marketing_options] WHERE teamName = @teamName"
     );
 
     // Send the fetched data as a JSON response
@@ -74,7 +74,7 @@ router.get("/fetchAllMarketingOptions", async (req, res) => {
     const request = pool.request(); // Create a new request object
 
     // Execute the query to fetch all marketing options
-    const result = await request.query("SELECT * FROM marketing_options");
+    const result = await request.query("SELECT * FROM [2025_marketing_options]");
 
     // Send the fetched data as a JSON response
     res.status(200).json(result.recordset);
@@ -104,7 +104,7 @@ router.post("/updateCompleted/:appId", async (req, res) => {
 
     // Perform the database update operation
     await request.query(`
-      UPDATE marketing_options 
+      UPDATE [2025_marketing_options] 
       SET complete = @newCompleteValue, completedon = @today 
       WHERE id = @appId
     `);
@@ -131,7 +131,7 @@ router.delete("/deletemarketingApplication/:appId", async (req, res) => {
     request.input("appId", sql.Int, appId);
 
     // Perform the database delete operation
-    await request.query("DELETE FROM marketing_options WHERE id = @appId");
+    await request.query("DELETE FROM [2025_marketing_options] WHERE id = @appId");
 
     res
       .status(200)

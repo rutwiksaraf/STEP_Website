@@ -1,19 +1,20 @@
 const sql = require("mssql");
 
-// Create a MySQL connection pool
+// Create a MSSQL connection pool
 const testConfig = {
-  user: "if-svc-ABE_STEP_testwebuser",
-  password: "X!TH+j|+q&QFjcR",
-  server: "sql-dev.ifas.ufl.edu",
-  database: "ABE_STEP_test",
-  pool: {
-    max: 100,
-    min: 0,
-    idleTimeoutMillis: 30000,
+  server: "sql-ent.ifas.ufl.edu",
+  database: "ABE_STEP",
+  authentication: {
+    type: "ntlm",  // Change to 'ntlm' for Windows Authentication
+    options: {
+      domain: "UFAD", // Specify your domain here
+      userName: "rutwiksaraf",  // Optional: Specify username if needed
+      password: "rutwikrutujasurekha3#7$",  // Optional: Specify password if needed
+    }
   },
   options: {
-    encrypt: true, // Use this if you're on Windows Azure
-    trustServerCertificate: true, // Change to false for production
+    encrypt: true,
+    trustServerCertificate: true,
   },
 };
 
@@ -23,6 +24,8 @@ async function setupDatabase() {
     const pool = await sql.connect(testConfig);
     console.log("Connected to MSSQL database");
 
+    // Your table creation logic here...
+
     return pool;
   } catch (err) {
     console.error("Database connection error: " + err.message);
@@ -30,4 +33,10 @@ async function setupDatabase() {
   }
 }
 
+
+
+
 module.exports = { setupDatabase };
+
+
+

@@ -1,4 +1,4 @@
-// backend/routes/seeding_rate_form.js
+// backend/routes/[2025_seeding_rate_form].js
 const express = require("express");
 const router = express.Router();
 const { setupDatabase } = require("./database");
@@ -19,18 +19,18 @@ router.post("/seedingratesubmit", async (req, res) => {
 
     // Check if a row with the same teamName already exists
     const checkResult = await request.query(
-      "SELECT * FROM seeding_rate_form WHERE teamName = @teamName"
+      "SELECT * FROM [2025_seeding_rate_form] WHERE teamName = @teamName"
     );
 
     if (checkResult.recordset.length === 0) {
       // No existing row found, insert a new row
       await request.query(
-        "INSERT INTO seeding_rate_form (teamName, seedingRate, notes) VALUES (@teamName, @seedingRate, @notes)"
+        "INSERT INTO [2025_seeding_rate_form] (teamName, seedingRate, notes) VALUES (@teamName, @seedingRate, @notes)"
       );
     } else {
       // Existing row found, update the row with new details
       await request.query(
-        "UPDATE seeding_rate_form SET seedingRate = @seedingRate, notes = @notes WHERE teamName = @teamName"
+        "UPDATE [2025_seeding_rate_form] SET seedingRate = @seedingRate, notes = @notes WHERE teamName = @teamName"
       );
     }
 
@@ -57,7 +57,7 @@ router.post("/getCornseedingForms", async (req, res) => {
 
     // Define the SQL query to fetch submitted forms data for the specified user
     const result = await request.query(
-      "SELECT * FROM seeding_rate_form WHERE teamName = @teamName"
+      "SELECT * FROM [2025_seeding_rate_form] WHERE teamName = @teamName"
     );
 
     // Send the fetched data as a JSON response
@@ -74,7 +74,7 @@ router.get("/getAllCornseedingForms", async (req, res) => {
     const request = pool.request(); // Create a new request object
 
     // Execute the query to fetch all submitted seeding forms
-    const result = await request.query("SELECT * FROM seeding_rate_form");
+    const result = await request.query("SELECT * FROM [2025_seeding_rate_form]");
 
     // Send the fetched data as a JSON response
     res.status(200).json(result.recordset);

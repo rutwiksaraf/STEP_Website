@@ -31,6 +31,8 @@ import axios from "axios";
 import cottonImage from "./cotton.jpg"; // Adjust './cotton.jpg' if your file structure is different
 import { saveAs } from "file-saver";
 import profileImage from "./profile.jpg";
+import RainfallChart from "./weatherChart";
+
 // import GrowthRegulationForm from "./GrowthRegulationForm"; // Import the Growth Regulation form
 
 function WelcomeCotton() {
@@ -141,6 +143,7 @@ function WelcomeCotton() {
     "Insurance Selection",
     "Marketing Contracts",
     "Bulletin",
+    "Weather"
   ];
 
   // Function to handle tab selection
@@ -999,6 +1002,11 @@ function WelcomeCotton() {
                 <CottonBulletin />
               </Container>
             )}
+            {selectedTab === 9 && (
+                <Container component="main" maxWidth="90%">
+                  <RainfallChart stationId="170" />
+                </Container>
+              )}
           </div>
         </Container>
       </div>

@@ -43,6 +43,8 @@ const WeatherGraph = () => {
   const [selectedParam, setSelectedParam] = useState("rain");
   const [chartData, setChartData] = useState(null);
   const [tableData, setTableData] = useState([]);
+  const [weatherDataFromDB, setWeatherDataFromDB] = useState([]);
+  const [dbChartData, setDbChartData] = useState(null);
 
   useEffect(() => {
     const fetchWeatherData = async () => {
@@ -58,6 +60,22 @@ const WeatherGraph = () => {
       }
     };
     fetchWeatherData();
+
+
+    const fetchWeatherDataFromDB = async () => {
+      try {
+        const response = await axios.get(`/api/weatherfromdb`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setWeatherDataFromDB(response.data);
+      } catch (error) {
+        console.error("Error fetching weather data from DB", error);
+      }
+    };
+    fetchWeatherData();
+    fetchWeatherDataFromDB();
   }, []);
 
   useEffect(() => {
@@ -89,10 +107,33 @@ const WeatherGraph = () => {
       ],
     });
 
+    if (weatherDataFromDB.length > 0) {
+      const dbLabels = weatherDataFromDB.map((entry) => formatDate(entry.date));
+      const dbDataPoints = weatherDataFromDB.map((entry) =>
+        entry[selectedParam] != null ? entry[selectedParam].toFixed(2) : 0
+      );
+
+      setDbChartData({
+        labels: dbLabels,
+        datasets: [
+          {
+            label: `DB: ${PARAMETERS[selectedParam]}`,
+            data: dbDataPoints,
+            backgroundColor:
+              selectedParam === "rain" ? "#77b3d4" : "transparent",
+            borderColor: COLORS[selectedParam] || "#77b3d4",
+            borderWidth: 2,
+            fill: selectedParam !== "rain",
+            tension: 0,
+          },
+        ],
+      });
+    }
+
     setTableData(
       labels.map((date, index) => ({ date, value: dataPoints[index] }))
     );
-  }, [selectedParam, weatherData]);
+  }, [selectedParam, weatherData, weatherDataFromDB]);
 
   const chartOptions = {
     maintainAspectRatio: false,
@@ -137,6 +178,7 @@ const WeatherGraph = () => {
       },
     },
   };
+  
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -272,6 +314,17 @@ const WeatherGraph = () => {
             </tbody>
           </table>
         </div>
+      </div>
+      <div style={{ width: "100%", minWidth: "800px", height: "500px" }}>
+        {dbChartData ? (
+          selectedParam === "rain" ? (
+            <Bar data={dbChartData} options={chartOptions} />
+          ) : (
+            <Line data={dbChartData} options={chartOptions} />
+          )
+        ) : (
+          <p>Loading...</p>
+        )}
       </div>
     </div>
   );

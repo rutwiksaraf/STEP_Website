@@ -72,6 +72,42 @@ router.get("/listFiles", (req, res) => {
   });
 });
 
+// router.get("/latestinsuranceFiles", (req, res) => {
+//   const metadataFilePath = path.join("./uploads/insurance", "metadata.json");
+
+//   fs.readFile(metadataFilePath, "utf8", (err, data) => {
+//     if (err) {
+//       console.error("Error reading metadata file:", err);
+//       return res.status(500).json({ message: "Internal server error" });
+//     }
+
+//     try {
+//       let files = JSON.parse(data);
+
+//       // Sort files by upload date in descending order
+//       files.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
+
+//       // Get the latest date
+//       const latestDate =
+//         files.length > 0 ? files[0].uploadDate.split("T")[0] : null;
+
+//       if (!latestDate) {
+//         return res.status(404).json({ message: "No files found" });
+//       }
+
+//       // Filter files to include only those from the latest date
+//       const latestFiles = files.filter((file) =>
+//         file.uploadDate.startsWith(latestDate)
+//       );
+
+//       res.json({ files: latestFiles });
+//     } catch (parseError) {
+//       console.error("Error parsing metadata file:", parseError);
+//       res.status(500).json({ message: "Error parsing metadata file" });
+//     }
+//   });
+// });
+
 router.get("/latestinsuranceFiles", (req, res) => {
   const metadataFilePath = path.join("./uploads/insurance", "metadata.json");
 
@@ -87,20 +123,7 @@ router.get("/latestinsuranceFiles", (req, res) => {
       // Sort files by upload date in descending order
       files.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
 
-      // Get the latest date
-      const latestDate =
-        files.length > 0 ? files[0].uploadDate.split("T")[0] : null;
-
-      if (!latestDate) {
-        return res.status(404).json({ message: "No files found" });
-      }
-
-      // Filter files to include only those from the latest date
-      const latestFiles = files.filter((file) =>
-        file.uploadDate.startsWith(latestDate)
-      );
-
-      res.json({ files: latestFiles });
+      res.json({ files: files });
     } catch (parseError) {
       console.error("Error parsing metadata file:", parseError);
       res.status(500).json({ message: "Error parsing metadata file" });
@@ -145,6 +168,45 @@ router.get("/listMarketingFiles", (req, res) => {
   }
 });
 
+// router.get("/latestmarketingFiles", (req, res) => {
+//   const metadataFilePath = path.join(
+//     "./uploads/marketingOptions",
+//     "metadata.json"
+//   );
+
+//   fs.readFile(metadataFilePath, "utf8", (err, data) => {
+//     if (err) {
+//       console.error("Error reading metadata file:", err);
+//       return res.status(500).json({ message: "Internal server error" });
+//     }
+
+//     try {
+//       let files = JSON.parse(data);
+
+//       // Sort files by upload date in descending order
+//       files.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
+
+//       // Get the latest date
+//       const latestDate =
+//         files.length > 0 ? files[0].uploadDate.split("T")[0] : null;
+
+//       if (!latestDate) {
+//         return res.status(404).json({ message: "No files found" });
+//       }
+
+//       // Filter files to include only those from the latest date
+//       const latestFiles = files.filter((file) =>
+//         file.uploadDate.startsWith(latestDate)
+//       );
+
+//       res.json({ files: latestFiles });
+//     } catch (parseError) {
+//       console.error("Error parsing metadata file:", parseError);
+//       res.status(500).json({ message: "Error parsing metadata file" });
+//     }
+//   });
+// });
+
 router.get("/latestmarketingFiles", (req, res) => {
   const metadataFilePath = path.join(
     "./uploads/marketingOptions",
@@ -163,20 +225,7 @@ router.get("/latestmarketingFiles", (req, res) => {
       // Sort files by upload date in descending order
       files.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
 
-      // Get the latest date
-      const latestDate =
-        files.length > 0 ? files[0].uploadDate.split("T")[0] : null;
-
-      if (!latestDate) {
-        return res.status(404).json({ message: "No files found" });
-      }
-
-      // Filter files to include only those from the latest date
-      const latestFiles = files.filter((file) =>
-        file.uploadDate.startsWith(latestDate)
-      );
-
-      res.json({ files: latestFiles });
+      res.json({ files: files });
     } catch (parseError) {
       console.error("Error parsing metadata file:", parseError);
       res.status(500).json({ message: "Error parsing metadata file" });
@@ -187,7 +236,7 @@ router.get("/latestmarketingFiles", (req, res) => {
 router.get("/listTeamFiles/:teamName", (req, res) => {
   const teamName = req.params.teamName;
   const directoryPath = path.join(__dirname, "uploads", "corn", teamName);
-  ensureDirectoryExists(directoryPath);
+  // ensureDirectoryExists(directoryPath);
   if (fs.existsSync(directoryPath)) {
     fs.readdir(directoryPath, (err, files) => {
       if (err) {

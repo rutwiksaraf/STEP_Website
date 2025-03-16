@@ -406,7 +406,7 @@ function MarketingOptionsForm() {
               {marketingOptions.map((option, index) => (
                 <TableRow key={index}>
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>{option.date}</TableCell>
+                  <TableCell>{formatDate(option.date)}</TableCell>
                   <TableCell>{option.contractType}</TableCell>
                   <TableCell>{option.quantityBushels}</TableCell>
                   {/* <TableCell>{option.complete}</TableCell> */}
@@ -434,7 +434,7 @@ function MarketingOptionsForm() {
                   <TableCell>
                     {option.complete === "yes" ? (
                       <p style={{ textAlign: "justify" }}>
-                        {option.completedon}
+                        {formatDate(option.completedon)}
                       </p>
                     ) : (
                       <></>

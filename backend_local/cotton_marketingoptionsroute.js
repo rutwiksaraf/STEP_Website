@@ -3,47 +3,7 @@ const router = express.Router();
 const { setupDatabase } = require("./database");
 const sql = require("mssql");
 
-// Define a route for inserting marketing options
-// router.post("/cottoninsertMarketingOption", (req, res) => {
-//   setupDatabase()
-//     .then((db) => {
-//       try {
-//         // Extract data from the request body
-//         const { teamName, date, contractType, quantityBushels, complete } =
-//           req.body;
 
-//         // Insert a new marketing option
-//         const insertQuery =
-//           "INSERT INTO cotton_marketing_options (teamName, date, contractType, quantityBushels,complete) VALUES (?, ?, ?, ?,?)";
-//         db.query(
-//           insertQuery,
-//           [teamName, date, contractType, quantityBushels, complete],
-//           (insertError, insertResult) => {
-//             if (insertError) {
-//               console.error(
-//                 "Error inserting marketing option into the database:",
-//                 insertError
-//               );
-//               res.status(500).json({ message: "Option insertion failed" });
-//             } else {
-//               res.status(200).json({
-//                 message: "Option inserted successfully",
-//               });
-//             }
-//           }
-//         );
-//         db.release();
-//       } catch (error) {
-//         console.error("Error handling marketing option insertion:", error);
-//         res.status(500).json({ message: "Internal server error" });
-//         db.release();
-//       }
-//     })
-//     .catch((err) => {
-//       console.error("Database setup error: " + err.message);
-//       res.status(500).json({ message: "Database setup error" });
-//     });
-// });
 
 router.post("/cottoninsertMarketingOption", async (req, res) => {
   const { teamName, date, contractType, quantityBushels, complete } = req.body;
@@ -65,7 +25,7 @@ router.post("/cottoninsertMarketingOption", async (req, res) => {
 
     // Insert a new marketing option
     await request.query(`
-      INSERT INTO cotton_marketing_options (teamName, date, contractType, quantityBushels, complete, submitteddate, completedon)
+      INSERT INTO [2025_cotton_marketing_options] (teamName, date, contractType, quantityBushels, complete, submitteddate, completedon)
       VALUES (@teamName, @date, @contractType, @quantityBushels, @complete, @submitteddate, @today)
     `);
 
@@ -89,7 +49,7 @@ router.post("/cottoninsertMarketingOption", async (req, res) => {
 
 //         // Query the database to fetch all marketing options for the specified teamName
 //         const query =
-//           "SELECT * FROM cotton_marketing_options WHERE teamName = ?";
+//           "SELECT * FROM [2025_cotton_marketing_options] WHERE teamName = ?";
 //         db.query(query, [teamName], (error, results) => {
 //           if (error) {
 //             console.error("Error fetching marketing options:", error);
@@ -130,7 +90,7 @@ router.get("/cottonfetchMarketingOptions", async (req, res) => {
 
     // Query the database to fetch all marketing options for the specified teamName
     const result = await request.query(
-      "SELECT * FROM cotton_marketing_options WHERE teamName = @teamName"
+      "SELECT * FROM [2025_cotton_marketing_options] WHERE teamName = @teamName"
     );
 
     // Send the fetched data as a JSON response
@@ -141,34 +101,6 @@ router.get("/cottonfetchMarketingOptions", async (req, res) => {
   }
 });
 
-// router.get("/cottonfetchAllMarketingOptions", (req, res) => {
-//   setupDatabase()
-//     .then((db) => {
-//       try {
-//         // Extract the teamName from the query parameters
-//         // Query the database to fetch all marketing options for the specified teamName
-//         const query = "SELECT * FROM cotton_marketing_options";
-//         db.query(query, (error, results) => {
-//           if (error) {
-//             console.error("Error fetching marketing options:", error);
-//             res.status(500).json({ message: "Error fetching options" });
-//           } else {
-//             // Send the fetched data as a JSON response
-//             res.status(200).json(results);
-//           }
-//         });
-//         db.release();
-//       } catch (error) {
-//         console.error("Error handling marketing options fetch:", error);
-//         res.status(500).json({ message: "Internal server error" });
-//         db.release();
-//       }
-//     })
-//     .catch((err) => {
-//       console.error("Database setup error: " + err.message);
-//       res.status(500).json({ message: "Database setup error" });
-//     });
-// });
 
 router.get("/cottonfetchAllMarketingOptions", async (req, res) => {
   try {
@@ -177,7 +109,7 @@ router.get("/cottonfetchAllMarketingOptions", async (req, res) => {
 
     // Execute the query to fetch all marketing options
     const result = await request.query(
-      "SELECT * FROM cotton_marketing_options"
+      "SELECT * FROM [2025_cotton_marketing_options]"
     );
 
     // Send the fetched data as a JSON response
@@ -208,7 +140,7 @@ router.post("/cottonupdateCompleted/:appId", async (req, res) => {
 
     // Perform the database update operation
     await request.query(`
-      UPDATE cotton_marketing_options 
+      UPDATE [2025_cotton_marketing_options] 
       SET complete = @newCompleteValue, completedon = @today 
       WHERE id = @appId
     `);
@@ -236,7 +168,7 @@ router.delete("/cottondeletemarketingApplication/:appId", async (req, res) => {
 
     // Perform the database delete operation
     await request.query(
-      "DELETE FROM cotton_marketing_options WHERE id = @appId"
+      "DELETE FROM [2025_cotton_marketing_options] WHERE id = @appId"
     );
 
     res

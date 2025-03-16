@@ -12,8 +12,8 @@ const secretKey = "step_website";
 let transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "stepnotification2024@gmail.com", // Replace with your email
-    pass: "xeci cnoq ezff mbaf", // Replace with your email password or app password
+    user: "floridastepcontest@gmail.com", // Replace with your email
+    pass: "lirn kwvh quri agrk", // Replace with your email password or app password
   },
 });
 
@@ -43,7 +43,7 @@ router.get("/getAdminCrops", async (req, res) => {
     request.input("adminId", sql.Int, adminId); // Use input method to define parameters for your query
 
     const result = await request.query(
-      "SELECT name FROM admin_crops WHERE userId = @adminId"
+      "SELECT name FROM [2025_admin_crops] WHERE userId = @adminId"
     ); // Use named parameters in your query
     console.log("Admin Crops");
     console.log(result);
@@ -77,7 +77,7 @@ router.post("/registerAdmin", async (req, res) => {
 
     // Define the SQL statement for inserting admin data
     const adminSql = `
-      INSERT INTO admin_registration_data (username, password, email, phone)
+      INSERT INTO [2025_admin_registration_data] (username, password, email, phone)
       OUTPUT INSERTED.id
       VALUES (@username, @password, @email, @phone)
     `;
@@ -100,7 +100,7 @@ router.post("/registerAdmin", async (req, res) => {
 
     // Send an email with registration details
     const mailOptions = {
-      from: "stepnotification2024@gmail.com",
+      from: "floridastepcontest@gmail.com",
       to: adminData.email,
       subject: "Admin Registration Successful",
       text: emailContent,
@@ -118,7 +118,7 @@ router.post("/registerAdmin", async (req, res) => {
       if (crop) {
         const cropRequest = new sql.Request(transaction);
         const cropSql = `
-            INSERT INTO admin_crops (userId, name)
+            INSERT INTO [2025_admin_crops] (userId, name)
             VALUES (@userId, @name)
           `;
         await cropRequest
@@ -154,13 +154,13 @@ router.delete("/deleteAdmin/:id", async (req, res) => {
     const deleteCropsRequest = new sql.Request(transaction);
     deleteCropsRequest.input("adminId", sql.Int, adminId);
     await deleteCropsRequest.query(
-      "DELETE FROM admin_crops WHERE userId = @adminId"
+      "DELETE FROM [2025_admin_crops] WHERE userId = @adminId"
     );
 
     const deleteAdminRequest = new sql.Request(transaction);
     deleteAdminRequest.input("adminId", sql.Int, adminId);
     await deleteAdminRequest.query(
-      "DELETE FROM admin_registration_data WHERE id = @adminId"
+      "DELETE FROM [2025_admin_registration_data] WHERE id = @adminId"
     );
 
     await transaction.commit();
@@ -190,7 +190,7 @@ router.get("/adminDetails", async (req, res) => {
     request.input("adminId", sql.Int, adminId);
 
     const result = await request.query(
-      "SELECT * FROM admin_registration_data WHERE id = @adminId"
+      "SELECT * FROM [2025_admin_registration_data] WHERE id = @adminId"
     );
 
     if (result.recordset.length === 0) {

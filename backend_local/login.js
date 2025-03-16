@@ -23,10 +23,10 @@ router.post("/login", async (req, res) => {
     // Define SQL statement to select user based on cropType
     if (cropType === "corn") {
       loginSql =
-        "SELECT * FROM corn_registration_data WHERE teamName = @teamName";
+        "SELECT * FROM [2025_corn_registration_data] WHERE teamName = @teamName";
     } else if (cropType === "cotton") {
       loginSql =
-        "SELECT * FROM cotton_registration_data WHERE teamName = @teamName";
+        "SELECT * FROM [2025_cotton_registration_data] WHERE teamName = @teamName";
     } else {
       return res.status(400).json({ message: "Unsupported crop type" });
     }
@@ -94,8 +94,8 @@ router.post("/adminlogin", async (req, res) => {
     // Step 2: Check if the user exists in the database and the crop type matches
     const query = `
       SELECT admin.*, crop.name AS cropName 
-      FROM admin_registration_data admin
-      INNER JOIN admin_crops crop ON admin.id = crop.userId
+      FROM [2025_admin_registration_data] admin
+      INNER JOIN [2025_admin_crops] crop ON admin.id = crop.userId
       WHERE admin.username = @username AND crop.name = @cropType
     `;
 
