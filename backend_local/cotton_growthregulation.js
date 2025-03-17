@@ -78,7 +78,7 @@ router.post("/cottonInsertGrowthRegulation", async (req, res) => {
     request.input("rate", sql.VarChar, rate);
 
     await request.query(`
-      INSERT INTO 2025_[2025_cotton_growth_regulation] (teamName, date, regulator, rate)
+      INSERT INTO [2025_cotton_growth_regulation] (teamName, date, regulator, rate)
       VALUES (@teamName, @date, @regulator, @rate)
     `);
     res.status(200).json({ message: "Data inserted successfully" });
@@ -129,7 +129,7 @@ router.get("/cottonFetchGrowthRegulation", async (req, res) => {
     request.input("teamName", sql.VarChar, teamName);
 
     const result = await request.query(`
-      SELECT * FROM 2025_[2025_cotton_growth_regulation] WHERE teamName = @teamName
+      SELECT * FROM [2025_cotton_growth_regulation] WHERE teamName = @teamName
     `);
     res.status(200).json(result.recordset);
   } catch (error) {
@@ -172,7 +172,7 @@ router.get("/cottonFetchAllGrowthRegulation", async (req, res) => {
   try {
     const pool = await setupDatabase();
     const result = await pool.request().query(`
-      SELECT * FROM 2025_[2025_cotton_growth_regulation]
+      SELECT * FROM [2025_cotton_growth_regulation]
     `);
     res.status(200).json(result.recordset);
   } catch (error) {

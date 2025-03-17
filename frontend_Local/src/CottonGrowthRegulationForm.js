@@ -143,12 +143,29 @@ function CottonGrowthRegulationForm() {
                 sx={{
                   cursor: "pointer",
                   padding: "10px",
+                  marginRight: "20px",
                   backgroundColor:
                     regulator === "Pix (Mepiquat Chloride)"
-                      ? "#fa4616"
-                      : "#D8D4D7",
-                  border: "2px solid #fa4616", // Highlight the selected card
-                  marginRight: "30px", // Add margin to separate cards
+                      ? "#fa4616" : "#F5F5F5",
+                      border:
+                      regulator === "Pix (Mepiquat Chloride)"
+                        ? "2px solid rgb(255, 255, 255)"
+                        : "2px solid rgb(37, 106, 185)",
+                        borderRadius: "12px",
+                        color: regulator === "Pix (Mepiquat Chloride)" ? "white" : "#333",
+                        boxShadow:
+                          regulator === "Pix (Mepiquat Chloride)"                          ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                            : "none",
+                        transition: "all 0.3s ease-in-out",
+                        display: "flex",
+                        justifyContent: "center", // Center horizontally
+                        alignItems: "center", // Center vertically
+                        textAlign: "center", // Ensures text stays centered
+                        height: "50px", // Fixed height for better alignment
+                        "&:hover": {
+                          backgroundColor:
+                            regulator === "Pix (Mepiquat Chloride)" ? "#d73a12" : "#E0E0E0",
+                          transform: "scale(1.05)",}
                 }}
               >
                 <CardContent>
@@ -163,8 +180,26 @@ function CottonGrowthRegulationForm() {
                   cursor: "pointer",
                   padding: "10px",
                   backgroundColor:
-                    regulator === "Stance" ? "#fa4616" : "#D8D4D7", // Highlight the selected card
-                  border: "2px solid #fa4616",
+                    regulator === "Stance" ? "#fa4616" : "#F5F5F5", // Highlight the selected card
+                    border:
+                    regulator === "Stance"
+                      ? "2px solid rgb(255, 255, 255)"
+                      : "2px solid rgb(37, 106, 185)",
+                      borderRadius: "12px",
+                      color: regulator === "Stance" ? "white" : "#333",
+                      boxShadow:
+                        regulator === "Stance"                          ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                          : "none",
+                      transition: "all 0.3s ease-in-out",
+                      display: "flex",
+                      justifyContent: "center", // Center horizontally
+                      alignItems: "center", // Center vertically
+                      textAlign: "center", // Ensures text stays centered
+                      height: "50px", // Fixed height for better alignment
+                      "&:hover": {
+                        backgroundColor:
+                          regulator === "Stance" ? "#d73a12" : "#E0E0E0",
+                        transform: "scale(1.05)",}
                 }}
               >
                 <CardContent>

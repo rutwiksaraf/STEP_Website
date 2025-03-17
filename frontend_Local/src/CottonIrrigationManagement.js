@@ -344,10 +344,30 @@ function CottonIrrigationManagementForm() {
                 width: "30%",
                 minWidth: "200px",
                 cursor: "pointer",
+                marginRight: "10px",
                 backgroundColor:
-                  selectedOption === "soil-moisture" ? "#fa4616" : "#D8D4D7",
-                border: "2px solid #fa4616",
-                borderRadius: "8px",
+                  selectedOption === "soil-moisture" ? "#fa4616" : "#F5F5F5",
+                border:
+                  selectedOption === "soil-moisture"
+                    ? "2px solid rgb(255, 255, 255)"
+                    : "2px solid rgb(37, 106, 185)",
+                borderRadius: "12px",
+                color: selectedOption === "soil-moisture" ? "white" : "#333",
+                boxShadow:
+                  selectedOption === "soil-moisture"
+                    ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                    : "none",
+                transition: "all 0.3s ease-in-out",
+                display: "flex",
+                justifyContent: "center", // Center horizontally
+                alignItems: "center", // Center vertically
+                textAlign: "center", // Ensures text stays centered
+                height: "50px", // Fixed height for better alignment
+                "&:hover": {
+                  backgroundColor:
+                    selectedOption === "soil-moisture" ? "#d73a12" : "#E0E0E0",
+                  transform: "scale(1.05)",
+                },
               }}
             >
               <CardContent>
@@ -362,13 +382,35 @@ function CottonIrrigationManagementForm() {
                 width: "30%",
                 minWidth: "200px",
                 cursor: "pointer",
+                marginRight: "10px",
                 backgroundColor:
                   selectedOption === "evapotranspiration"
                     ? "#fa4616"
-                    : "#D8D4D7",
-                border: "2px solid #fa4616",
-                borderRadius: "8px",
-                margin: "5px",
+                    : "#F5F5F5",
+                border:
+                  selectedOption === "evapotranspiration"
+                    ? "2px solid rgb(255, 255, 255)"
+                    : "2px solid rgb(37, 106, 185)",
+                borderRadius: "12px",
+                color:
+                  selectedOption === "evapotranspiration" ? "white" : "#333",
+                boxShadow:
+                  selectedOption === "evapotranspiration"
+                    ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                    : "none",
+                transition: "all 0.3s ease-in-out",
+                display: "flex",
+                justifyContent: "center", // Center horizontally
+                alignItems: "center", // Center vertically
+                textAlign: "center", // Ensures text stays centered
+                height: "50px", // Fixed height for better alignment
+                "&:hover": {
+                  backgroundColor:
+                    selectedOption === "evapotranspiration"
+                      ? "#d73a12"
+                      : "#E0E0E0",
+                  transform: "scale(1.05)",
+                },
               }}
             >
               <CardContent>
@@ -384,9 +426,28 @@ function CottonIrrigationManagementForm() {
                 minWidth: "200px",
                 cursor: "pointer",
                 backgroundColor:
-                  selectedOption === "calendar" ? "#fa4616" : "#D8D4D7",
-                border: "2px solid #fa4616",
-                borderRadius: "8px",
+                  selectedOption === "calendar" ? "#fa4616" : "#F5F5F5",
+                border:
+                  selectedOption === "calendar"
+                    ? "2px solid rgb(255, 255, 255)"
+                    : "2px solid rgb(37, 106, 185)",
+                borderRadius: "12px",
+                color: selectedOption === "calendar" ? "white" : "#333",
+                boxShadow:
+                  selectedOption === "calendar"
+                    ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                    : "none",
+                transition: "all 0.3s ease-in-out",
+                display: "flex",
+                justifyContent: "center", // Center horizontally
+                alignItems: "center", // Center vertically
+                textAlign: "center", // Ensures text stays centered
+                height: "50px", // Fixed height for better alignment
+                "&:hover": {
+                  backgroundColor:
+                    selectedOption === "calendar" ? "#d73a12" : "#E0E0E0",
+                  transform: "scale(1.05)",
+                },
               }}
             >
               <CardContent>
@@ -515,17 +576,41 @@ function CottonIrrigationManagementForm() {
                       key={sensorOption}
                       onClick={() => handleSensorCardClick(sensorOption)}
                       sx={{
+                        width: "30%",
+                        minWidth: "200px",
                         cursor: "pointer",
-                        padding: "8px",
+                        marginRight: "10px",
+                        marginBottom: "10px",
                         backgroundColor:
                           soilMoistureSensor === sensorOption
                             ? "#fa4616"
-                            : "#D8D4D7",
-                        border: "2px solid #fa4616", // Highlight the selected card
-                        marginBottom: "8px",
-                        marginRight: "8px", // Add margin between cards for spacing
-                        width: "200px", // Set a fixed width for each card
-                        //opacity: soilMoistureSensor ? 0.75 : 1, // Disable the card if sensor is already selected //fix the sensor once selected
+                            : "#F5F5F5",
+                        border:
+                          soilMoistureSensor === sensorOption
+                            ? "2px solid rgb(255, 255, 255)"
+                            : "2px solid rgb(37, 106, 185)",
+                        borderRadius: "12px",
+                        color:
+                          soilMoistureSensor === sensorOption
+                            ? "white"
+                            : "#333",
+                        boxShadow:
+                          soilMoistureSensor === sensorOption
+                            ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                            : "none",
+                        transition: "all 0.3s ease-in-out",
+                        display: "flex",
+                        justifyContent: "center", // Center horizontally
+                        alignItems: "center", // Center vertically
+                        textAlign: "center", // Ensures text stays centered
+                        height: "50px", // Fixed height for better alignment
+                        "&:hover": {
+                          backgroundColor:
+                            soilMoistureSensor === sensorOption
+                              ? "#d73a12"
+                              : "#E0E0E0",
+                          transform: "scale(1.05)",
+                        },
                       }}
                     >
                       <CardContent>

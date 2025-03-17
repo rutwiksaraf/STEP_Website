@@ -107,7 +107,7 @@ router.get("/cottonfetchNitrogenManagementData", async (req, res) => {
 
     // Query the database based on the applicationType and teamName
     const result = await request.query(`
-      SELECT * FROM [2025_cotton_nitrogen_management_form]WHERE applicationType = @applicationType AND teamName = @teamName
+      SELECT * FROM [2025_cotton_nitrogen_management_form] WHERE applicationType = @applicationType AND teamName = @teamName
     `);
 
     // Send the fetched data as a JSON response
@@ -155,7 +155,7 @@ router.get("/cottonfetchAllNitrogenManagementData", async (req, res) => {
 
     // Execute the query to fetch all nitrogen management data
     const result = await request.query(
-      "SELECT * FROM 2025_cotton_[2025_nitrogen_management_form]"
+      "SELECT * FROM [2025_cotton_nitrogen_management_form]"
     );
 
     // Send the fetched data as a JSON response
@@ -215,7 +215,7 @@ router.delete("/deletecottonnitrogenApplication/:appId", async (req, res) => {
 
     // Perform the database delete operation based on the appId
     await request.query(
-      "DELETE FROM [2025_cotton_nitrogen_management_form]WHERE id = @appId"
+      "DELETE FROM [2025_cotton_nitrogen_management_form] WHERE id = @appId"
     );
 
     res.status(200).json({ message: "Application deleted successfully" });
@@ -373,7 +373,7 @@ router.post("/updateCottonNitrogenApplied/:appId", async (req, res) => {
     const fetchTeamNameRequest = new sql.Request(transaction);
     fetchTeamNameRequest.input("appId", sql.Int, appId);
     const fetchTeamNameResult = await fetchTeamNameRequest.query(
-      "SELECT teamName,date FROM [2025_cotton_nitrogen_management_form]WHERE id = @appId"
+      "SELECT teamName,date FROM [2025_cotton_nitrogen_management_form] WHERE id = @appId"
     );
 
     if (fetchTeamNameResult.recordset.length === 0) {
@@ -388,7 +388,7 @@ router.post("/updateCottonNitrogenApplied/:appId", async (req, res) => {
     updateRequest.input("newAppliedValue", sql.VarChar, newAppliedValue);
     updateRequest.input("appId", sql.Int, appId);
     await updateRequest.query(
-      "UPDATE [2025_cotton_nitrogen_management_form]SET applied = @newAppliedValue WHERE id = @appId"
+      "UPDATE [2025_cotton_nitrogen_management_form] SET applied = @newAppliedValue WHERE id = @appId"
     );
 
     const fetchEmailRequest = new sql.Request(transaction);

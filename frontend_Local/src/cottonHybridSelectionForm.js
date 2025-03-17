@@ -138,18 +138,29 @@ function CottonHybridForm() {
         <div style={{ display: "flex", flexWrap: "wrap" }}>
           {hybridOptions.map((option) => (
             <Card
-              key={option}
-              onClick={() => handleHybridClick(option)}
-              sx={{
-                cursor: "pointer",
-                margin: "4px",
-                padding: "8px",
-                backgroundColor: hybrid === option ? "#fa4616" : "#D8D4D7", // Highlight the selected card
-                border: "2px solid #fa4616", // Border for all cards
-                borderRadius: "8px", // Rounded corners
-                color: hybrid === option ? "white" : "black",
-              }}
-            >
+                key={option}
+                onClick={() => handleHybridClick(option)}
+                sx={{
+                    cursor: "pointer",
+                    margin: "4px",
+                    padding: "10px 16px",
+                    backgroundColor: hybrid === option ? "#fa4616" : "#F5F5F5",
+                    border: hybrid === option ? "2px solid rgb(255, 255, 255)" : "2px solid rgb(37, 106, 185)",
+                    borderRadius: "12px",
+                    color: hybrid === option ? "white" : "#333",
+                    boxShadow: hybrid === option ? "0px 4px 10px rgba(0, 0, 0, 0.2)" : "none",
+                    transition: "all 0.3s ease-in-out",
+                    display: "flex",
+                    justifyContent: "center", // Center horizontally
+                    alignItems: "center", // Center vertically
+                    textAlign: "center", // Ensures text stays centered
+                    height: "50px", // Fixed height for better alignment
+                    "&:hover": {
+                      backgroundColor: hybrid === option ? "#d73a12" : "#E0E0E0",
+                      transform: "scale(1.05)",
+                    },
+                  }}
+                >
               <CardContent>
                 <Typography variant="body2">{option}</Typography>
               </CardContent>

@@ -394,7 +394,7 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
                 cursor: !isApplicationTypeConfirmed ? "pointer" : "not-allowed",
                 padding: "8px",
                 backgroundColor:
-                  applicationType === "in-season" ? "#fa4616" : "#D8D4D7",
+                  applicationType === "in-season" ? "#fa4616" : "#F5F5F5",
                 border: "2px solid #fa4616",
                 borderRadius: "8px",
                 opacity:
@@ -421,8 +421,7 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
                 padding: "8px",
                 backgroundColor:
                   applicationType === "controlled-release"
-                    ? "#fa4616"
-                    : "#D8D4D7",
+                    ? "#fa4616" : "#F5F5F5",
 
                 border: "2px solid #fa4616",
                 borderRadius: "8px",
@@ -530,10 +529,30 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
                     sx={{
                       cursor: "pointer",
                       margin: "4px",
-                      padding: "8px",
+                      padding: "10px 16px",
                       backgroundColor:
-                        selectedCard === option ? "#fa4616" : "#D8D4D7",
-                      border: "2px solid #fa4616",
+                        selectedCard === option ? "#fa4616" : "#F5F5F5",
+                      border:
+                        selectedCard === option
+                          ? "2px solid rgb(255, 255, 255)"
+                          : "2px solid rgb(37, 106, 185)",
+                      borderRadius: "12px",
+                      color: selectedCard === option ? "white" : "#333",
+                      boxShadow:
+                        selectedCard === option
+                          ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                          : "none",
+                      transition: "all 0.3s ease-in-out",
+                      display: "flex",
+                      justifyContent: "center", // Center horizontally
+                      alignItems: "center", // Center vertically
+                      textAlign: "center", // Ensures text stays centered
+                      height: "50px", // Fixed height for better alignment
+                      "&:hover": {
+                        backgroundColor:
+                          selectedCard === option ? "#d73a12" : "#E0E0E0",
+                        transform: "scale(1.05)",
+                      },
                     }}
                   >
                     <CardContent>

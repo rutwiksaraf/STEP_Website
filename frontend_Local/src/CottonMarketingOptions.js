@@ -162,11 +162,31 @@ function CottonMarketingOptionsForm() {
             onClick={() => handleCardClick("Flat-price")}
             sx={{
               cursor: "pointer",
-              padding: "10px",
+              margin: "4px",
+              padding: "10px 16px",
               backgroundColor:
-                contractType === "Flat-price" ? "#fa4616" : "#D8D4D7",
-              border: "2px solid #fa4616", // Highlight the selected card
-              marginRight: "30px", // Add margin to separate cards
+                contractType === "Flat-price" ? "#fa4616" : "#F5F5F5",
+              border:
+                contractType === "Flat-price"
+                  ? "2px solid rgb(255, 255, 255)"
+                  : "2px solid rgb(37, 106, 185)",
+              borderRadius: "12px",
+              color: contractType === "Flat-price" ? "white" : "#333",
+              boxShadow:
+                contractType === "Flat-price"
+                  ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                  : "none",
+              transition: "all 0.3s ease-in-out",
+              display: "flex",
+              justifyContent: "center", // Center horizontally
+              alignItems: "center", // Center vertically
+              textAlign: "center", // Ensures text stays centered
+              height: "50px", // Fixed height for better alignment
+              "&:hover": {
+                backgroundColor:
+                  contractType === "Flat-price" ? "#d73a12" : "#E0E0E0",
+                transform: "scale(1.05)",
+              },
             }}
           >
             <CardContent>
@@ -216,7 +236,7 @@ function CottonMarketingOptionsForm() {
               sx={{
                 cursor: "pointer",
                 padding: "8px",
-                backgroundColor: "#D8D4D7",
+                backgroundColor: "#F5F5F5",
                 marginBottom: "8px",
                 marginRight: "2px",
                 textAlign: "center",
@@ -235,14 +255,31 @@ function CottonMarketingOptionsForm() {
                 onClick={() => handleQuantityCardClick(option)}
                 sx={{
                   cursor: "pointer",
-                  padding: "8px",
+                  margin: "4px",
+                  padding: "10px 16px",
                   backgroundColor:
-                    quantityBushels === option ? "#fa4616" : "#D8D4D7",
-                  marginBottom: "8px",
-                  marginRight: "2px",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  border: "2px solid #fa4616",
+                    quantityBushels === option ? "#fa4616" : "#F5F5F5",
+                  border:
+                    quantityBushels === option
+                      ? "2px solid rgb(255, 255, 255)"
+                      : "2px solid rgb(37, 106, 185)",
+                  borderRadius: "12px",
+                  color: quantityBushels === option ? "white" : "#333",
+                  boxShadow:
+                    quantityBushels === option
+                      ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                      : "none",
+                  transition: "all 0.3s ease-in-out",
+                  display: "flex",
+                  justifyContent: "center", // Center horizontally
+                  alignItems: "center", // Center vertically
+                  textAlign: "center", // Ensures text stays centered
+                  height: "50px", // Fixed height for better alignment
+                  "&:hover": {
+                    backgroundColor:
+                      quantityBushels === option ? "#d73a12" : "#E0E0E0",
+                    transform: "scale(1.05)",
+                  },
                 }}
               >
                 <CardContent>

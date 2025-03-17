@@ -33,6 +33,9 @@ import { saveAs } from "file-saver";
 import profileImage from "./profile.jpg";
 import RainfallChart from "./weatherChart";
 
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+
+
 // import GrowthRegulationForm from "./GrowthRegulationForm"; // Import the Growth Regulation form
 
 function WelcomeCotton() {
@@ -377,91 +380,135 @@ function WelcomeCotton() {
             {/* Content for other tabs (Hybrid Selection, Seeding Rate, etc.) */}
             {selectedTab === 0 && (
               <div
-                style={{
-                  backgroundImage:
-                    "url('https://step.ifas.ufl.edu/media/stepifasufledu/images/banner-photos/DJI_0265-(002).JPG')",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
+                  style={{
+                    backgroundImage:
+                      "url('https://source.unsplash.com/random/1920x1080?nature')",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                    minHeight: "50vh",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: "40px",
+                  }}
+                >
+                  <Container maxWidth="lg">
+                    <Paper
+                      elevation={5}
+                      style={{
+                        padding: "40px",
+                        backgroundColor: "rgba(255, 255, 255, 0.95)",
+                        borderRadius: "20px",
+                        boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
+                      }}
+                    >
+                      <Grid container spacing={4}>
+                        {/* Left Section: Profile Image and User Details */}
+                        <Grid item xs={12} md={4}>
+                          <div style={{ textAlign: "center" }}>
+                            <Typography
+                              variant="h4"
+                              gutterBottom
+                              style={{ fontWeight: "bold", color: "#333" }}
+                            >
+                              Welcome, {username}!
+                            </Typography>
+                            <Avatar
+                              alt="Profile Image"
+                              src={profileImageUrl}
+                              sx={{
+                                width: 200,
+                                height: 200,
+                                margin: "20px auto",
+                                border: "5px solid #fff",
+                                boxShadow: "0 5px 15px rgba(0, 0, 0, 0.2)",
+                              }}
+                            />
+                            <Paper
+                              elevation={2}
+                              style={{
+                                padding: "25px",
+                                borderRadius: "10px",
+                                marginBottom: "20px",
+                              }}
+                            >
+                              <Typography
+                                variant="h5"
+                                gutterBottom
+                                style={{ fontWeight: "bold", color: "#333" }}
+                              >
+                                Update Profile Image
+                              </Typography>
+                              <form
+                                onSubmit={handleUpload}
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  gap: "15px",
+                                }}
+                              >
+                                <FormControl>
+                                  <Input
+                                    id="file-input"
+                                    type="file"
+                                    onChange={handleFileChange}
+                                    style={{ display: "none" }}
+                                  />
+                                  <label htmlFor="file-input">
+                                    <Button
+                                      variant="outlined"
+                                      component="span"
+                                      startIcon={<CloudUploadIcon />}
+                                      style={{ marginRight: "10px" }}
+                                    >
+                                      Choose File
+                                    </Button>
+                                  </label>
+                                  <FormHelperText>
+                                    Select your profile image (jpg, jpeg, png
+                                    format)
+                                  </FormHelperText>
+                                </FormControl>
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  type="submit"
+                                  style={{
+                                    borderRadius: "8px",
+                                    padding: "10px 20px",
+                                    alignSelf: "flex-start",
+                                  }}
+                                >
+                                  Upload Profile Image
+                                </Button>
+                              </form>
+                            </Paper>
+                          </div>
+                        </Grid>
 
-                  justifyContent: "center", // This centers the form vertically
-                }}
-              >
-                <Container>
-                  <Paper elevation={3} style={{ padding: 20, margin: 20 }}>
-                    <Box display="flex" alignItems="center">
-                      <Avatar
-                        alt="Profile Image"
-                        src={profileImageUrl}
-                        style={{ marginRight: 20 }}
-                      />
-                      <Typography variant="h4" gutterBottom>
-                        Welcome, {username}!
-                      </Typography>
-                    </Box>
-                  </Paper>
-                  <Paper elevation={3} style={{ padding: 20, margin: 20 }}>
-                    <Typography variant="h5" gutterBottom>
-                      User Details
-                    </Typography>
-                    <p style={{ textAlign: "justify" }}></p>
-                    <div>
-                      <Avatar
-                        alt="Profile Image"
-                        src={profileImageUrl}
-                        sx={{ width: 350, height: 350 }}
-                        variant="rounded"
-                      />
-                      <p style={{ textAlign: "justify" }}></p>
-                      {/* <form onSubmit={handleUpload}>
-                        <input type="file" onChange={handleFileChange} />
-                        <p style={{ textAlign: "justify" }}></p>
-                        <button type="submit">Upload Profile Image</button>
-                        <p style={{ textAlign: "justify" }}></p>
-                      </form> */}
-                      <form
-                        onSubmit={handleUpload}
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "20px",
-                          alignItems: "start",
-                        }}
-                      >
-                        <FormControl>
-                          <InputLabel htmlFor="file-input">
-                            Profile Image
-                          </InputLabel>
-                          <p style={{ textAlign: "justify" }}></p>
-                          <Input
-                            marginLeft="40px"
-                            id="file-input"
-                            type="file"
-                            onChange={handleFileChange}
-                          />
-                          <FormHelperText>
-                            Select your profile image(* jpg,jpeg,png format)
-                          </FormHelperText>
-                        </FormControl>
-
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          type="submit"
-                        >
-                          Upload Profile Image
-                        </Button>
-                      </form>
-                    </div>
-                    <Grid container spacing={3}>
-                      {cornuser1.length > 0 && (
-                        <React.Fragment>
-                          <Grid item xs={6}>
-                            <Card>
-                              <CardContent>
-                                <Typography variant="h6">
-                                  User Information
-                                </Typography>
+                        {/* Right Section: User Details and Image Upload */}
+                        <Grid item xs={12} md={8}>
+                          <Paper
+                            elevation={2}
+                            style={{
+                              padding: "20px",
+                              borderRadius: "10px",
+                              marginTop: "30px",
+                              marginBottom: "20px",
+                            }}
+                          >
+                            <Typography
+                              variant="h6"
+                              style={{
+                                fontWeight: "bold",
+                                marginBottom: "10px",
+                              }}
+                            >
+                              User Information
+                            </Typography>
+                            {cornuser1.length > 0 && (
+                              <>
                                 <Typography>
                                   Username/TeamName: {cornuser1[0].teamName}
                                 </Typography>
@@ -469,83 +516,130 @@ function WelcomeCotton() {
                                   Crop Type: {cornuser1[0].cropType}
                                 </Typography>
                                 <Typography>
-                                  Capitan First Name:{" "}
-                                  {cornuser1[0].captainFirstName}
-                                </Typography>
-                                <Typography>
-                                  Capitan Last Name:{" "}
+                                  Captain: {cornuser1[0].captainFirstName}{" "}
                                   {cornuser1[0].captainLastName}
                                 </Typography>
-                              </CardContent>
-                            </Card>
-                          </Grid>
-                          <Grid item xs={6}>
-                            <Card>
-                              <CardContent>
-                                <Typography>
-                                  Address 1: {cornuser1[0].address1}
-                                </Typography>
-                                <Typography>
-                                  Address 2: {cornuser1[0].address2}
-                                </Typography>
+                              </>
+                            )}
+                          </Paper>
+                          {cornuser1.length > 0 && (
+                            <Grid container spacing={3}>
+                              <Grid item xs={12} sm={6}>
+                                <Paper
+                                  elevation={2}
+                                  style={{
+                                    padding: "20px",
+                                    borderRadius: "10px",
+                                    height: "100%", // Ensures both papers are the same height
+                                    display: "flex", // Enables flexbox
+                                    flexDirection: "column", // Aligns content properly
+                                    justifyContent: "space-between", // Distributes content evenly
+                                  }}
+                                >
+                                  <Typography
+                                    variant="h6"
+                                    style={{
+                                      fontWeight: "bold",
+                                      marginBottom: "10px",
+                                    }}
+                                  >
+                                    Location
+                                  </Typography>
+                                  <Typography>
+                                    {cornuser1[0].address1}
+                                  </Typography>
+                                  <Typography>
+                                    {cornuser1[0].address2}
+                                  </Typography>
+                                  <Typography>
+                                    {cornuser1[0].city}, {cornuser1[0].state}{" "}
+                                    {cornuser1[0].zipCode}
+                                  </Typography>
+                                  <Typography>{cornuser1[0].country}</Typography>
+                                </Paper>
+                              </Grid>
 
-                                <Typography>
-                                  City: {cornuser1[0].city}
-                                </Typography>
-                                <Typography>
-                                  State: {cornuser1[0].state}
-                                </Typography>
-                                <Typography>
-                                  Zip Code: {cornuser1[0].zipCode}
-                                </Typography>
-                                <Typography>
-                                  Country: {cornuser1[0].country}
-                                </Typography>
-                              </CardContent>
-                            </Card>
-                          </Grid>
-                          <Grid item xs={12}>
-                            <Card>
-                              <CardContent>
-                                <Typography variant="h6">
-                                  Contact Information
-                                </Typography>
-                                <Typography>
-                                  Email: {cornuser1[0].email}
-                                </Typography>
-                                <Typography>
-                                  Phone: {cornuser1[0].phone}
-                                </Typography>
-                              </CardContent>
-                            </Card>
-                          </Grid>
-                        </React.Fragment>
-                      )}
-                    </Grid>
-                    {teamMembers1.length > 0 && (
-                      <Paper
-                        elevation={3}
-                        style={{ marginTop: 20, padding: 20 }}
-                      >
-                        <Typography variant="h5" gutterBottom>
-                          Team Members
-                        </Typography>
-                        {teamMembers1.map((member, index) => (
-                          <Card key={index} style={{ marginBottom: 10 }}>
-                            <CardContent>
-                              <Typography variant="h6">
-                                Team Member {index + 1}
+                              <Grid item xs={12} sm={6}>
+                                <Paper
+                                  elevation={2}
+                                  style={{
+                                    padding: "20px",
+                                    borderRadius: "10px",
+                                    height: "100%", // Ensures both papers are the same height
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  <Typography
+                                    variant="h6"
+                                    style={{
+                                      fontWeight: "bold",
+                                      marginBottom: "10px",
+                                    }}
+                                  >
+                                    Contact Information
+                                  </Typography>
+                                  <Typography>
+                                    Email: {cornuser1[0].email}
+                                  </Typography>
+                                  <Typography>
+                                    Phone: {cornuser1[0].phone}
+                                  </Typography>
+                                </Paper>
+                              </Grid>
+                            </Grid>
+                          )}
+
+                          {teamMembers1.length > 0 && (
+                            <Paper
+                              elevation={2}
+                              style={{
+                                padding: "25px",
+                                borderRadius: "10px",
+                                marginTop: "20px",
+                              }}
+                            >
+                              <Typography
+                                variant="h5"
+                                gutterBottom
+                                style={{ fontWeight: "bold", color: "#333" }}
+                              >
+                                Team Members
                               </Typography>
-                              <Typography>Name: {member.name}</Typography>
-                              <Typography>Email: {member.email}</Typography>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </Paper>
-                    )}
-                  </Paper>
-                </Container>
-              </div>
+                              <Grid container spacing={2}>
+                                {teamMembers1.map((member, index) => (
+                                  <Grid item xs={12} sm={6} key={index}>
+                                    <Paper
+                                      elevation={1}
+                                      style={{
+                                        padding: "15px",
+                                        borderRadius: "8px",
+                                      }}
+                                    >
+                                      <Typography
+                                        variant="subtitle1"
+                                        style={{ fontWeight: "bold" }}
+                                      >
+                                        Team Member {index + 1}
+                                      </Typography>
+                                      <Typography>
+                                        Name: {member.name}
+                                      </Typography>
+                                      <Typography>
+                                        Email: {member.email}
+                                      </Typography>
+                                    </Paper>
+                                  </Grid>
+                                ))}
+                              </Grid>
+                            </Paper>
+                          )}
+                        </Grid>
+                      </Grid>
+                    </Paper>
+                  </Container>
+                </div>
             )}
             {selectedTab === 1 && (
               <Container component="main" maxWidth="70%">

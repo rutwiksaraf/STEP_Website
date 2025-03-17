@@ -119,7 +119,7 @@ router.post("/cottoninsurancesubmit", async (req, res) => {
       insertRequest.input("level", sql.VarChar, level);
 
       await insertRequest.query(
-        "INSERT INTO cotton_insurance_selection_form (teamName, coverage, level) VALUES (@teamName, @coverage, @level)"
+        "INSERT INTO [2025_cotton_insurance_selection_form] (teamName, coverage, level) VALUES (@teamName, @coverage, @level)"
       );
       res
         .status(200)

@@ -128,11 +128,31 @@ function CottonInsuranceSelectionForm() {
             onClick={() => handleCardClick("Yield protection")}
             sx={{
               cursor: "pointer",
-              padding: "10px",
+              margin: "4px",
+              padding: "10px 16px",
               backgroundColor:
-                coverage === "Yield protection" ? "#fa4616" : "#D8D4D7",
-              border: "2px solid #fa4616", // Highlight the selected card
-              marginRight: "30px", // Add margin to separate cards
+                coverage === "Yield protection" ? "#fa4616" : "#F5F5F5",
+              border:
+                coverage === "Yield protection"
+                  ? "2px solid rgb(255, 255, 255)"
+                  : "2px solid rgb(37, 106, 185)",
+              borderRadius: "12px",
+              color: coverage === "Yield  protection" ? "white" : "#333",
+              boxShadow:
+                coverage === "Yield protection"
+                  ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                  : "none",
+              transition: "all 0.3s ease-in-out",
+              display: "flex",
+              justifyContent: "center", // Center horizontally
+              alignItems: "center", // Center vertically
+              textAlign: "center", // Ensures text stays centered
+              height: "50px", // Fixed height for better alignment
+              "&:hover": {
+                backgroundColor:
+                  coverage === "Yield protection" ? "#d73a12" : "#E0E0E0",
+                transform: "scale(1.05)",
+              },
             }}
           >
             <CardContent>
@@ -143,10 +163,31 @@ function CottonInsuranceSelectionForm() {
             onClick={() => handleCardClick("Revenue protection")}
             sx={{
               cursor: "pointer",
-              padding: "10px",
+              margin: "4px",
+              padding: "10px 16px",
               backgroundColor:
-                coverage === "Revenue protection" ? "#fa4616" : "#D8D4D7",
-              border: "2px solid #fa4616", // Highlight the selected card
+                coverage === "Revenue protection" ? "#fa4616" : "#F5F5F5",
+              border:
+                coverage === "Revenue protection"
+                  ? "2px solid rgb(255, 255, 255)"
+                  : "2px solid rgb(37, 106, 185)",
+              borderRadius: "12px",
+              color: coverage === "Revenue protection" ? "white" : "#333",
+              boxShadow:
+                coverage === "Revenue protection"
+                  ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                  : "none",
+              transition: "all 0.3s ease-in-out",
+              display: "flex",
+              justifyContent: "center", // Center horizontally
+              alignItems: "center", // Center vertically
+              textAlign: "center", // Ensures text stays centered
+              height: "50px", // Fixed height for better alignment
+              "&:hover": {
+                backgroundColor:
+                  coverage === "Revenue protection" ? "#d73a12" : "#E0E0E0",
+                transform: "scale(1.05)",
+              }, // Highlight the selected card
             }}
           >
             <CardContent>
@@ -202,13 +243,31 @@ function CottonInsuranceSelectionForm() {
                 onClick={() => handleLevelCardClick(option)}
                 sx={{
                   cursor: "pointer",
-                  padding: "8px",
-                  backgroundColor: level === option ? "#fa4616" : "#D8D4D7",
-                  marginBottom: "8px",
-                  marginRight: "2px",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  border: "2px solid #fa4616",
+              margin: "4px",
+              padding: "10px 16px",
+              backgroundColor:
+                level === option ? "#fa4616" : "#F5F5F5",
+              border:
+                level === option
+                  ? "2px solid rgb(255, 255, 255)"
+                  : "2px solid rgb(37, 106, 185)",
+              borderRadius: "12px",
+              color: level === option ? "white" : "#333",
+              boxShadow:
+                level === option
+                  ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                  : "none",
+              transition: "all 0.3s ease-in-out",
+              display: "flex",
+              justifyContent: "center", // Center horizontally
+              alignItems: "center", // Center vertically
+              textAlign: "center", // Ensures text stays centered
+              height: "50px", // Fixed height for better alignment
+              "&:hover": {
+                backgroundColor:
+                  level === option ? "#d73a12" : "#E0E0E0",
+                transform: "scale(1.05)",
+              },
                 }}
               >
                 <CardContent>
