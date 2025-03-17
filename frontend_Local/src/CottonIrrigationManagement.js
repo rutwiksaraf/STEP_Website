@@ -759,15 +759,34 @@ function CottonIrrigationManagementForm() {
                         key={option}
                         onClick={() => handleAmountCardClick(option)}
                         sx={{
+                          width: "10%",
+                          minWidth: "200px",
                           cursor: "pointer",
-                          padding: "8px",
+                          marginRight: "10px",
+                          marginBottom: "10px",
                           backgroundColor:
-                            amount === option ? "#fa4616" : "#D8D4D7",
-                          marginBottom: "8px",
-                          marginRight: "2px",
-                          textAlign: "center",
-                          fontWeight: "bold",
-                          border: "2px solid #fa4616",
+                            amount === option ? "#fa4616" : "#F5F5F5",
+                          border:
+                            amount === option
+                              ? "2px solid rgb(255, 255, 255)"
+                              : "2px solid rgb(37, 106, 185)",
+                          borderRadius: "12px",
+                          color: amount === option ? "white" : "#333",
+                          boxShadow:
+                            amount === option
+                              ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                              : "none",
+                          transition: "all 0.3s ease-in-out",
+                          display: "flex",
+                          justifyContent: "center", // Center horizontally
+                          alignItems: "center", // Center vertically
+                          textAlign: "center", // Ensures text stays centered
+                          height: "50px", // Fixed height for better alignment
+                          "&:hover": {
+                            backgroundColor:
+                              amount === option ? "#d73a12" : "#E0E0E0",
+                            transform: "scale(1.05)",
+                          },
                         }}
                       >
                         <CardContent>
