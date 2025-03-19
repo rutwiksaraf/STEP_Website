@@ -23,6 +23,7 @@ const session = require("express-session");
 const fileUploadRoutes = require("./fileUploadRoutes"); // Import the file upload routes
 const bulletin = require("./corn_bulletin");
 const weather = require("./corn_weather")
+const cottonweather = require("./cotton_weather")
 const cottonbulletin = require("./cotton_bulletin");
 const admindata = require("./admin_data");
 const fetchadmin = require("./fetch_admin");
@@ -76,6 +77,7 @@ app.use("/api", authenticateToken, adminuserdata);
 app.use("/api", authenticateToken, fileUploadRoutes);
 app.use("/api", authenticateToken, bulletin);
 app.use("/api", authenticateToken, weather);
+app.use("/api", authenticateToken, cottonweather);
 app.use("/api", authenticateToken, cottonbulletin);
 app.use("/api", authenticateToken, admindata);
 app.use("/api", authenticateToken, fetchadmin);

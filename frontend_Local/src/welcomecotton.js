@@ -30,10 +30,9 @@ import CottonBulletin from "./CottonBulletin";
 import axios from "axios";
 import cottonImage from "./cotton.jpg"; // Adjust './cotton.jpg' if your file structure is different
 import { saveAs } from "file-saver";
-import profileImage from "./profile.jpg";
-import RainfallChart from "./weatherChart";
 
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import CottonWeatherGraph from "./CottonWeatherChart";
 
 
 // import GrowthRegulationForm from "./GrowthRegulationForm"; // Import the Growth Regulation form
@@ -1098,7 +1097,7 @@ function WelcomeCotton() {
             )}
             {selectedTab === 9 && (
                 <Container component="main" maxWidth="90%">
-                  <RainfallChart stationId="170" />
+                  <CottonWeatherGraph stationId="170" />
                 </Container>
               )}
           </div>
