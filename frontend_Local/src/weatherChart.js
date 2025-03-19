@@ -115,9 +115,8 @@ const WeatherGraph = () => {
           {
             label: `DB: ${PARAMETERS[selectedParam]}`,
             data: dbDataPoints,
-            backgroundColor:
-              selectedParam === "rain" ? "#77b3d4" : "transparent",
-            borderColor: COLORS[selectedParam] || "#77b3d4",
+            backgroundColor: selectedParam === "rain" ? "#99ccff" : "transparent",
+          borderColor: COLORS[selectedParam] || "#99ccff",
             borderWidth: 2,
             fill: selectedParam !== "rain",
             tension: 0,
@@ -204,7 +203,100 @@ const WeatherGraph = () => {
         ))}
       </div>
 
+      
       <div
+        style={{
+          display: "flex",
+          alignItems: "start",
+          gap: "20px",
+          width: "100%",
+          maxHeight: "500px",
+        }}
+      >
+        {/* DB Chart Container */}
+        <div
+          style={{
+            flexGrow: 1,
+            minWidth: "800px",
+            height: "500px",
+            overflowX: "auto",
+          }}
+        >
+          {dbChartData ? (
+            selectedParam === "rain" ? (
+              <Bar data={dbChartData} options={chartOptions} />
+            ) : (
+              <Line data={dbChartData} options={chartOptions} />
+            )
+          ) : (
+            <p>Loading...</p>
+          )}
+        </div>
+
+        {/* DB Data Table Container */}
+        <div
+          style={{
+            width: "400px",
+            height: "500px",
+            overflowY: "auto",
+            backgroundColor: "#f4f4f4",
+            borderRadius: "10px",
+            padding: "20px",
+          }}
+        >
+          <h3
+            style={{ fontSize: "24px", fontWeight: "bold", color: "#002657" }}
+          >
+            {PARAMETERS[selectedParam]}
+          </h3>
+          <table
+            style={{
+              borderCollapse: "collapse",
+              width: "100%",
+              borderRadius: "10px",
+            }}
+          >
+            <thead>
+              <tr style={{ backgroundColor: "#002657", color: "white" }}>
+                <th style={{ padding: "10px" }}>Date</th>
+                <th style={{ padding: "10px" }}>{PARAMETERS[selectedParam]}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {dbTableData.map((entry, index) => (
+                <tr key={index}>
+                  <td
+                    style={{
+                      border: "1px solid",
+                      padding: "10px",
+                      textAlign: "center",
+                    }}
+                  >
+                    {entry.date}
+                  </td>
+                  <td
+                    style={{
+                      border: "1px solid",
+                      padding: "10px",
+                      textAlign: "center",
+                    }}
+                  >
+                    {entry.value}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default WeatherGraph;
+
+
+{/* <div
         style={{
           display: "flex",
           alignItems: "start",
@@ -295,82 +387,4 @@ const WeatherGraph = () => {
             </tbody>
           </table>
         </div>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "start",
-          gap: "20px",
-          width: "100%",
-          maxHeight: "500px",
-        }}
-      >
-        {/* DB Chart Container */}
-        <div
-          style={{
-            flexGrow: 1,
-            minWidth: "800px",
-            height: "500px",
-            overflowX: "auto",
-          }}
-        >
-          {dbChartData ? (
-            selectedParam === "rain" ? (
-              <Bar data={dbChartData} options={chartOptions} />
-            ) : (
-              <Line data={dbChartData} options={chartOptions} />
-            )
-          ) : (
-            <p>Loading...</p>
-          )}
-        </div>
-
-        {/* DB Data Table Container */}
-        <div
-          style={{
-            width: "400px",
-            height: "500px",
-            overflowY: "auto",
-            backgroundColor: "#f4f4f4",
-            borderRadius: "10px",
-            padding: "20px",
-          }}
-        >
-          <h3
-            style={{ fontSize: "24px", fontWeight: "bold", color: "#002657" }}
-          >
-            {PARAMETERS[selectedParam]}
-          </h3>
-          <table
-            style={{
-              borderCollapse: "collapse",
-              width: "100%",
-              borderRadius: "10px",
-            }}
-          >
-            <thead>
-              <tr style={{ backgroundColor: "#002657", color: "white" }}>
-                <th style={{ padding: "10px" }}>Date</th>
-                <th style={{ padding: "10px" }}>{PARAMETERS[selectedParam]}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dbTableData.map((entry, index) => (
-                <tr key={index}>
-                  <td style={{ padding: "10px", textAlign: "center" }}>
-                    {entry.date}
-                  </td>
-                  <td style={{ padding: "10px", textAlign: "center" }}>
-                    {entry.value}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default WeatherGraph;
+      </div> */}
