@@ -22,20 +22,20 @@ const token = localStorage.getItem("token");
 
 const PARAMETERS = {
   rain: "Rainfall (in)",
-  rfd: "Radiation Flux Density (W/m²)", // Added unit
+  rfd: "Radiation Flux Density (W/m²)",
   tsoil: "Soil Temperature (°C)",
   rh: "Humidity (%)",
   ws: "Wind Speed (m/s)",
-  et: "Evapotranspiration (in)", // Added ET parameter
+  et: "Evapotranspiration (in)",
 };
 
 const COLORS = {
-  rain: "#99ccff", // Warm blue
-  rfd: "#FF8C00", // Warm orange
-  tsoil: "#FFD700", // Warm yellow
-  rh: "#FF1493", // Warm pink
-  ws: "#FF4500", // Warm orange-red
-  et: "#32CD32", // Green for ET
+  rain: "#99ccff",
+  rfd: "#FF8C00",
+  tsoil: "#FFD700",
+  rh: "#FF1493",
+  ws: "#FF4500",
+  et: "#32CD32",
 };
 
 const WeatherGraph = () => {
@@ -45,35 +45,31 @@ const WeatherGraph = () => {
   const [tableData, setTableData] = useState([]);
   const [weatherDataFromDB, setWeatherDataFromDB] = useState([]);
   const [dbChartData, setDbChartData] = useState(null);
+  const [dbTableData, setDbTableData] = useState([]);
 
   useEffect(() => {
     const fetchWeatherData = async () => {
       try {
         const response = await axios.get(`/api/weather`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
         setWeatherData(response.data);
       } catch (error) {
         console.error("Error fetching weather data", error);
       }
     };
-    fetchWeatherData();
-
 
     const fetchWeatherDataFromDB = async () => {
       try {
         const response = await axios.get(`/api/weatherfromdb`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
         setWeatherDataFromDB(response.data);
       } catch (error) {
         console.error("Error fetching weather data from DB", error);
       }
     };
+
     fetchWeatherData();
     fetchWeatherDataFromDB();
   }, []);
@@ -99,10 +95,10 @@ const WeatherGraph = () => {
           label: PARAMETERS[selectedParam],
           data: dataPoints,
           backgroundColor: selectedParam === "rain" ? "#99ccff" : "transparent",
-          borderColor: COLORS[selectedParam] || "#99ccff", // Use the warm color for each parameter
+          borderColor: COLORS[selectedParam] || "#99ccff",
           borderWidth: 2,
-          fill: selectedParam !== "rain", // Fill for line graph
-          tension: 0, // For sharp, straight lines instead of curves
+          fill: selectedParam !== "rain",
+          tension: 0,
         },
       ],
     });
@@ -128,6 +124,10 @@ const WeatherGraph = () => {
           },
         ],
       });
+
+      setDbTableData(
+        dbLabels.map((date, index) => ({ date, value: dbDataPoints[index] }))
+      );
     }
 
     setTableData(
@@ -138,47 +138,28 @@ const WeatherGraph = () => {
   const chartOptions = {
     maintainAspectRatio: false,
     responsive: true,
-    layout: {
-      padding: {
-        right: 20, // Ensures last x-axis label isn't cut off
-      },
-    },
+    layout: { padding: { right: 20 } },
     scales: {
       x: {
         reverse: true,
         ticks: {
-          font: {
-            size: 20,
-          },
-          autoSkip: false, // Ensures all labels are shown
-          maxRotation: 0, // Keeps labels horizontal
-          padding: 10, // Adds spacing so labels don’t get cut
+          font: { size: 20 },
+          autoSkip: false,
+          maxRotation: 0,
+          padding: 10,
         },
-        title: {
-          display: true,
-          text: "Date",
-          font: {
-            size: 30,
-          },
-        },
+        title: { display: true, text: "Date", font: { size: 30 } },
       },
       y: {
-        ticks: {
-          font: {
-            size: 20,
-          },
-        },
+        ticks: { font: { size: 20 } },
         title: {
           display: true,
           text: PARAMETERS[selectedParam],
-          font: {
-            size: 30,
-          },
+          font: { size: 30 },
         },
       },
     },
   };
-  
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -315,16 +296,78 @@ const WeatherGraph = () => {
           </table>
         </div>
       </div>
-      <div style={{ width: "100%", minWidth: "800px", height: "500px" }}>
-        {dbChartData ? (
-          selectedParam === "rain" ? (
-            <Bar data={dbChartData} options={chartOptions} />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "start",
+          gap: "20px",
+          width: "100%",
+          maxHeight: "500px",
+        }}
+      >
+        {/* DB Chart Container */}
+        <div
+          style={{
+            flexGrow: 1,
+            minWidth: "800px",
+            height: "500px",
+            overflowX: "auto",
+          }}
+        >
+          {dbChartData ? (
+            selectedParam === "rain" ? (
+              <Bar data={dbChartData} options={chartOptions} />
+            ) : (
+              <Line data={dbChartData} options={chartOptions} />
+            )
           ) : (
-            <Line data={dbChartData} options={chartOptions} />
-          )
-        ) : (
-          <p>Loading...</p>
-        )}
+            <p>Loading...</p>
+          )}
+        </div>
+
+        {/* DB Data Table Container */}
+        <div
+          style={{
+            width: "400px",
+            height: "500px",
+            overflowY: "auto",
+            backgroundColor: "#f4f4f4",
+            borderRadius: "10px",
+            padding: "20px",
+          }}
+        >
+          <h3
+            style={{ fontSize: "24px", fontWeight: "bold", color: "#002657" }}
+          >
+            {PARAMETERS[selectedParam]}
+          </h3>
+          <table
+            style={{
+              borderCollapse: "collapse",
+              width: "100%",
+              borderRadius: "10px",
+            }}
+          >
+            <thead>
+              <tr style={{ backgroundColor: "#002657", color: "white" }}>
+                <th style={{ padding: "10px" }}>Date</th>
+                <th style={{ padding: "10px" }}>{PARAMETERS[selectedParam]}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {dbTableData.map((entry, index) => (
+                <tr key={index}>
+                  <td style={{ padding: "10px", textAlign: "center" }}>
+                    {entry.date}
+                  </td>
+                  <td style={{ padding: "10px", textAlign: "center" }}>
+                    {entry.value}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
