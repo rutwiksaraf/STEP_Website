@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Bar, Line } from "react-chartjs-2";
 import {
@@ -115,8 +115,9 @@ const WeatherGraph = () => {
           {
             label: `DB: ${PARAMETERS[selectedParam]}`,
             data: dbDataPoints,
-            backgroundColor: selectedParam === "rain" ? "#99ccff" : "transparent",
-          borderColor: COLORS[selectedParam] || "#99ccff",
+            backgroundColor:
+              selectedParam === "rain" ? "#99ccff" : "transparent",
+            borderColor: COLORS[selectedParam] || "#99ccff",
             borderWidth: 2,
             fill: selectedParam !== "rain",
             tension: 0,
@@ -134,18 +135,27 @@ const WeatherGraph = () => {
     );
   }, [selectedParam, weatherData, weatherDataFromDB]);
 
+  const chartScrollRef = useRef(null);
+
+  useEffect(() => {
+    if (chartScrollRef.current) {
+      chartScrollRef.current.scrollLeft = chartScrollRef.current.scrollWidth;
+    }
+  }, [dbChartData]);
+
   const chartOptions = {
     maintainAspectRatio: false,
     responsive: true,
     layout: { padding: { right: 20 } },
     scales: {
       x: {
-        reverse: true,
+        // reverse: true,
         ticks: {
           font: { size: 20 },
           autoSkip: false,
           maxRotation: 0,
           padding: 10,
+          maxTicksLimit: 7,
         },
         title: { display: true, text: "Date", font: { size: 30 } },
       },
@@ -203,7 +213,6 @@ const WeatherGraph = () => {
         ))}
       </div>
 
-      
       <div
         style={{
           display: "flex",
@@ -214,29 +223,35 @@ const WeatherGraph = () => {
         }}
       >
         {/* DB Chart Container */}
-        <div
-          style={{
-            flexGrow: 1,
-            minWidth: "800px",
-            height: "500px",
-            overflowX: "auto",
-          }}
-        >
-          {dbChartData ? (
-            selectedParam === "rain" ? (
-              <Bar data={dbChartData} options={chartOptions} />
-            ) : (
-              <Line data={dbChartData} options={chartOptions} />
-            )
-          ) : (
-            <p>Loading...</p>
-          )}
-        </div>
+        {dbChartData && (
+          <div
+            // ref={chartScrollRef}
+            style={{
+              flexGrow: 1,
+              minWidth: "800px",
+              height: "500px",
+              overflowX: "auto",
+            }}
+          >
+            <div
+              style={{
+                width: `${dbChartData.labels.length * 100}px`,
+                height: "100%",
+              }}
+            >
+              {selectedParam === "rain" ? (
+                <Bar data={dbChartData} options={chartOptions} />
+              ) : (
+                <Line data={dbChartData} options={chartOptions} />
+              )}
+            </div>
+          </div>
+        )}
 
         {/* DB Data Table Container */}
         <div
           style={{
-            width: "400px",
+            width: "500px",
             height: "500px",
             overflowY: "auto",
             backgroundColor: "#f4f4f4",
@@ -295,8 +310,8 @@ const WeatherGraph = () => {
 
 export default WeatherGraph;
 
-
-{/* <div
+{
+  /* <div
         style={{
           display: "flex",
           alignItems: "start",
@@ -387,4 +402,5 @@ export default WeatherGraph;
             </tbody>
           </table>
         </div>
-      </div> */}
+      </div> */
+}
