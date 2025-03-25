@@ -149,7 +149,7 @@ const WeatherGraph = () => {
     layout: { padding: { right: 20 } },
     scales: {
       x: {
-        // reverse: true,
+        reverse: true,
         ticks: {
           font: { size: 20 },
           autoSkip: false,
@@ -225,7 +225,7 @@ const WeatherGraph = () => {
         {/* DB Chart Container */}
         {dbChartData && (
           <div
-            // ref={chartScrollRef}
+            ref={chartScrollRef}
             style={{
               flexGrow: 1,
               minWidth: "800px",

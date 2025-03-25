@@ -112,6 +112,7 @@ router.post("/savecottonweatherdatatodb", async (req, res) => {
     const aggregatedData = await cottonAggregateWeatherData(); // Aggregate weather data
 
     for (const data of aggregatedData) {
+      console.log("Inserting data:", data);
       const request = new sql.Request(transaction); // Use the transaction for each request
 
       request.input("date", sql.Date, data.date);
@@ -123,7 +124,7 @@ router.post("/savecottonweatherdatatodb", async (req, res) => {
       request.input("et", sql.Float, data.et);
 
       await request.query(
-        "INSERT INTO [2025_cotton_weather_data] (date, rain, rfd, tsoil, rh, ws, et) VALUES (@date, @rain, @rfd, @tsoil, @rh, @ws, @et)"
+        "INSERT INTO [2025_cotton_weather_data] (date, rain, rfd, tsoil, rh, ws, et) SELECT @date, @rain, @rfd, @tsoil, @rh, @ws, @et WHERE NOT EXISTS (SELECT 1 FROM [2025_cotton_weather_data] WHERE date = @date);"
       );
     }
  // Commit the transaction after all queries succeed
