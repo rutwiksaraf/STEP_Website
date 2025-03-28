@@ -25,7 +25,7 @@ const PARAMETERS = {
   rfd: "Radiation Flux Density (W/m²)",
   tsoil: "Soil Temperature (°C)",
   rh: "Humidity (%)",
-  ws: "Wind Speed (m/s)",
+  ws: "Wind Speed (mph)",
   et: "Evapotranspiration (in)",
 };
 
@@ -77,11 +77,13 @@ const WeatherGraph = () => {
   useEffect(() => {
     if (weatherData.length === 0) return;
 
-    const formatDate = (dateString) =>
-      new Date(dateString).toLocaleDateString("en-US", {
-        month: "2-digit",
-        day: "2-digit",
-      });
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate() + 1).padStart(2, "0");
+      return `${month}/${day}`;
+    };
+    
 
     const labels = weatherData.map((entry) => formatDate(entry.date));
     const dataPoints = weatherData.map((entry) =>
