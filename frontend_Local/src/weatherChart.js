@@ -23,7 +23,7 @@ const token = localStorage.getItem("token");
 const PARAMETERS = {
   rain: "Rainfall (in)",
   rfd: "Radiation Flux Density (W/m²)",
-  tsoil: "Soil Temperature (°C)",
+  tsoil: "Soil Temperature (°F)",
   rh: "Humidity (%)",
   ws: "Wind Speed (mph)",
   et: "Evapotranspiration (in)",
