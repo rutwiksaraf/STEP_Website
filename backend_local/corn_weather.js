@@ -56,9 +56,12 @@ const aggregateWeatherData = async () => {
     throw new Error("Failed to fetch weather or ET data");
   }
 
+
+
   const dailyData = {};
   weatherData.forEach((record) => {
     const date = record.endTime.split("T")[0];
+    console.log("FAWN record:", record);
     if (!dailyData[date]) {
       dailyData[date] = {
         rain: 0,
@@ -66,6 +69,7 @@ const aggregateWeatherData = async () => {
         tsoil: 0,
         rh: 0,
         ws: 0,
+        t2m: 0,
         count: 0,
         et: null,
       };
@@ -75,7 +79,9 @@ const aggregateWeatherData = async () => {
     dailyData[date].tsoil += Number(record.tsoil) || 0;
     dailyData[date].rh += Number(record.rh) || 0;
     dailyData[date].ws += Number(record.ws) || 0;
+    dailyData[date].t2m += Number(record.t2m) || 0;
     dailyData[date].count++;
+
   });
 
   // Retrieve ET data for the specific station
@@ -87,6 +93,7 @@ const aggregateWeatherData = async () => {
       }
     });
   }
+  
 
   // Format response
   return Object.entries(dailyData).map(([date, values]) => ({
@@ -96,8 +103,10 @@ const aggregateWeatherData = async () => {
     tsoil: values.tsoil / values.count,
     rh: values.rh / values.count,
     ws: values.ws / values.count,
+    t2m: values.t2m / values.count,
     et: values.et, // Include ET data
-  }));
+  })
+);
 };
 
 router.post("/saveweatherdatatodb", async (req, res) => {
@@ -120,11 +129,31 @@ router.post("/saveweatherdatatodb", async (req, res) => {
       request.input("tsoil", sql.Float, data.tsoil);
       request.input("rh", sql.Float, data.rh);
       request.input("ws", sql.Float, data.ws);
+      request.input("t2m", sql.Float, data.t2m);
       request.input("et", sql.Float, data.et);
 
-      await request.query(
-        "INSERT INTO [2025_weather_data] (date, rain, rfd, tsoil, rh, ws, et) VALUES (@date, @rain, @rfd, @tsoil, @rh, @ws, @et)"
-      );
+      await request.query(`
+        IF EXISTS (
+          SELECT 1 FROM [2025_weather_data] WHERE date = @date
+        )
+        BEGIN
+          UPDATE [2025_weather_data]
+          SET rain = @rain,
+              rfd = @rfd,
+              tsoil = @tsoil,
+              rh = @rh,
+              ws = @ws,
+              et = @et,
+              t2m = @t2m
+          WHERE date = @date
+        END
+        ELSE
+        BEGIN
+          INSERT INTO [2025_weather_data] (date, rain, rfd, tsoil, rh, ws, et, t2m)
+          VALUES (@date, @rain, @rfd, @tsoil, @rh, @ws, @et, @t2m)
+        END
+      `);
+      
     }
  // Commit the transaction after all queries succeed
     res.status(200).json({
