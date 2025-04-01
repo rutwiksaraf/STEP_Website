@@ -9,6 +9,9 @@ const FAWN_WEATHER_API_URL =
 const FAWN_ET_API_BASE_URL =
   "https://fawn.ifas.ufl.edu/controller.php/fiveDaysETsJson/test/";
 
+const WEATHER_API_FORECAST_URL =
+  "https://api.weatherapi.com/v1/forecast.json?key=3e5a549504c14d44927192432250502&q=32064&days=7";
+
 // Function to get the date 6 days before today in YYYY-MM-DD format
 const getPastDate = (daysBefore) => {
   const date = new Date();
@@ -205,5 +208,42 @@ router.get("/weatherfromdb", async (req, res) => {
       });
   }
 });
+
+const fetchForecastData = async () => {
+  try {
+    const response = await axios.get(WEATHER_API_FORECAST_URL);
+    const forecastDays = response.data.forecast.forecastday;
+
+    const formattedForecast = forecastDays.map((day) => ({
+      date: day.date,
+      avgtemp_f: day.day.avgtemp_f,
+      totalprecip_in: day.day.totalprecip_in,
+      avghumidity: day.day.avghumidity,
+      maxwind_mph: day.day.maxwind_mph,
+    }));
+
+    return formattedForecast;
+  } catch (error) {
+    console.error("Error fetching forecast data:", error.message);
+    return null;
+  }
+};
+
+// Add a new route to get forecast data
+router.get("/weatherforecast", async (req, res) => {
+  try {
+    const forecastData = await fetchForecastData();
+
+    if (!forecastData) {
+      return res.status(500).json({ message: "Failed to fetch forecast data" });
+    }
+
+    res.status(200).json(forecastData);
+  } catch (error) {
+    console.error("Error in /weatherforecast route:", error);
+    res.status(500).json({ message: "Server error fetching forecast" });
+  }
+});
+
 
 module.exports = router;

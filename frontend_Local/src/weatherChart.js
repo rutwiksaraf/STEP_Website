@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Bar, Line } from "react-chartjs-2";
+import { Legend, Tooltip } from "chart.js";
+
 import {
   Chart as ChartJS,
   BarElement,
@@ -15,7 +17,9 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   LineElement,
-  PointElement
+  PointElement,
+  Legend,
+  Tooltip
 );
 
 const token = localStorage.getItem("token");
@@ -26,8 +30,15 @@ const PARAMETERS = {
   rh: "Humidity (%)",
   ws: "Wind Speed (mph)",
   et: "Evapotranspiration (in)",
-  t2m: "Temperature (°F)",
+  t2m: "Air Temperature (°F)",
   gdd: "Growing Degree Days (°F)",
+};
+
+const forecastKeyMap = {
+  t2m: "avgtemp_f",
+  rain: "totalprecip_in",
+  rh: "avghumidity",
+  ws: "maxwind_mph",
 };
 
 const COLORS = {
@@ -49,6 +60,7 @@ const WeatherGraph = () => {
   const [weatherDataFromDB, setWeatherDataFromDB] = useState([]);
   const [dbChartData, setDbChartData] = useState(null);
   const [dbTableData, setDbTableData] = useState([]);
+  const [forecastData, setForecastData] = useState([]);
 
   useEffect(() => {
     const fetchWeatherData = async () => {
@@ -72,7 +84,18 @@ const WeatherGraph = () => {
         console.error("Error fetching weather data from DB", error);
       }
     };
+    const fetchForecast = async () => {
+      try {
+        const res = await axios.get("/api/weatherforecast", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setForecastData(res.data);
+      } catch (err) {
+        console.error("Error fetching forecast:", err);
+      }
+    };
 
+    fetchForecast();
     fetchWeatherData();
     fetchWeatherDataFromDB();
   }, []);
@@ -82,10 +105,12 @@ const WeatherGraph = () => {
 
     const formatDate = (dateString) => {
       const date = new Date(dateString);
+      date.setDate(date.getDate() + 1); // shift the *whole date* forward by one day
       const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
       return `${month}/${day}`;
     };
+    
 
     const labels = weatherData.map((entry) => formatDate(entry.date));
     const dataPoints = weatherData.map((entry) =>
@@ -124,7 +149,6 @@ const WeatherGraph = () => {
         cumulativePointsReversed.push(cumulative.toFixed(2));
       });
 
-      // Step 2: Reverse back to match original chart order (most recent first)
       const gddPoints = gddPointsReversed.reverse();
       const cumulativePoints = cumulativePointsReversed.reverse();
 
@@ -169,20 +193,40 @@ const WeatherGraph = () => {
         entry[selectedParam] != null ? entry[selectedParam].toFixed(2) : 0
       );
 
+      const forecastLabels = forecastData.map((entry) =>
+        formatDate(entry.date)
+      );
+      const forecastKey = forecastKeyMap[selectedParam];
+      const forecastPoints = forecastData.map((entry) =>
+        entry[forecastKey] != null ? entry[forecastKey].toFixed(2) : null
+      );
+
+      const allLabels = [...dbLabels.reverse(), ...forecastLabels];
+      
+
+
+      const mainDataset = {
+        label: `DB: ${PARAMETERS[selectedParam]}`,
+        data: dbDataPoints.reverse(),
+        borderColor: COLORS[selectedParam],
+        borderWidth: 2,
+        fill: selectedParam !== "rain",
+        tension: 0,
+      };
+
+      const forecastDataset = {
+        label: `Forecast: ${PARAMETERS[selectedParam]}`,
+        data: [...new Array(dbLabels.length).fill(null), ...forecastPoints],
+        borderColor: COLORS[selectedParam],
+        borderDash: [10, 5],
+        borderWidth: 2,
+        fill: false,
+        tension: 0.2,
+      };
+
       setDbChartData({
-        labels: dbLabels,
-        datasets: [
-          {
-            label: `DB: ${PARAMETERS[selectedParam]}`,
-            data: dbDataPoints,
-            backgroundColor:
-              selectedParam === "rain" ? "#99ccff" : "transparent",
-            borderColor: COLORS[selectedParam] || "#99ccff",
-            borderWidth: 2,
-            fill: selectedParam !== "rain",
-            tension: 0,
-          },
-        ],
+        labels: allLabels,
+        datasets: [mainDataset, forecastDataset],
       });
 
       setDbTableData(
@@ -206,13 +250,26 @@ const WeatherGraph = () => {
     }
   }, [dbChartData]);
 
+  console.log("Selected param:", selectedParam);
+
   const chartOptions = {
     maintainAspectRatio: false,
     responsive: true,
-    layout: { padding: { right: 20 } },
+    layout: { padding: { right: 20, top: 30 } }, // added top padding for legend space
+    plugins: {
+      legend: {
+        display: selectedParam === "gdd",
+        position: "right",
+        labels: {
+          font: { size: 16 },
+          color: "#333",
+          boxWidth: 20,
+        },
+      },
+    },
     scales: {
       x: {
-        reverse: true,
+        reverse: false,
         ticks: {
           font: { size: 20 },
           autoSkip: false,
@@ -226,16 +283,20 @@ const WeatherGraph = () => {
         position: "left",
         title: {
           display: true,
-          text: "GDD (°F)",
+          text:
+            selectedParam === "gdd"
+              ? "GDD (°F)"
+              : PARAMETERS[selectedParam] || "Value",
           font: { size: 30 },
         },
         ticks: { font: { size: 20 } },
       },
       y1: {
         position: "right",
+        display: selectedParam === "gdd",
         grid: { drawOnChartArea: false },
         title: {
-          display: true,
+          display: selectedParam === "gdd",
           text: "Cumulative GDD (°F)",
           font: { size: 30 },
         },
@@ -243,6 +304,8 @@ const WeatherGraph = () => {
       },
     },
   };
+
+
 
   return (
     <div style={{ textAlign: "center" }}>
