@@ -189,9 +189,14 @@ const WeatherGraph = () => {
       );
     } else {
       const dbLabels = weatherDataFromDB.map((entry) => formatDate(entry.date));
-      const dbDataPoints = weatherDataFromDB.map((entry) =>
-        entry[selectedParam] != null ? entry[selectedParam].toFixed(2) : 0
-      );
+      const dbDataPoints = weatherDataFromDB.map((entry) => {
+        if (selectedParam === "t2m") {
+          const fahrenheit = (entry.t2m * 9) / 5 + 32;
+          return fahrenheit.toFixed(2);
+        }
+        return entry[selectedParam] != null ? entry[selectedParam].toFixed(2) : 0;
+      });
+      
 
       const forecastLabels = forecastData.map((entry) =>
         formatDate(entry.date)
@@ -209,6 +214,7 @@ const WeatherGraph = () => {
         label: `DB: ${PARAMETERS[selectedParam]}`,
         data: dbDataPoints.reverse(),
         borderColor: COLORS[selectedParam],
+        backgroundColor: selectedParam === "rain" ? COLORS.rain : "transparent",
         borderWidth: 2,
         fill: selectedParam !== "rain",
         tension: 0,
@@ -218,6 +224,7 @@ const WeatherGraph = () => {
         label: `Forecast: ${PARAMETERS[selectedParam]}`,
         data: [...new Array(dbLabels.length).fill(null), ...forecastPoints],
         borderColor: COLORS[selectedParam],
+        backgroundColor: selectedParam === "rain" ? COLORS.rain : "transparent",
         borderDash: [10, 5],
         borderWidth: 2,
         fill: false,
@@ -229,12 +236,21 @@ const WeatherGraph = () => {
         datasets: [mainDataset, forecastDataset],
       });
 
-      setDbTableData(
-        dbLabels.map((date, index) => ({
-          date,
-          value: dbDataPoints[index],
-        }))
-      );
+      let tableRows = dbLabels.map((date, index) => {
+        const value =
+          selectedParam === "t2m"
+            ? ((weatherDataFromDB[index]?.t2m * 9) / 5 + 32).toFixed(2)
+            : dbDataPoints[index];
+        return { date, value };
+      });
+      
+      
+        tableRows = tableRows.reverse(); // show latest date first
+      
+      
+      setDbTableData(tableRows);
+      
+      
     }
 
     setTableData(
@@ -269,7 +285,7 @@ const WeatherGraph = () => {
     },
     scales: {
       x: {
-        reverse: false,
+        reverse: selectedParam === "gdd" ? true : false,
         ticks: {
           font: { size: 20 },
           autoSkip: false,
