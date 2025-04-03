@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Bar, Line } from "react-chartjs-2";
 import { Legend, Tooltip } from "chart.js";
+import annotationPlugin from "chartjs-plugin-annotation";
 
 import {
   Chart as ChartJS,
@@ -19,18 +20,20 @@ ChartJS.register(
   LineElement,
   PointElement,
   Legend,
-  Tooltip
+  Tooltip,
+  annotationPlugin,
+
 );
 
 const token = localStorage.getItem("token");
 
 const PARAMETERS = {
   rain: "Rainfall (in)",
-  rfd: "Radiation Flux Density (W/m²)",
+  t2m: "Air Temperature (°F)",
   rh: "Humidity (%)",
   ws: "Wind Speed (mph)",
   et: "Evapotranspiration (in)",
-  t2m: "Air Temperature (°F)",
+  rfd: "Radiation Flux Density (W/m²)",
   gdd: "Growing Degree Days (°F)",
 };
 
@@ -61,6 +64,9 @@ const WeatherGraph = () => {
   const [dbChartData, setDbChartData] = useState(null);
   const [dbTableData, setDbTableData] = useState([]);
   const [forecastData, setForecastData] = useState([]);
+  const [forecastStartLabel, setForecastStartLabel] = useState(null);
+  const [allChartLabels, setAllChartLabels] = useState([]);
+
 
   useEffect(() => {
     const fetchWeatherData = async () => {
@@ -201,13 +207,16 @@ const WeatherGraph = () => {
       const forecastLabels = forecastData.map((entry) =>
         formatDate(entry.date)
       );
+      
+
       const forecastKey = forecastKeyMap[selectedParam];
       const forecastPoints = forecastData.map((entry) =>
         entry[forecastKey] != null ? entry[forecastKey].toFixed(2) : null
       );
 
       const allLabels = [...dbLabels.reverse(), ...forecastLabels];
-      
+      setAllChartLabels(allLabels); // 👈 Save to state
+setForecastStartLabel(forecastLabels.length > 0 ? forecastLabels[0] : null);
 
 
       const mainDataset = {
@@ -268,6 +277,8 @@ const WeatherGraph = () => {
 
   console.log("Selected param:", selectedParam);
 
+
+
   const chartOptions = {
     maintainAspectRatio: false,
     responsive: true,
@@ -282,6 +293,37 @@ const WeatherGraph = () => {
           boxWidth: 20,
         },
       },
+      annotation: {
+        annotations: {
+          forecastDivider: {
+            type: "line",
+            scaleID: "x",
+            value: forecastStartLabel, // ← This needs to be defined (see below)
+            borderColor: "gray",
+            borderWidth: 2,
+            borderDash: [6, 6],
+            label: {
+              content: "Forecast Start",
+              enabled: true,
+              position: "start",
+              font: {
+                style: "italic",
+                size: 14
+              },
+              color: "#555",
+              yAdjust: -10,
+            },
+          },
+          forecastRegion: {
+            type: "box",
+            xMin: forecastStartLabel,
+            xMax: allChartLabels[allChartLabels.length - 1],
+            backgroundColor: "rgba(173, 216, 230, 0.15)", // Light blue shade
+            borderWidth: 0,
+          },
+          
+        },
+      }
     },
     scales: {
       x: {
@@ -319,6 +361,8 @@ const WeatherGraph = () => {
         ticks: { font: { size: 20 } },
       },
     },
+    
+    
   };
 
 

@@ -15,6 +15,7 @@
     "babel-preset-react": "^6.24.1",
     "buffer": "^6.0.3",
     "chart.js": "^4.4.7",
+    "chartjs-plugin-annotation": "^3.1.0",
     "crypto-browserify": "^3.12.0",
     "express-openid-connect": "^2.17.1",
     "file-saver": "^2.0.5",
