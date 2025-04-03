@@ -176,6 +176,8 @@ router.post("/saveweatherdatatodb", async (req, res) => {
   }
 });
 
+
+
 // API endpoint to get aggregated weather data including ET
 router.get("/weather", async (req, res) => {
   try {

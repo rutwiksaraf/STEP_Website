@@ -136,61 +136,63 @@ const WeatherGraph = () => {
     });
 
     if (selectedParam === "gdd") {
-      // Step 1: Reverse only for GDD accumulation
-      const reversed = [...weatherDataFromDB].reverse();
+  const forecastDates = forecastData.map((entry) => formatDate(entry.date));
 
-      let cumulative = 0;
-      const gddPointsReversed = [];
-      const cumulativePointsReversed = [];
+  const reversed = [...weatherDataFromDB].reverse();
+  let cumulative = 0;
 
-      reversed.forEach((entry) => {
-        const fahrenheit = (entry.t2m * 9) / 5 + 32;
-        const gdd = Math.max(fahrenheit - 50, 0);
-        cumulative += gdd;
+  const filteredLabels = [];
+  const gddPoints = [];
+  const cumulativePoints = [];
 
-        gddPointsReversed.push(gdd.toFixed(2));
-        cumulativePointsReversed.push(cumulative.toFixed(2));
-      });
+  reversed.forEach((entry) => {
+    const dateLabel = formatDate(entry.date);
+    if (!forecastDates.includes(dateLabel)) {
+      const fahrenheit = (entry.t2m * 9) / 5 + 32;
+      const gdd = Math.max(fahrenheit - 50, 0);
+      cumulative += gdd;
 
-      const gddPoints = gddPointsReversed.reverse();
-      const cumulativePoints = cumulativePointsReversed.reverse();
+      filteredLabels.push(dateLabel);
+      gddPoints.push(gdd.toFixed(2));
+      cumulativePoints.push(cumulative.toFixed(2));
+    }
+  });
 
-      const dbLabels = weatherDataFromDB.map((entry) => formatDate(entry.date));
+  setDbChartData({
+    labels: filteredLabels,
+    datasets: [
+      {
+        label: "GDD (Daily)",
+        data: gddPoints,
+        borderColor: COLORS["t2m"],
+        backgroundColor: "transparent",
+        borderWidth: 2,
+        fill: false,
+        tension: 0,
+        yAxisID: "y",
+      },
+      {
+        label: "Cumulative GDD",
+        data: cumulativePoints,
+        borderColor: "#800080", // purple
+        backgroundColor: "transparent",
+        borderWidth: 2,
+        fill: false,
+        tension: 0.3,
+        yAxisID: "y1",
+      },
+    ],
+  });
 
-      setDbChartData({
-        labels: dbLabels,
-        datasets: [
-          {
-            label: "GDD (Daily)",
-            data: gddPoints,
-            borderColor: COLORS["t2m"],
-            backgroundColor: "transparent",
-            borderWidth: 2,
-            fill: false,
-            tension: 0,
-            yAxisID: "y",
-          },
-          {
-            label: "Cumulative GDD",
-            data: cumulativePoints,
-            borderColor: "#800080", // purple
-            backgroundColor: "transparent",
-            borderWidth: 2,
-            fill: false,
-            tension: 0.3,
-            yAxisID: "y1",
-          },
-        ],
-      });
-
-      setDbTableData(
-        dbLabels.map((date, index) => ({
-          date,
-          gdd: gddPoints[index],
-          cumulativeGdd: cumulativePoints[index],
-        }))
-      );
-    } else {
+  setDbTableData(
+    filteredLabels.map((date, index) => ({
+      date,
+      gdd: gddPoints[index],
+      cumulativeGdd: cumulativePoints[index],
+    }))
+  );
+}
+ else {
       const dbLabels = weatherDataFromDB.map((entry) => formatDate(entry.date));
       const dbDataPoints = weatherDataFromDB.map((entry) => {
         if (selectedParam === "t2m") {
@@ -323,7 +325,7 @@ const WeatherGraph = () => {
     },
     scales: {
       x: {
-        reverse: selectedParam === "gdd" ? true : false,
+        reverse: false,
         ticks: {
           font: { size: 20 },
           autoSkip: false,
