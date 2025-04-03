@@ -21,8 +21,7 @@ ChartJS.register(
   PointElement,
   Legend,
   Tooltip,
-  annotationPlugin,
-
+  annotationPlugin
 );
 
 const token = localStorage.getItem("token");
@@ -66,7 +65,6 @@ const WeatherGraph = () => {
   const [forecastData, setForecastData] = useState([]);
   const [forecastStartLabel, setForecastStartLabel] = useState(null);
   const [allChartLabels, setAllChartLabels] = useState([]);
-
 
   useEffect(() => {
     const fetchWeatherData = async () => {
@@ -116,7 +114,6 @@ const WeatherGraph = () => {
       const day = String(date.getDate()).padStart(2, "0");
       return `${month}/${day}`;
     };
-    
 
     const labels = weatherData.map((entry) => formatDate(entry.date));
     const dataPoints = weatherData.map((entry) =>
@@ -200,24 +197,27 @@ const WeatherGraph = () => {
           const fahrenheit = (entry.t2m * 9) / 5 + 32;
           return fahrenheit.toFixed(2);
         }
-        return entry[selectedParam] != null ? entry[selectedParam].toFixed(2) : 0;
+        return entry[selectedParam] != null
+          ? entry[selectedParam].toFixed(2)
+          : 0;
       });
-      
 
-      const forecastLabels = forecastData.map((entry) =>
-        formatDate(entry.date)
-      );
-      
+      const forecastLabels = Array.isArray(forecastData)
+        ? forecastData.map((entry) => formatDate(entry.date))
+        : [];
 
       const forecastKey = forecastKeyMap[selectedParam];
-      const forecastPoints = forecastData.map((entry) =>
-        entry[forecastKey] != null ? entry[forecastKey].toFixed(2) : null
-      );
+      const forecastPoints = Array.isArray(forecastData)
+        ? forecastData.map((entry) =>
+            entry[forecastKey] != null ? entry[forecastKey].toFixed(2) : null
+          )
+        : [];
 
       const allLabels = [...dbLabels.reverse(), ...forecastLabels];
       setAllChartLabels(allLabels); // 👈 Save to state
-setForecastStartLabel(forecastLabels.length > 0 ? forecastLabels[0] : null);
-
+      setForecastStartLabel(
+        forecastLabels.length > 0 ? forecastLabels[0] : null
+      );
 
       const mainDataset = {
         label: `DB: ${PARAMETERS[selectedParam]}`,
@@ -252,14 +252,10 @@ setForecastStartLabel(forecastLabels.length > 0 ? forecastLabels[0] : null);
             : dbDataPoints[index];
         return { date, value };
       });
-      
-      
-        tableRows = tableRows.reverse(); // show latest date first
-      
-      
+
+      tableRows = tableRows.reverse(); // show latest date first
+
       setDbTableData(tableRows);
-      
-      
     }
 
     setTableData(
@@ -277,12 +273,10 @@ setForecastStartLabel(forecastLabels.length > 0 ? forecastLabels[0] : null);
 
   console.log("Selected param:", selectedParam);
 
-
-
   const chartOptions = {
     maintainAspectRatio: false,
     responsive: true,
-    layout: { padding: { right: 20, top: 30 } }, // added top padding for legend space
+    layout: { padding: { right: 20, top: 30 } },
     plugins: {
       legend: {
         display: selectedParam === "gdd",
@@ -293,37 +287,39 @@ setForecastStartLabel(forecastLabels.length > 0 ? forecastLabels[0] : null);
           boxWidth: 20,
         },
       },
-      annotation: {
-        annotations: {
-          forecastDivider: {
-            type: "line",
-            scaleID: "x",
-            value: forecastStartLabel, // ← This needs to be defined (see below)
-            borderColor: "gray",
-            borderWidth: 2,
-            borderDash: [6, 6],
-            label: {
-              content: "Forecast Start",
-              enabled: true,
-              position: "start",
-              font: {
-                style: "italic",
-                size: 14
+      ...(forecastStartLabel &&
+        allChartLabels.length > 0 && {
+          annotation: {
+            annotations: {
+              forecastDivider: {
+                type: "line",
+                scaleID: "x",
+                value: forecastStartLabel,
+                borderColor: "gray",
+                borderWidth: 2,
+                borderDash: [6, 6],
+                label: {
+                  content: "Forecast Start",
+                  enabled: true,
+                  position: "start",
+                  font: {
+                    style: "italic",
+                    size: 14,
+                  },
+                  color: "#555",
+                  yAdjust: -10,
+                },
               },
-              color: "#555",
-              yAdjust: -10,
+              forecastRegion: {
+                type: "box",
+                xMin: forecastStartLabel,
+                xMax: allChartLabels[allChartLabels.length - 1],
+                backgroundColor: "rgba(173, 216, 230, 0.15)",
+                borderWidth: 0,
+              },
             },
           },
-          forecastRegion: {
-            type: "box",
-            xMin: forecastStartLabel,
-            xMax: allChartLabels[allChartLabels.length - 1],
-            backgroundColor: "rgba(173, 216, 230, 0.15)", // Light blue shade
-            borderWidth: 0,
-          },
-          
-        },
-      }
+        }),
     },
     scales: {
       x: {
@@ -361,11 +357,7 @@ setForecastStartLabel(forecastLabels.length > 0 ? forecastLabels[0] : null);
         ticks: { font: { size: 20 } },
       },
     },
-    
-    
   };
-
-
 
   return (
     <div style={{ textAlign: "center" }}>
