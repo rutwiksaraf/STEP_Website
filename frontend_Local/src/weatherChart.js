@@ -136,63 +136,64 @@ const WeatherGraph = () => {
     });
 
     if (selectedParam === "gdd") {
-  const forecastDates = forecastData.map((entry) => formatDate(entry.date));
+      const forecastDates = forecastData.map((entry) => formatDate(entry.date));
 
-  const reversed = [...weatherDataFromDB].reverse();
-  let cumulative = 0;
+      const reversed = [...weatherDataFromDB].reverse();
+      let cumulative = 0;
 
-  const filteredLabels = [];
-  const gddPoints = [];
-  const cumulativePoints = [];
+      const filteredLabels = [];
+      const gddPoints = [];
+      const cumulativePoints = [];
 
-  reversed.forEach((entry) => {
-    const dateLabel = formatDate(entry.date);
-    if (!forecastDates.includes(dateLabel)) {
-      const fahrenheit = (entry.t2m * 9) / 5 + 32;
-      const gdd = Math.max(fahrenheit - 50, 0);
-      cumulative += gdd;
+      reversed.forEach((entry) => {
+        const dateLabel = formatDate(entry.date);
+        if (!forecastDates.includes(dateLabel)) {
+          const fahrenheit = (entry.t2m * 9) / 5 + 32;
+          const gdd = Math.max(fahrenheit - 50, 0);
+          cumulative += gdd;
 
-      filteredLabels.push(dateLabel);
-      gddPoints.push(gdd.toFixed(2));
-      cumulativePoints.push(cumulative.toFixed(2));
-    }
-  });
+          filteredLabels.push(dateLabel);
+          gddPoints.push(gdd.toFixed(2));
+          cumulativePoints.push(cumulative.toFixed(2));
+        }
+      });
 
-  setDbChartData({
-    labels: filteredLabels,
-    datasets: [
-      {
-        label: "GDD (Daily)",
-        data: gddPoints,
-        borderColor: COLORS["t2m"],
-        backgroundColor: "transparent",
-        borderWidth: 2,
-        fill: false,
-        tension: 0,
-        yAxisID: "y",
-      },
-      {
-        label: "Cumulative GDD",
-        data: cumulativePoints,
-        borderColor: "#800080", // purple
-        backgroundColor: "transparent",
-        borderWidth: 2,
-        fill: false,
-        tension: 0.3,
-        yAxisID: "y1",
-      },
-    ],
-  });
+      setDbChartData({
+        labels: filteredLabels,
+        datasets: [
+          {
+            label: "GDD (Daily)",
+            data: gddPoints,
+            borderColor: COLORS["t2m"],
+            backgroundColor: "transparent",
+            borderWidth: 2,
+            fill: false,
+            tension: 0,
+            yAxisID: "y",
+          },
+          {
+            label: "Cumulative GDD",
+            data: cumulativePoints,
+            borderColor: "#800080", // purple
+            backgroundColor: "transparent",
+            borderWidth: 2,
+            fill: false,
+            tension: 0.3,
+            yAxisID: "y1",
+          },
+        ],
+      });
 
-  setDbTableData(
-    filteredLabels.map((date, index) => ({
-      date,
-      gdd: gddPoints[index],
-      cumulativeGdd: cumulativePoints[index],
-    }))
-  );
-}
- else {
+      const reversedTableData = filteredLabels
+        .map((date, index) => ({
+          date,
+          gdd: gddPoints[index],
+          cumulativeGdd: cumulativePoints[index],
+        }))
+        .reverse(); // 🔁 Reverse to show latest date first
+
+      setDbTableData(reversedTableData);
+    } else {
       const dbLabels = weatherDataFromDB.map((entry) => formatDate(entry.date));
       const dbDataPoints = weatherDataFromDB.map((entry) => {
         if (selectedParam === "t2m") {
@@ -215,10 +216,15 @@ const WeatherGraph = () => {
           )
         : [];
 
-      const allLabels = [...dbLabels.reverse(), ...forecastLabels];
-      setAllChartLabels(allLabels); // 👈 Save to state
+      const showForecast = selectedParam !== "rfd" && selectedParam !== "et";
+
+      const allLabels = showForecast
+        ? [...dbLabels.reverse(), ...forecastLabels]
+        : dbLabels.reverse();
+
+      setAllChartLabels(allLabels);
       setForecastStartLabel(
-        forecastLabels.length > 0 ? forecastLabels[0] : null
+        showForecast && forecastLabels.length > 0 ? forecastLabels[0] : null
       );
 
       const mainDataset = {
@@ -231,20 +237,26 @@ const WeatherGraph = () => {
         tension: 0,
       };
 
-      const forecastDataset = {
-        label: `Forecast: ${PARAMETERS[selectedParam]}`,
-        data: [...new Array(dbLabels.length).fill(null), ...forecastPoints],
-        borderColor: COLORS[selectedParam],
-        backgroundColor: selectedParam === "rain" ? COLORS.rain : "transparent",
-        borderDash: [10, 5],
-        borderWidth: 2,
-        fill: false,
-        tension: 0.2,
-      };
+      const datasets = [mainDataset];
+
+      if (showForecast) {
+        const forecastDataset = {
+          label: `Forecast: ${PARAMETERS[selectedParam]}`,
+          data: [...new Array(dbLabels.length).fill(null), ...forecastPoints],
+          borderColor: COLORS[selectedParam],
+          backgroundColor:
+            selectedParam === "rain" ? COLORS.rain : "transparent",
+          borderDash: [10, 5],
+          borderWidth: 2,
+          fill: false,
+          tension: 0.2,
+        };
+        datasets.push(forecastDataset);
+      }
 
       setDbChartData({
         labels: allLabels,
-        datasets: [mainDataset, forecastDataset],
+        datasets,
       });
 
       let tableRows = dbLabels.map((date, index) => {
