@@ -423,22 +423,31 @@ router.get("/getProfileImageUrl/:cropType/:teamName", (req, res) => {
   const uploadDir = path.join(__dirname, "uploads", cropType, teamName);
   const defaultImageUrl = `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRooEnD32-UtBw55GBfDTxxUZApMhWWnRaoLw&usqp=CAU`;
 
-  fs.readdir(uploadDir, (err, files) => {
-    if (err) {
-      console.error("Error reading the directory:", err);
-      return res.status(500).send(defaultImageUrl); // Send default image URL in case of error
+  // Check if directory exists first
+  fs.access(uploadDir, fs.constants.R_OK, (accessErr) => {
+    if (accessErr) {
+      // Do not log to stderr
+      console.log(`Directory ${uploadDir} not found, sending default image.`);
+      return res.send(defaultImageUrl);
     }
 
-    const profileImage = files.find((file) => file.startsWith("profile."));
-    if (profileImage) {
-      const imageUrl = `uploads/${cropType}/${teamName}/${profileImage}`;
-      res.send(imageUrl);
-    } else {
-      const imageUrl = defaultImageUrl;
-      res.send(imageUrl); // Send default image URL if profile image is not found
-    }
+    fs.readdir(uploadDir, (err, files) => {
+      if (err) {
+        console.log("Error reading files, sending default image.");
+        return res.send(defaultImageUrl);
+      }
+
+      const profileImage = files.find((file) => file.startsWith("profile."));
+      if (profileImage) {
+        const imageUrl = `uploads/${cropType}/${teamName}/${profileImage}`;
+        res.send(imageUrl);
+      } else {
+        res.send(defaultImageUrl);
+      }
+    });
   });
 });
+
 
 function updateMetadata(metadataFilePath, fileName, callback) {
   fs.readFile(metadataFilePath, "utf8", (err, data) => {

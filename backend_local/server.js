@@ -43,19 +43,6 @@ server.listen(port, function () {
   debug("Express server listening on port " + server.address().port);
 });
 
-async function triggerSaveWeatherData() {
-  try {
-    const response = await fetch("https://step-app.ifas.ufl.edu/api/saveweatherdatatodb", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    const data = await response.json();
-    console.log("Weather data save response:", data);
-  } catch (error) {
-    console.error("Error triggering saveweatherdatatodb:", error);
-  }
-}
 
 server.on("error", onError);
 server.on("listening", onListening);
@@ -115,15 +102,4 @@ function onListening() {
   var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
   debug("Listening on " + bind);
 }
-
-// Run once after 1 minute of the server being up
-setTimeout(() => {
-  triggerSaveWeatherData();
-
-  // Run every 24 hours after that
-  setInterval(() => {
-    triggerSaveWeatherData();
-  }, 24 * 60 * 60 * 1000); // 24 hours
-
-}, 60 * 1000); // 1 minute delay after server starts
 
