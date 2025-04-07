@@ -190,7 +190,7 @@ const WeatherGraph = () => {
           gdd: gddPoints[index],
           cumulativeGdd: cumulativePoints[index],
         }))
-        .reverse(); // 🔁 Reverse to show latest date first
+        .reverse(); 
 
       setDbTableData(reversedTableData);
     } else {

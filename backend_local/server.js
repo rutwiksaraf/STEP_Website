@@ -6,6 +6,9 @@ var https = require("https");
 var fs = require("fs");
 var http = require("http");
 var debug = require("debug")("plantmgn:server");
+const cron = require("node-cron");
+const axios = require("axios");
+
 
 
 /**
@@ -46,6 +49,31 @@ server.listen(port, function () {
 
 server.on("error", onError);
 server.on("listening", onListening);
+
+// Define the function to call your weather API
+const triggerSaveWeatherData = async () => {
+  try {
+    const response = await axios.post(
+      "https://step-app.ifas.ufl.edu/api/saveweatherdatatodb",
+      {},
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    console.log("Weather data saved:", response.data.message);
+  } catch (error) {
+    console.error("Error saving weather data:", error.message);
+  }
+};
+
+// Call once immediately when server starts (for testing)
+triggerSaveWeatherData();
+
+// Then schedule it to run once every day at 6 AM server time
+cron.schedule("0 6 * * *", () => {
+  console.log("🔁 Running scheduled weather data save...");
+  triggerSaveWeatherData();
+});
 
 /**
  * Normalize a port into a number, string, or false.
