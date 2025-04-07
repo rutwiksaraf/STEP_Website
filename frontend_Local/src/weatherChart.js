@@ -190,7 +190,7 @@ const WeatherGraph = () => {
           gdd: gddPoints[index],
           cumulativeGdd: cumulativePoints[index],
         }))
-        .reverse(); 
+        .reverse();
 
       setDbTableData(reversedTableData);
     } else {
@@ -285,8 +285,6 @@ const WeatherGraph = () => {
     }
   }, [dbChartData]);
 
-  console.log("Selected param:", selectedParam);
-
   const chartOptions = {
     maintainAspectRatio: false,
     responsive: true,
@@ -349,8 +347,9 @@ const WeatherGraph = () => {
       },
       y: {
         position: "left",
+        display: false,
         title: {
-          display: true,
+          display: false,
           text:
             selectedParam === "gdd"
               ? "GDD (°F)"
@@ -366,6 +365,50 @@ const WeatherGraph = () => {
         title: {
           display: selectedParam === "gdd",
           text: "Cumulative GDD (°F)",
+          font: { size: 30 },
+        },
+        ticks: { font: { size: 20 } },
+      },
+    },
+  };
+
+  const yAxisChartData = {
+    labels: dbChartData?.labels || [],
+    datasets: [
+      {
+        label: "Placeholder",
+        data: dbChartData?.datasets[0]?.data || [],
+        borderColor: "transparent",
+        backgroundColor: "transparent",
+      },
+    ],
+  };
+
+  const yAxisChartOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: false },
+    },
+    layout: {
+      padding: { top: 30 }, // match padding of main chart
+    },
+    scales: {
+      x: {
+        display: true, // enable x-axis
+        ticks: { display: false },
+        grid: { display: false },
+      },
+      y: {
+        position: "left",
+        display: true,
+        title: {
+          display: false,
+          text:
+            selectedParam === "gdd"
+              ? "GDD (°F)"
+              : PARAMETERS[selectedParam] || "Value",
           font: { size: 30 },
         },
         ticks: { font: { size: 20 } },
@@ -419,26 +462,47 @@ const WeatherGraph = () => {
       <div
         style={{
           display: "flex",
-          alignItems: "start",
-          gap: "20px",
+          alignItems: "stretch", // ⬅️ Ensure both charts stretch to full height
+          gap: "0px", // ⬅️ No gap between charts to avoid spacing issues
           width: "100%",
           maxHeight: "500px",
         }}
       >
-        {/* DB Chart Container */}
+        <div
+          style={{
+            width: "80px",
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "center",
+            maxHeight: "400px",
+            paddingTop: "15px",
+          }}
+        >
+          {dbChartData && (
+            <div style={{ width: "100%", height: "100%" }}>
+              {selectedParam === "rain" ? (
+                <Bar data={yAxisChartData} options={yAxisChartOptions} />
+              ) : (
+                <Line data={yAxisChartData} options={yAxisChartOptions} />
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Main Chart */}
         {dbChartData && (
           <div
             ref={chartScrollRef}
             style={{
               flexGrow: 1,
-              height: "500px",
               overflowX: "auto",
+              paddingTop: "25px",
             }}
           >
             <div
               style={{
                 width: `${dbChartData.labels.length * 100}px`,
-                height: "100%",
+                height: "470px", // ⬅️ Same height as the y-axis chart
               }}
             >
               {selectedParam === "rain" ? (
@@ -788,24 +852,24 @@ export default WeatherGraph;
 //         ))}
 //       </div>
 
-//       <div style={{ display: "flex", alignItems: "start", gap: "20px", width: "100%", maxHeight: "500px" }}>
-//         {/* Fixed Y-Axis Chart */}
-//         <div style={{ width: "80px", height: "500px" }}>
-//           {dbChartData && <Line data={yAxisData} options={yAxisOnlyOptions} />}
-//         </div>
+// <div style={{ display: "flex", alignItems: "start", gap: "20px", width: "100%", maxHeight: "500px" }}>
+//   {/* Fixed Y-Axis Chart */}
+//   <div style={{ width: "80px", height: "500px" }}>
+//     {dbChartData && <Line data={yAxisChartData} options={yAxisOnlyChartOptions} />}
+//   </div>
 
-//         {/* Main Chart */}
-//         {dbChartData && (
-//           <div ref={chartScrollRef} style={{ flexGrow: 1, minWidth: "800px", height: "500px", overflowX: "auto" }}>
-//             <div style={{ width: `${dbChartData.labels.length * 100}px`, height: "100%" }}>
-//               {selectedParam === "rain" ? (
-//                 <Bar data={dbChartData} options={dataChartOptions} />
-//               ) : (
-//                 <Line data={dbChartData} options={dataChartOptions} />
-//               )}
-//             </div>
-//           </div>
+//   {/* Main Chart */}
+//   {dbChartData && (
+//     <div ref={chartScrollRef} style={{ flexGrow: 1, minWidth: "800px", height: "500px", overflowX: "auto" }}>
+//       <div style={{ width: `${dbChartData.labels.length * 100}px`, height: "100%" }}>
+//         {selectedParam === "rain" ? (
+//           <Bar data={dbChartData} options={dataChartOptions} />
+//         ) : (
+//           <Line data={dbChartData} options={dataChartOptions} />
 //         )}
+//       </div>
+//     </div>
+//   )}
 
 //         {/* DB Data Table Container */}
 //         <div style={{ width: "500px", height: "500px", overflowY: "auto", backgroundColor: "#f4f4f4", borderRadius: "10px", padding: "20px" }}>
