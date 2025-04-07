@@ -475,7 +475,7 @@ const WeatherGraph = () => {
             alignItems: "flex-start",
             justifyContent: "center",
             maxHeight: "400px",
-            paddingTop: "15px",
+            paddingTop: "14px",
           }}
         >
           {dbChartData && (
