@@ -67,7 +67,7 @@ const triggerSaveWeatherData = async () => {
 };
 
 // Call once immediately when server starts (for testing)
-triggerSaveWeatherData();
+// triggerSaveWeatherData();
 
 // Then schedule it to run once every day at 6 AM server time
 cron.schedule("0 6 * * *", () => {
