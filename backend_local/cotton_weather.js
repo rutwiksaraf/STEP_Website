@@ -9,6 +9,11 @@ const FAWN_WEATHER_API_URL =
 const FAWN_ET_API_BASE_URL =
   "https://fawn.ifas.ufl.edu/controller.php/fiveDaysETsJson/test/";
 
+  const COTTON_WEATHER_API_FORECAST_URL =
+  "https://api.weatherapi.com/v1/forecast.json?key=3e5a549504c14d44927192432250502&q=32565&days=7";
+
+
+
 // Function to get the date 6 days before today in YYYY-MM-DD format
 const cottonGetPastDate = (daysBefore) => {
   const date = new Date();
@@ -66,6 +71,7 @@ const cottonAggregateWeatherData = async () => {
         tsoil: 0,
         rh: 0,
         ws: 0,
+        t2m: 0,
         count: 0,
         et: null,
       };
@@ -75,6 +81,7 @@ const cottonAggregateWeatherData = async () => {
     dailyData[date].tsoil += Number(record.tsoil) || 0;
     dailyData[date].rh += Number(record.rh) || 0;
     dailyData[date].ws += Number(record.ws) || 0;
+    dailyData[date].t2m += Number(record.t2m) || 0;
     dailyData[date].count++;
   });
 
@@ -96,6 +103,7 @@ const cottonAggregateWeatherData = async () => {
     tsoil: values.tsoil / values.count,
     rh: values.rh / values.count,
     ws: values.ws / values.count,
+    t2m: values.t2m / values.count,
     et: values.et, // Include ET data
   }));
 };
@@ -121,11 +129,30 @@ router.post("/savecottonweatherdatatodb", async (req, res) => {
       request.input("tsoil", sql.Float, data.tsoil);
       request.input("rh", sql.Float, data.rh);
       request.input("ws", sql.Float, data.ws);
+      request.input("t2m", sql.Float, data.t2m);
       request.input("et", sql.Float, data.et);
 
-      await request.query(
-        "INSERT INTO [2025_cotton_weather_data] (date, rain, rfd, tsoil, rh, ws, et) SELECT @date, @rain, @rfd, @tsoil, @rh, @ws, @et WHERE NOT EXISTS (SELECT 1 FROM [2025_cotton_weather_data] WHERE date = @date);"
-      );
+      await request.query(`
+        IF EXISTS (
+          SELECT 1 FROM [2025_cotton_weather_data] WHERE date = @date
+        )
+        BEGIN
+          UPDATE [2025_cotton_weather_data]
+          SET rain = @rain,
+              rfd = @rfd,
+              tsoil = @tsoil,
+              rh = @rh,
+              ws = @ws,
+              et = @et,
+              t2m = @t2m
+          WHERE date = @date
+        END
+        ELSE
+        BEGIN
+          INSERT INTO [2025_cotton_weather_data] (date, rain, rfd, tsoil, rh, ws, et, t2m)
+          VALUES (@date, @rain, @rfd, @tsoil, @rh, @ws, @et, @t2m)
+        END
+      `);
     }
  // Commit the transaction after all queries succeed
     res.status(200).json({
@@ -177,5 +204,42 @@ router.get("/cottonweatherfromdb", async (req, res) => {
       });
   }
 });
+
+const fetchCottonForecastData = async () => {
+  try {
+    const response = await axios.get(COTTON_WEATHER_API_FORECAST_URL);
+    const forecastDays = response.data.forecast.forecastday;
+
+    const formattedForecast = forecastDays.map((day) => ({
+      date: day.date,
+      avgtemp_f: day.day.avgtemp_f,
+      totalprecip_in: day.day.totalprecip_in,
+      avghumidity: day.day.avghumidity,
+      maxwind_mph: day.day.maxwind_mph,
+    }));
+
+    return formattedForecast;
+  } catch (error) {
+    console.error("Error fetching forecast data:", error.message);
+    return null;
+  }
+};
+
+// Add a new route to get forecast data
+router.get("/cottonweatherforecast", async (req, res) => {
+  try {
+    const forecastData = await fetchCottonForecastData();
+
+    if (!forecastData) {
+      return res.status(500).json({ message: "Failed to fetch forecast data" });
+    }
+
+    res.status(200).json(forecastData);
+  } catch (error) {
+    console.error("Error in /weatherforecast route:", error);
+    res.status(500).json({ message: "Server error fetching forecast" });
+  }
+});
+
 
 module.exports = router;
