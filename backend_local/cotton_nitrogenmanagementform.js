@@ -551,7 +551,7 @@ router.post("/cottonnitrogenstarter", async (req, res) => {
     // `;
 
     await request.query(`
-    INSERT INTO nitrogenstarter (teamName, starter, amount)
+    INSERT INTO [2025_nitrogenstarter] (teamName, starter, amount)
     VALUES (@teamName, @starter, @amount)
   `);
 

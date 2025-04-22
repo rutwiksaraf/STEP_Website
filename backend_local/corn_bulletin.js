@@ -233,27 +233,72 @@ router.get("/latestmarketingFiles", (req, res) => {
   });
 });
 
-router.get("/listTeamFiles/:teamName", (req, res) => {
-  const teamName = req.params.teamName;
-  const directoryPath = path.join(__dirname, "uploads", "corn", teamName);
-  // ensureDirectoryExists(directoryPath);
-  if (fs.existsSync(directoryPath)) {
-    fs.readdir(directoryPath, (err, files) => {
-      if (err) {
-        console.error("Could not list the directory.", err);
-        return res.status(500).json({ message: "Failed to list files" });
-      }
 
-      // Filter out non-file entities and send the list of files
-      const fileList = files.filter((file) =>
-        fs.statSync(path.join(directoryPath, file)).isFile()
-      );
-      res.json({ files: fileList });
-    });
-  } else {
-    res.status(404).json({ message: "File not found" });
+router.get("/listTeamFiles/:teamName", (req, res) => {
+  const requestedTeam = decodeURIComponent(req.params.teamName)
+    .replace(/[’‘‛`´]/g, "'")
+    .replace(/\s+/g, " ") // normalize multiple spaces
+    .trim()
+    .toLowerCase(); // make comparison case-insensitive
+
+    const baseDir = path.join(__dirname, "uploads", "corn");
+
+  console.log("Resolved uploads path:", baseDir);
+
+
+  if (!fs.existsSync(baseDir)) {
+    return res.status(404).json({ message: `Base uploads folder not found: ${baseDir}` });
   }
+
+  const folders = fs.readdirSync(baseDir, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+
+  // Try to match the folder ignoring case and trailing spaces
+  const normalize = (str) =>
+    str
+      .replace(/[’‘‛`´]/g, "'")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+  
+  const matchedFolder = folders.find(folder => normalize(folder) === requestedTeam);
+  
+
+  if (!matchedFolder) {
+    return res.status(404).json({ message: "Team folder not found" });
+  }
+
+  const teamDir = path.join(baseDir, matchedFolder);
+  const files = fs.readdirSync(teamDir).filter(file =>
+    fs.statSync(path.join(teamDir, file)).isFile()
+  );
+
+  res.json({ files });
 });
+
+
+// router.get("/listTeamFiles/:teamName", (req, res) => {
+//   const teamName = req.params.teamName;
+//   const directoryPath = path.join(__dirname, "uploads", "corn", teamName);
+//   // ensureDirectoryExists(directoryPath);
+//   if (fs.existsSync(directoryPath)) {
+//     fs.readdir(directoryPath, (err, files) => {
+//       if (err) {
+//         console.error("Could not list the directory.", err);
+//         return res.status(500).json({ message: "Failed to list files" });
+//       }
+
+//       // Filter out non-file entities and send the list of files
+//       const fileList = files.filter((file) =>
+//         fs.statSync(path.join(directoryPath, file)).isFile()
+//       );
+//       res.json({ files: fileList });
+//     });
+//   } else {
+//     res.status(404).json({ message: "File not found" });
+//   }
+// });
 
 router.get("/downloadTeamFile/:teamName/:fileName", (req, res) => {
   const { teamName, fileName } = req.params;

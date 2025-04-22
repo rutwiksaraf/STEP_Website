@@ -21,7 +21,6 @@ router.post("/register", async (req, res) => {
     ...formData,
     address2: formData.address2 || "", // If address2 is empty or undefined, set it to ""
   };
-  
 
   const { cropType, teamMembers } = formDataToSend;
 
@@ -107,7 +106,23 @@ router.post("/register", async (req, res) => {
       text: emailContent,
     };
     let internalEmailContent = `Team has been successfully registered.\nUsername & Team name: ${formDataToSend.teamName} \n Captain Email: ${formDataToSend.email}`;
-    const internalRecipients = ["rutwiksaraf@ufl.edu", "sbhambota@ufl.edu", "jonescarson@ufl.edu", "vsharma1@ufl.edu"].join(",");
+    let internalRecipients = "";
+
+    if (cropType === "corn") {
+      internalRecipients = [
+        "rutwiksaraf@ufl.edu",
+        "sbhambota@ufl.edu",
+        "jonescarson@ufl.edu",
+        "vsharma1@ufl.edu",
+      ].join(",");
+    } else if (cropType === "cotton") {
+      internalRecipients = [
+        "rutwiksaraf@ufl.edu",
+        "sbhambota@ufl.edu",
+        "vsharma1@ufl.edu",
+        "hardeep.singh1@ufl.edu",
+      ].join(",");
+    }
 
     const InternalMailOptions = {
       from: "stepnotification2024@gmail.com",
@@ -133,16 +148,10 @@ router.post("/register", async (req, res) => {
       console.log("Email sent: " + info.response);
       res.status(201).json({ message: "Registration successful" });
     });
-
-
-
   } catch (error) {
     console.error("Error handling registration:", error);
     res.status(500).json({ message: "Registration failed" });
   }
-  
-
-  
 });
 
 router.post("/forgot-password", async (req, res) => {
