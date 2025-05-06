@@ -26,40 +26,40 @@ function CottonHybridForm() {
   const token = localStorage.getItem("token");
 
   const hybridOptions = [
-    "NG3195",
-    "NG4190",
-    "DP 2020",
-    "DP2145",
-    "DP2012",
-    "DP2131",
-    "PHY400",
-    "PHY411",
-    "PHY415",
-    "PHY443",
-    "Others",
+    { name: "NG3195B3XF", cost: 765 },
+    { name: "NG4190B3XF", cost: 740 },
+    { name: "PHY411W3FE", cost: 720 },
+    { name: "PHY415W3FE", cost: 720 },
+    { name: "DP2038B3XF", cost: 765 },
+    { name: "DP2414B3TXF", cost: 815 },
+    { name: "DP2522NRB3TXF", cost: 815 },
+    { name: "DP2537B3TXF", cost: 815 },
+    { name: "DP2127B3XF", cost: 690 },
+    { name: "DP2333B3XF", cost: 770 },
+    { name: "DP2328B3TXF", cost: 825 },
+    { name: "Others", cost: null },
   ];
+
   const hybridCosts = {
-    NG3195: "1",
-    NG4190: "2",
-    "DP 2020": "3",
-    DP2145: "4",
-    DP2012: "5",
-    DP2131: "8",
-    PHY400: "6",
-    PHY411: "9",
-    PHY415: "10",
-    PHY443: "7",
-    Others: "", // assuming 'Others' does not have a predefined cost
+    NG3195B3XF: "765.00",
+    NG4190B3XF: "740.00",
+    PHY411W3FE: "720.00",
+    PHY415W3FE: "720.00",
+    DP2038B3XF: "765.00",
+    DP2414B3TXF: "815.00",
+    DP2522NRB3TXF: "815.00",
+    DP2537B3TXF: "815.00",
+    DP2127B3XF: "690.00",
+    DP2333B3XF: "770.00",
+    DP2328B3TXF: "825.00",
   };
 
-  const handleHybridClick = (selectedHybrid) => {
-    setHybrid(selectedHybrid);
-    if (selectedHybrid !== "Others" && hybridOptions.includes(selectedHybrid)) {
-      // Set cost from the hybridCosts map
-      const selectedCost = hybridCosts[selectedHybrid];
-      setCost(selectedCost ? selectedCost.toString() : "");
+  const handleHybridClick = (selectedHybridName) => {
+    setHybrid(selectedHybridName);
+    const found = hybridOptions.find((h) => h.name === selectedHybridName);
+    if (found && found.cost) {
+      setCost(found.cost.toString());
     } else {
-      // Reset or handle cost for 'Others' or unlisted options
       setCost("");
     }
   };
@@ -138,31 +138,39 @@ function CottonHybridForm() {
         <div style={{ display: "flex", flexWrap: "wrap" }}>
           {hybridOptions.map((option) => (
             <Card
-                key={option}
-                onClick={() => handleHybridClick(option)}
-                sx={{
-                    cursor: "pointer",
-                    margin: "4px",
-                    padding: "10px 16px",
-                    backgroundColor: hybrid === option ? "#fa4616" : "#F5F5F5",
-                    border: hybrid === option ? "2px solid rgb(255, 255, 255)" : "2px solid rgb(37, 106, 185)",
-                    borderRadius: "12px",
-                    color: hybrid === option ? "white" : "#333",
-                    boxShadow: hybrid === option ? "0px 4px 10px rgba(0, 0, 0, 0.2)" : "none",
-                    transition: "all 0.3s ease-in-out",
-                    display: "flex",
-                    justifyContent: "center", // Center horizontally
-                    alignItems: "center", // Center vertically
-                    textAlign: "center", // Ensures text stays centered
-                    height: "50px", // Fixed height for better alignment
-                    "&:hover": {
-                      backgroundColor: hybrid === option ? "#d73a12" : "#E0E0E0",
-                      transform: "scale(1.05)",
-                    },
-                  }}
-                >
+              key={option.name}
+              onClick={() => handleHybridClick(option.name)}
+              sx={{
+                cursor: "pointer",
+                margin: "4px",
+                padding: "10px 16px",
+                backgroundColor: hybrid === option ? "#fa4616" : "#F5F5F5",
+                border:
+                  hybrid === option
+                    ? "2px solid rgb(255, 255, 255)"
+                    : "2px solid rgb(37, 106, 185)",
+                borderRadius: "12px",
+                color: hybrid === option ? "white" : "#333",
+                boxShadow:
+                  hybrid === option
+                    ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                    : "none",
+                transition: "all 0.3s ease-in-out",
+                display: "flex",
+                justifyContent: "center", // Center horizontally
+                alignItems: "center", // Center vertically
+                textAlign: "center", // Ensures text stays centered
+                height: "50px", // Fixed height for better alignment
+                "&:hover": {
+                  backgroundColor: hybrid === option ? "#d73a12" : "#E0E0E0",
+                  transform: "scale(1.05)",
+                },
+              }}
+            >
               <CardContent>
-                <Typography variant="body2">{option}</Typography>
+                <Typography variant="body2">
+                  {option.name}: {option.cost ? `$${option.cost}` : ""}
+                </Typography>
               </CardContent>
             </Card>
           ))}
@@ -297,23 +305,20 @@ function CottonHybridForm() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {submittedForms.map((form, index) => (
-                <TableRow key={index}>
-                  <TableCell>{form.hybrid}</TableCell>
-                  {form.hybrid === "Others" ||
-                  !hybridOptions.includes(form.hybrid) ? (
-                    <TableCell>${form.cost}</TableCell>
-                  ) : (
+              {submittedForms.map((form, index) => {
+                const isPredefined = hybridOptions.some(
+                  (h) => h.name === form.hybrid && h.cost
+                );
+                return (
+                  <TableRow key={index}>
+                    <TableCell>{form.hybrid}</TableCell>
                     <TableCell>
-                      {hybridOptions.includes(form.hybrid)
-                        ? `Default $${form.cost}`
-                        : `$${form.cost}`}
+                      {isPredefined ? `Default $${form.cost}` : `$${form.cost}`}
                     </TableCell>
-                  )}
-                  <TableCell>{form.notes}</TableCell>
-                  {/* <TableCell>{form.teamName}</TableCell> */}
-                </TableRow>
-              ))}
+                    <TableCell>{form.notes}</TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>

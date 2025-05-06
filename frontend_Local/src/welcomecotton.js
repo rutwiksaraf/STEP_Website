@@ -654,7 +654,7 @@ function WelcomeCotton() {
                     source your own seed. If sourcing your own seed, 15 lbs to 2
                     bags of seed must be delivered to the West Florida Research
                     and Education Center located at 4253 Experiment Dr, Jay FL,
-                    32565 from March 20th till May 10th. You must provide
+                    32565 till May 10th. You must provide
                     documentation of the retail price for any seed that you
                     source.
                   </p>

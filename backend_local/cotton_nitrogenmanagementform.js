@@ -55,37 +55,6 @@ router.post("/cottonnitrogenmanagementsubmit", async (req, res) => {
   }
 });
 
-// router.get("/cottonfetchNitrogenManagementData", (req, res) => {
-//   setupDatabase()
-//     .then((db) => {
-//       try {
-//         // Extract the applicationType from the query parameters
-//         const { applicationType, teamName } = req.query;
-
-//         // Query the database based on the applicationType
-//         const query =
-//           "SELECT * FROM [2025_cotton_nitrogen_management_form]WHERE applicationType = ? and teamName = ?";
-//         db.query(query, [applicationType, teamName], (error, results) => {
-//           if (error) {
-//             console.error("Error fetching data from the database:", error);
-//             res.status(500).json({ message: "Error fetching data" });
-//           } else {
-//             // Send the fetched data as a JSON response
-//             res.status(200).json(results);
-//           }
-//         });
-//         db.release();
-//       } catch (error) {
-//         console.error("Error handling data fetch:", error);
-//         res.status(500).json({ message: "Internal server error" });
-//         db.release();
-//       }
-//     })
-//     .catch((err) => {
-//       console.error("Database setup error: " + err.message);
-//       res.status(500).json({ message: "Database setup error" });
-//     });
-// });
 
 router.get("/cottonfetchNitrogenManagementData", async (req, res) => {
   const { applicationType, teamName } = req.query; // Extract the applicationType and teamName from the query parameters
@@ -118,35 +87,6 @@ router.get("/cottonfetchNitrogenManagementData", async (req, res) => {
   }
 });
 
-// router.get("/cottonfetchAllNitrogenManagementData", (req, res) => {
-//   setupDatabase()
-//     .then((db) => {
-//       try {
-//         // Extract the applicationType from the query parameters
-
-//         // Query the database based on the applicationType
-//         const query = "SELECT * FROM 2025_cotton_[2025_nitrogen_management_form]";
-//         db.query(query, (error, results) => {
-//           if (error) {
-//             console.error("Error fetching data from the database:", error);
-//             res.status(500).json({ message: "Error fetching data" });
-//           } else {
-//             // Send the fetched data as a JSON response
-//             res.status(200).json(results);
-//           }
-//         });
-//         db.release();
-//       } catch (error) {
-//         console.error("Error handling data fetch:", error);
-//         res.status(500).json({ message: "Internal server error" });
-//         db.release();
-//       }
-//     })
-//     .catch((err) => {
-//       console.error("Database setup error: " + err.message);
-//       res.status(500).json({ message: "Database setup error" });
-//     });
-// });
 
 router.get("/cottonfetchAllNitrogenManagementData", async (req, res) => {
   try {
@@ -166,38 +106,6 @@ router.get("/cottonfetchAllNitrogenManagementData", async (req, res) => {
   }
 });
 
-// router.delete("/deletecottonnitrogenApplication/:appId", (req, res) => {
-//   setupDatabase()
-//     .then((db) => {
-//       try {
-//         // Extract the application ID from the request parameters
-//         const appId = req.params.appId;
-
-//         // Perform the database delete operation based on the appId
-//         const deleteQuery =
-//           "DELETE FROM [2025_cotton_nitrogen_management_form]WHERE id = ?";
-//         db.query(deleteQuery, [appId], (deleteError, deleteResult) => {
-//           if (deleteError) {
-//             console.error("Error deleting the application:", deleteError);
-//             res.status(500).json({ message: "Error deleting the application" });
-//           } else {
-//             res
-//               .status(200)
-//               .json({ message: "Application deleted successfully" });
-//           }
-//         });
-//         db.release();
-//       } catch (error) {
-//         console.error("Error handling application deletion:", error);
-//         res.status(500).json({ message: "Internal server error" });
-//         db.release();
-//       }
-//     })
-//     .catch((err) => {
-//       console.error("Database setup error: " + err.message);
-//       res.status(500).json({ message: "Database setup error" });
-//     });
-// });
 
 router.delete("/deletecottonnitrogenApplication/:appId", async (req, res) => {
   const appId = req.params.appId; // Extract the application ID from the request parameters
@@ -224,133 +132,6 @@ router.delete("/deletecottonnitrogenApplication/:appId", async (req, res) => {
     res.status(500).json({ message: "Error deleting the application" });
   }
 });
-
-// router.post("/updateCottonNitrogenApplied/:appId", (req, res) => {
-//   setupDatabase()
-//     .then((db) => {
-//       try {
-//         // Extract the application ID from the request parameters
-//         const appId = req.params.appId;
-
-//         // Define the new value for the "applied" field (e.g., "yes")
-//         const newAppliedValue = "yes";
-
-//         const fetchTeamNameQuery =
-//           "SELECT teamName FROM [2025_cotton_nitrogen_management_form]WHERE id = ?";
-//         db.query(fetchTeamNameQuery, [appId], (fetchError, fetchResult) => {
-//           if (fetchError) {
-//             console.error("Error fetching team name:", fetchError);
-//             res.status(500).json({ message: "Error fetching team name" });
-//           } else if (fetchResult.length === 0) {
-//             res.status(404).json({ message: "Application not found" });
-//           } else {
-//             const teamName = fetchResult[0].teamName;
-
-//             // Perform the database update operation
-//             const updateQuery =
-//               "UPDATE [2025_cotton_nitrogen_management_form]SET applied = ? WHERE id = ?";
-//             db.query(
-//               updateQuery,
-//               [newAppliedValue, appId],
-//               (updateError, updateResult) => {
-//                 if (updateError) {
-//                   console.error(
-//                     "Error updating the applied field:",
-//                     updateError
-//                   );
-//                   res
-//                     .status(500)
-//                     .json({ message: "Error updating the applied field" });
-//                 } else {
-//                   const fetchEmailQuery =
-//                     "SELECT email FROM 2025_cotton_registration_data WHERE teamName = ?";
-//                   db.query(
-//                     fetchEmailQuery,
-//                     [teamName],
-//                     async (emailError, emailResult) => {
-//                       if (emailError) {
-//                         console.error("Error fetching email:", emailError);
-//                         res.status(500).json({
-//                           message: "Error fetching recipient's email",
-//                         });
-//                       } else if (emailResult.length === 0) {
-//                         res
-//                           .status(404)
-//                           .json({ message: "Recipient's email not found" });
-//                       } else {
-//                         const recipientEmail = emailResult[0].email;
-//                         let emailText = `The application with ID ${appId} has been marked as applied.`;
-//                         const fetchApplicationDetailsQuery =
-//                           "SELECT * FROM [2025_cotton_nitrogen_management_form]WHERE id = ?";
-//                         await db.query(
-//                           fetchApplicationDetailsQuery,
-//                           [appId],
-//                           (detailsError, detailsResult) => {
-//                             if (detailsError) {
-//                               console.error(
-//                                 "Error fetching application details:",
-//                                 detailsError
-//                               );
-//                               res.status(500).json({
-//                                 message: "Error fetching application details",
-//                               });
-//                             } else if (detailsResult.length === 0) {
-//                               res.status(404).json({
-//                                 message: "Application details not found",
-//                               });
-//                             } else {
-//                               const applicationDetails = detailsResult[0];
-//                               const {
-//                                 applicationType,
-//                                 placement,
-//                                 date,
-//                                 dateToday,
-//                               } = applicationDetails;
-
-//                               // Compose the email text
-//                               emailText = `Hello ${teamName},\n\nThe nitrogen application of cotton crop with application type: ${applicationType}, placement type: ${placement}, for date ${date} requested on ${dateToday} is confirmed.`;
-
-//                               // Send an email when the "applied" field is updated successfully
-
-//                               console.log(recipientEmail);
-//                               const mailOptions = {
-//                                 from: "stepnotification2024@gmail.com",
-//                                 to: recipientEmail, // Use the fetched recipient's email address
-//                                 subject: "Nitrogen Application Status Update",
-//                                 text: emailText,
-//                               };
-//                               try {
-//                                 const info = transporter.sendMail(mailOptions);
-//                                 console.log("Email sent: " + mailOptions.text);
-//                               } catch (error) {
-//                                 console.error("Email sending error: ", error);
-//                               }
-//                             }
-//                           }
-//                         );
-//                         res.status(200).json({
-//                           message: "Applied field updated successfully",
-//                         });
-//                       }
-//                     }
-//                   );
-//                 }
-//               }
-//             );
-//           }
-//         });
-//         db.release();
-//       } catch (error) {
-//         console.error("Error handling update of the applied field:", error);
-//         res.status(500).json({ message: "Internal server error" });
-//         db.release();
-//       }
-//     })
-//     .catch((err) => {
-//       console.error("Database setup error: " + err.message);
-//       res.status(500).json({ message: "Database setup error" });
-//     });
-// });
 
 router.post("/updateCottonNitrogenApplied/:appId", async (req, res) => {
   const appId = req.params.appId; // Extract the application ID from the request parameters
@@ -433,30 +214,6 @@ router.post("/updateCottonNitrogenApplied/:appId", async (req, res) => {
   }
 });
 
-// router.post("/saveCottonApplicationTypeConfirmation", (req, res) => {
-//   setupDatabase().then((db) => {
-//     const { teamName, applicationType, isConfirmed } = req.body;
-
-//     // Replace this SQL with the correct SQL for your database schema
-//     const sql = `INSERT INTO 2025_CottonApplicationConfirmations (teamName, applicationType, isConfirmed) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE isConfirmed = ?`;
-
-//     db.query(
-//       sql,
-//       [teamName, applicationType, isConfirmed, isConfirmed],
-//       (err, result) => {
-//         if (err) {
-//           console.error("Error saving data:", err);
-//           res.status(500).send("Error saving application type confirmation");
-//         } else {
-//           res
-//             .status(200)
-//             .send("Application type confirmation saved successfully");
-//         }
-//       }
-//     );
-//     db.release();
-//   });
-// });
 
 router.post("/saveCottonApplicationTypeConfirmation", async (req, res) => {
   const { teamName, applicationType, isConfirmed } = req.body;

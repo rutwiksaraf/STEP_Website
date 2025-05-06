@@ -130,7 +130,7 @@ function IrrigationManagementForm() {
     fetchApplicationTypeConfirmation();
     fetchApplicationTypeConfirmation1();
     fetchData();
-  }, [selectedOption, soilMoistureSensor]); // Fetch data whenever applicationType changes
+  }, []); // Fetch data whenever applicationType changes
 
   const fetchApplicationTypeConfirmation = () => {
     axios

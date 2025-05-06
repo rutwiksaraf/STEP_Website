@@ -50,7 +50,7 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
   const [dateToday, setDateToday] = useState(new Date().toISOString());
   const token = localStorage.getItem("token");
   const [formValues, setFormValues] = useState({
-    starter: "Starter Fertilizer",
+    starter: "Fertilizer Application at Planting",
     amount: "",
   });
 
@@ -102,12 +102,12 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
   const productOptions = ["Pursell: 44.5-0-0", "Harrell: 43-0-0​"];
 
   const handleproductClick = (selected) => {
-    // if (selected === "Harrell: 43-0-0​") setProductType("Harrell: 43-0-0​");
-    // if (selected === "Pursell: 44.5-0-0") setProductType("Pursell: 44.5-0-0");
+    if (selected === "Harrell: 43-0-0​") setProductType("Harrell: 43-0-0​");
+    if (selected === "Pursell: 44.5-0-0") setProductType("Pursell: 44.5-0-0");
     setProductType(selected);
-    // if (selectedCard1 === selected) {
-    //   setSelectedCard1(null);
-    // } else
+    if (selectedCard1 === selected) {
+      setSelectedCard1(null);
+    } else
     setSelectedCard1(selected);
   };
 
@@ -322,7 +322,7 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
 
   const handleCardClick2 = () => {
     // Example: Toggle a specific value or open a dialog to change the value
-    const newValue = "Starter Fertilizer"; // Placeholder for new value
+    const newValue = "Fertilizer Application at Planting"; // Placeholder for new value
     setFormValues((prevValues) => ({
       ...prevValues,
       starter: newValue,
@@ -340,22 +340,12 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
       >
         <Typography variant="h6">Fertilizer Application Form</Typography>
         <p>
-          All the starter fertilizer is applied at planting, Source 46-0-0. Do
-          not fill the form if no starter fertilizer is required.
+        Enter the amount of nitrogen fertilizer (46-0-0) at the time of planning. Do not fill the form if no fertilizer is required at planting.”
         </p>
-        {/* <TextField
-          fullWidth
-          label="Starter Fertilizer"
-          variant="outlined"
-          name="starter"
-          value={formValues.starter}
-          onChange={handleInputChange}
-          required
-          sx={{ mb: 2 }}
-        /> */}
+        
 
         <Typography variant="h6" color="text.secondary">
-          Starter Fertilizer
+        Fertilizer Application at Planting
         </Typography>
         {/* <Typography variant="body1">
               {formValues.starter || "No starter fertilizer selected"}
@@ -384,52 +374,117 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
           Add Application
         </Typography> */}
 
+{/* <div style={{ display: "flex", flexWrap: "wrap" }}>
+                
+                  <Card
+                    key={option}
+                    onClick={() =>
+                      handleCardClick("in-season")
+                    }
+                    sx={{
+                      cursor: "pointer",
+                      margin: "4px",
+                      padding: "10px 16px",
+                      backgroundColor:
+                        applicationType === "in-season" ? "#fa4616" : "#F5F5F5",
+                      border:
+                        selectedCard === option
+                          ? "2px solid rgb(255, 255, 255)"
+                          : "2px solid rgb(37, 106, 185)",
+                      
+                    }}
+                  >
+                    <CardContent>
+                      <Typography variant="body2">{option}</Typography>
+                    </CardContent>
+                  </Card>
+                
+              </div> */}
+
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <Card
-              onClick={() =>
-                !isApplicationTypeConfirmed && handleCardClick("in-season")
-              }
+              onClick={() => {
+                if (!isApplicationTypeConfirmed) {
+                  handleCardClick("in-season");
+                }
+              }}
+              
               sx={{
-                cursor: !isApplicationTypeConfirmed ? "pointer" : "not-allowed",
-                padding: "8px",
+                cursor: "pointer",
+                margin: "4px",
+                      padding: "10px 16px",
                 backgroundColor:
                   applicationType === "in-season" ? "#fa4616" : "#F5F5F5",
-                border: "2px solid #fa4616",
+                  border:
+                  applicationType === "in-season"
+                    ? "2px solid rgb(255, 255, 255)"
+                    : "2px solid rgb(37, 106, 185)",
                 borderRadius: "8px",
-                opacity:
-                  isApplicationTypeConfirmed && applicationType !== "in-season"
-                    ? 0.5
-                    : 1,
+                borderRadius: "12px",
+                      color: applicationType === "in-season" ? "white" : "#333",
+                      boxShadow:
+                        applicationType === "in-season"
+                          ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                          : "none",
+                      transition: "all 0.3s ease-in-out",
+                      display: "flex",
+                      justifyContent: "center", // Center horizontally
+                      alignItems: "center", // Center vertically
+                      textAlign: "center", // Ensures text stays centered
+                      height: "50px", // Fixed height for better alignment
+                      "&:hover": {
+                        backgroundColor:
+                        applicationType === "in-season" ? "#d73a12" : "#E0E0E0",
+                        transform: "scale(1.05)",
+                      },
+                
               }}
             >
               <CardContent>
                 <Typography variant="body2">
-                  In-season Fertilizer Application
+                  In-Season Fertilizer Application
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
           <Grid item xs={6}>
-            <Card
-              onClick={() =>
-                !isApplicationTypeConfirmed &&
-                handleCardClick("controlled-release")
-              }
+          <Card
+              onClick={() => {
+                if (!isApplicationTypeConfirmed) {
+                  handleCardClick("controlled-release");
+                }
+              }}
+              
               sx={{
-                cursor: !isApplicationTypeConfirmed ? "pointer" : "not-allowed",
-                padding: "8px",
+                cursor: "pointer",
+                margin: "4px",
+                      padding: "10px 16px",
                 backgroundColor:
+                  applicationType === "controlled-release" ? "#fa4616" : "#F5F5F5",
+                  border:
                   applicationType === "controlled-release"
-                    ? "#fa4616" : "#F5F5F5",
-
-                border: "2px solid #fa4616",
+                    ? "2px solid rgb(255, 255, 255)"
+                    : "2px solid rgb(37, 106, 185)",
                 borderRadius: "8px",
-                opacity:
-                  isApplicationTypeConfirmed &&
-                  applicationType !== "controlled-release"
-                    ? 0.5
-                    : 1,
+                borderRadius: "12px",
+                      color: applicationType === "controlled-release" ? "white" : "#333",
+                      boxShadow:
+                        applicationType === "controlled-release"
+                          ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                          : "none",
+                      transition: "all 0.3s ease-in-out",
+                      display: "flex",
+                      justifyContent: "center", // Center horizontally
+                      alignItems: "center", // Center vertically
+                      textAlign: "center", // Ensures text stays centered
+                      height: "50px", // Fixed height for better alignment
+                      "&:hover": {
+                        backgroundColor:
+                        applicationType === "controlled-release" ? "#d73a12" : "#E0E0E0",
+                        transform: "scale(1.05)",
+                      },
+                
               }}
             >
               <CardContent>
@@ -445,9 +500,8 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
           variant="contained"
           color="primary"
           onClick={() => handleConfirmApplicationType()}
-          disabled={isApplicationTypeConfirmed} // Button is disabled if the application type is confirmed
         >
-          Submit application type (cannot be changed later)
+          Submit application type
         </Button>
         <br></br>
         <br></br>
@@ -501,7 +555,7 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
         </Grid>
       </Grid> */}
 
-        {isApplicationTypeConfirmed && applicationType === "in-season" && (
+        {applicationType === "in-season" && (
           <>
             <p style={{ textAlign: "justify" }}>
               In-season fertilizer applications of granular urea (46-0-0) is
@@ -584,7 +638,7 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
             </Grid> */}
           </>
         )}
-        {isApplicationTypeConfirmed &&
+        {
           applicationType === "controlled-release" && (
             <>
               <p style={{ textAlign: "justify" }}>
@@ -607,17 +661,37 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
                 <div style={{ display: "flex", flexWrap: "wrap" }}>
                   {controlledreleaseOptions.map((option) => (
                     <Card
-                      key={option}
-                      onClick={() => handleClick(option)}
-                      sx={{
-                        cursor: "pointer",
-                        margin: "4px",
-                        padding: "8px",
+                    key={option}
+                    onClick={() => handleClick(option)}
+                    sx={{
+                      cursor: "pointer",
+                      margin: "4px",
+                      padding: "10px 16px",
+                      backgroundColor:
+                        selectedCard === option ? "#fa4616" : "#F5F5F5",
+                      border:
+                        selectedCard === option
+                          ? "2px solid rgb(255, 255, 255)"
+                          : "2px solid rgb(37, 106, 185)",
+                      borderRadius: "12px",
+                      color: selectedCard === option ? "white" : "#333",
+                      boxShadow:
+                        selectedCard === option
+                          ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                          : "none",
+                      transition: "all 0.3s ease-in-out",
+                      display: "flex",
+                      justifyContent: "center", // Center horizontally
+                      alignItems: "center", // Center vertically
+                      textAlign: "center", // Ensures text stays centered
+                      height: "50px", // Fixed height for better alignment
+                      "&:hover": {
                         backgroundColor:
-                          selectedCard === option ? "#fa4616" : "#D8D4D7",
-                        border: "2px solid #fa4616",
-                      }}
-                    >
+                          selectedCard === option ? "#d73a12" : "#E0E0E0",
+                        transform: "scale(1.05)",
+                      },
+                    }}
+                  >
                       <CardContent>
                         <Typography variant="body2">{option}</Typography>
                       </CardContent>
@@ -633,17 +707,37 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
                 <div style={{ display: "flex", flexWrap: "wrap" }}>
                   {productOptions.map((option) => (
                     <Card
-                      key={option}
-                      onClick={() => handleproductClick(option)}
-                      sx={{
-                        cursor: "pointer",
-                        margin: "4px",
-                        padding: "8px",
+                    key={option}
+                    onClick={() => handleproductClick(option)}
+                    sx={{
+                      cursor: "pointer",
+                      margin: "4px",
+                      padding: "10px 16px",
+                      backgroundColor:
+                        productType === option ? "#fa4616" : "#F5F5F5",
+                      border:
+                      productType === option
+                          ? "2px solid rgb(255, 255, 255)"
+                          : "2px solid rgb(37, 106, 185)",
+                      borderRadius: "12px",
+                      color: productType === option ? "white" : "#333",
+                      boxShadow:
+                      productType === option
+                          ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                          : "none",
+                      transition: "all 0.3s ease-in-out",
+                      display: "flex",
+                      justifyContent: "center", // Center horizontally
+                      alignItems: "center", // Center vertically
+                      textAlign: "center", // Ensures text stays centered
+                      height: "50px", // Fixed height for better alignment
+                      "&:hover": {
                         backgroundColor:
-                          selectedCard1 === option ? "#fa4616" : "#D8D4D7",
-                        border: "2px solid #fa4616",
-                      }}
-                    >
+                        productType === option ? "#d73a12" : "#E0E0E0",
+                        transform: "scale(1.05)",
+                      },
+                    }}
+                  >
                       <CardContent>
                         <Typography variant="body2">{option}</Typography>
                       </CardContent>
@@ -703,14 +797,13 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
       </form>
       <br></br>
       <Typography variant="h6" gutterBottom>
-        Starter Fertilizer Data
+      Fertilizer Application at Planting
       </Typography>
       <TableContainer>
         <Table id={`table-n2-mgmnt-${sectionData}`} size="small">
           <TableHead>
             <TableRow>
               <TableCell>#</TableCell>
-              <TableCell>Starter</TableCell>
               <TableCell>Amount</TableCell>
             </TableRow>
           </TableHead>
@@ -718,7 +811,6 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
             {[...starterTableData].map((app, index) => (
               <TableRow key={app.id}>
                 <TableCell>{index + 1}</TableCell>
-                <TableCell>{app.starter}</TableCell>
                 <TableCell>{app.amount}</TableCell>
                 {/* Optionally render additional cell based on condition */}
                 {/* {applicationType === "in-season" && (
@@ -744,8 +836,11 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
                   <TableCell>Date</TableCell>
                   <TableCell>Amount</TableCell>
 
-                  <TableCell>placement</TableCell>
+                  <TableCell>Placement</TableCell>
+
                   <TableCell>Applied</TableCell>
+                  <TableCell>Source</TableCell>
+
                   {applicationType === "controlled-release" && (
                     <TableCell>Product</TableCell>
                   )}

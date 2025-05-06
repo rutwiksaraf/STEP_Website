@@ -24,13 +24,17 @@ import axios from "axios"; // Import Axios for making HTTP requests
 
 function CottonSeedingRateForm() {
   const [seedingRate, setSeedingRate] = useState("");
+  const [seedingMethod, setSeedingMethod] = useState("");
+
   const [notes, setNotes] = useState("");
   const [statusMsg, setStatusMsg] = useState("");
   const teamName = localStorage.getItem("username");
   const [submittedForms, setSubmittedForms] = useState([]);
   const token = localStorage.getItem("token");
 
-  const seedingOptions = ["29000", "36000", "43500", "58000"];
+  const seedingOptions = ["29000", "30000", "32000", "36000"];
+
+  const seedingMethods = ["Hill Drop", "Single Drop"];
 
   const handleSeedingClick = (selectedSeeding) => {
     setSeedingRate(selectedSeeding);
@@ -74,6 +78,7 @@ function CottonSeedingRateForm() {
       seedingRate,
       notes,
       teamName,
+      seedingMethod,
     };
 
     try {
@@ -108,43 +113,114 @@ function CottonSeedingRateForm() {
       <Typography variant="h4" gutterBottom>
         Seeding Rate Form
       </Typography>
+      <p style={{ textAlign: "justify" }}>
+        The 2025 STEP cotton contest offer the following seeding rates:
+      </p>
       <form onSubmit={handleFormSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <div style={{ display: "flex", flexWrap: "wrap" }}>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                paddingBottom: "20px",
+              }}
+            >
               {seedingOptions.map((option) => (
                 <Card
-                          key={option}
-                          onClick={() => handleSeedingClick(option)}
-                          sx={{
-                            cursor: "pointer",
-                            margin: "4px",
-                            padding: "10px 16px",
-                            backgroundColor: seedingRate === option ? "#fa4616" : "#F5F5F5",
-                            border: seedingRate === option ? "2px solid rgb(255, 255, 255)" : "2px solid rgb(37, 106, 185)",
-                            borderRadius: "12px",
-                            color: seedingRate === option ? "white" : "#333",
-                            boxShadow: seedingRate === option ? "0px 4px 10px rgba(0, 0, 0, 0.2)" : "none",
-                            transition: "all 0.3s ease-in-out",
-                            display: "flex",
-                            justifyContent: "center", // Center horizontally
-                            alignItems: "center", // Center vertically
-                            textAlign: "center", // Ensures text stays centered
-                            height: "50px", // Fixed height for better alignment
-                            "&:hover": {
-                              backgroundColor: seedingRate === option ? "#d73a12" : "#E0E0E0",
-                              transform: "scale(1.05)",
-                            },
-                          }}
-                        >
+                  key={option}
+                  onClick={() => handleSeedingClick(option)}
+                  sx={{
+                    cursor: "pointer",
+                    margin: "4px",
+                    padding: "10px 16px",
+                    backgroundColor:
+                      seedingRate === option ? "#fa4616" : "#F5F5F5",
+                    border:
+                      seedingRate === option
+                        ? "2px solid rgb(255, 255, 255)"
+                        : "2px solid rgb(37, 106, 185)",
+                    borderRadius: "12px",
+                    color: seedingRate === option ? "white" : "#333",
+                    boxShadow:
+                      seedingRate === option
+                        ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                        : "none",
+                    transition: "all 0.3s ease-in-out",
+                    display: "flex",
+                    justifyContent: "center", // Center horizontally
+                    alignItems: "center", // Center vertically
+                    textAlign: "center", // Ensures text stays centered
+                    height: "50px", // Fixed height for better alignment
+                    "&:hover": {
+                      backgroundColor:
+                        seedingRate === option ? "#d73a12" : "#E0E0E0",
+                      transform: "scale(1.05)",
+                    },
+                  }}
+                >
                   <CardContent>
                     <Typography variant="body2">{option} Seeds/Acre</Typography>
                   </CardContent>
                 </Card>
               ))}
             </div>
-            <br></br>
+
+            <br></br> 
+            <Typography variant="h5" gutterBottom>
+            Method
+          </Typography>
+
+          <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                paddingBottom: "20px",
+              }}
+            >
+              {seedingMethods.map((option) => (
+                <Card
+                  key={option}
+                  onClick={() => setSeedingMethod(option)}
+                  sx={{
+                    cursor: "pointer",
+                    margin: "4px",
+                    padding: "10px 16px",
+                    backgroundColor:
+                      seedingMethod === option ? "#fa4616" : "#F5F5F5",
+                    border:
+                      seedingMethod === option
+                        ? "2px solid rgb(255, 255, 255)"
+                        : "2px solid rgb(37, 106, 185)",
+                    borderRadius: "12px",
+                    color: seedingMethod === option ? "white" : "#333",
+                    boxShadow:
+                      seedingMethod === option
+                        ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                        : "none",
+                    transition: "all 0.3s ease-in-out",
+                    display: "flex",
+                    justifyContent: "center", // Center horizontally
+                    alignItems: "center", // Center vertically
+                    textAlign: "center", // Ensures text stays centered
+                    height: "50px", // Fixed height for better alignment
+                    "&:hover": {
+                      backgroundColor:
+                        seedingMethod === option ? "#d73a12" : "#E0E0E0",
+                      transform: "scale(1.05)",
+                    },
+                  }}
+                >
+                  <CardContent>
+                    <Typography variant="body2">{option}</Typography>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+          
           </Grid>
+          
           <Grid item xs={12}>
             <TextField
               id="seedingrate-notes-input"
@@ -204,6 +280,7 @@ function CottonSeedingRateForm() {
                 <TableRow>
                   <TableCell>#</TableCell>
                   <TableCell>Seeding Rate</TableCell>
+                  <TableCell>Method</TableCell>
                   <TableCell>Notes</TableCell>
                   {/* <TableCell>Team Name</TableCell> */}
                 </TableRow>
@@ -213,6 +290,7 @@ function CottonSeedingRateForm() {
                   <TableRow key={index}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>${form.seedingRate}</TableCell>
+                    <TableCell>{form.seedingMethod}</TableCell>
                     <TableCell>{form.notes}</TableCell>
                     {/* <TableCell>{form.teamName}</TableCell> */}
                   </TableRow>

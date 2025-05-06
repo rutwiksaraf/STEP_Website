@@ -42,7 +42,7 @@ function CottonIrrigationManagementForm() {
   const [amount, setAmount] = useState("");
   const [applications, setApplications] = useState([]);
   const teamName = localStorage.getItem("username");
-  const sensorOptions = ["Sentek probe (Holder Ag)", "BMP logic", "AquaSpy"];
+  const sensorOptions = ["BMP logic", "AquaSpy"];
   // const [selectedOption, setSelectedOption] = useState("");
   const [dateToday, setDateToday] = useState(new Date().toISOString());
   const token = localStorage.getItem("token");
