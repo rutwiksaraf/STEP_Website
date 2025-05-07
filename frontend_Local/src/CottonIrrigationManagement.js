@@ -264,38 +264,16 @@ function CottonIrrigationManagementForm() {
       return;
     }
     // Prepare the data to be sent
-    let formData;
-    if (selectedOption === "soil-moisture") {
-      formData = {
-        date: date,
-        reading: amount,
-        options: selectedOption,
-        applied: "no",
-        teamName, // Get team name from session
-        sensorType: soilMoistureSensor, // Send sensor type
-        dateToday: dateToday,
-      };
-    } else if (selectedOption === "calendar") {
-      formData = {
-        date: date,
-        reading: amount,
-        options: selectedOption,
-        applied: "no",
-        teamName, // Get team name from session
-        sensorType: "", // Send sensor type
-        dateToday: dateToday,
-      };
-    } else if (selectedOption === "evapotranspiration") {
-      formData = {
-        date: date,
-        reading: amount,
-        options: selectedOption,
-        applied: "no",
-        teamName, // Get team name from session
-        sensorType: "", // Send sensor type
-        dateToday: dateToday,
-      };
-    }
+    const formData = {
+      date: date,
+      reading: amount,
+      options: selectedOption,
+      applied: "no",
+      teamName,
+      sensorType: soilMoistureSensor, // always include
+      dateToday: dateToday,
+    };
+    
 
     // Send a POST request to your backend endpoint
     axios
@@ -341,10 +319,9 @@ function CottonIrrigationManagementForm() {
             <Card
               onClick={() => handleCardClick("soil-moisture")}
               sx={{
-                width: "30%",
-                minWidth: "200px",
                 cursor: "pointer",
-                marginRight: "10px",
+                margin: "4px",
+                padding: "10px 16px",
                 backgroundColor:
                   selectedOption === "soil-moisture" ? "#fa4616" : "#F5F5F5",
                 border:
@@ -379,16 +356,15 @@ function CottonIrrigationManagementForm() {
             <Card
               onClick={() => handleCardClick("evapotranspiration")}
               sx={{
-                width: "30%",
-                minWidth: "200px",
                 cursor: "pointer",
-                marginRight: "10px",
+                margin: "4px",
+                padding: "10px 16px",
                 backgroundColor:
                   selectedOption === "evapotranspiration"
                     ? "#fa4616"
                     : "#F5F5F5",
                 border:
-                  selectedOption === "evapotranspiration"
+                  selectedOption === "soil-moisture"
                     ? "2px solid rgb(255, 255, 255)"
                     : "2px solid rgb(37, 106, 185)",
                 borderRadius: "12px",
@@ -422,13 +398,13 @@ function CottonIrrigationManagementForm() {
             <Card
               onClick={() => handleCardClick("calendar")}
               sx={{
-                width: "30%",
-                minWidth: "200px",
                 cursor: "pointer",
+                margin: "4px",
+                padding: "10px 16px",
                 backgroundColor:
                   selectedOption === "calendar" ? "#fa4616" : "#F5F5F5",
                 border:
-                  selectedOption === "calendar"
+                  selectedOption === "soil-moisture"
                     ? "2px solid rgb(255, 255, 255)"
                     : "2px solid rgb(37, 106, 185)",
                 borderRadius: "12px",
@@ -470,64 +446,7 @@ function CottonIrrigationManagementForm() {
         </Button>
         {/* )} */}
         <p></p>
-        {/* <div style={{ display: "flex", flexWrap: "wrap" }}>
-        <Grid container spacing={1}>
-          <Grid
-            item
-            xs={4}
-            style={{ display: "flex", justifyContent: "center" }}
-          >
-            <RadioGroup
-              row
-              value={selectedOption}
-              onChange={(e) => setSelectedOption(e.target.value)}
-            >
-              <FormControlLabel
-                value="soil-moisture"
-                control={<Radio />}
-                label="Soil Moisture"
-              />
-            </RadioGroup>
-          </Grid>
 
-          <Grid
-            item
-            xs={4}
-            style={{ display: "flex", justifyContent: "center" }}
-          >
-            <RadioGroup
-              row
-              value={selectedOption}
-              onChange={(e) => setSelectedOption(e.target.value)}
-            >
-              <FormControlLabel
-                value="evapotranspiration"
-                control={<Radio />}
-                label="Evapotranspiration"
-              />
-            </RadioGroup>
-          </Grid>
-
-          <Grid
-            item
-            xs={4}
-            style={{ display: "flex", justifyContent: "center" }}
-          >
-            <RadioGroup
-              row
-              value={selectedOption}
-              onChange={(e) => setSelectedOption(e.target.value)}
-            >
-              <FormControlLabel
-                value="calendar"
-                control={<Radio />}
-                label="Calendar"
-              />
-            </RadioGroup>
-          </Grid>
-        </Grid>
-      </div> */}
-        {/* {selectedOption === "soil-moisture" && ( */}
         {isApplicationTypeConfirmed && (
           <div>
             <>
@@ -565,6 +484,7 @@ function CottonIrrigationManagementForm() {
                   </p>
                 </li>
               </ul>
+
               <Typography variant="h6" gutterBottom>
                 Soil moisture sensor
               </Typography>
@@ -576,11 +496,9 @@ function CottonIrrigationManagementForm() {
                       key={sensorOption}
                       onClick={() => handleSensorCardClick(sensorOption)}
                       sx={{
-                        width: "30%",
-                        minWidth: "200px",
                         cursor: "pointer",
-                        marginRight: "10px",
-                        marginBottom: "10px",
+                        margin: "4px",
+                        padding: "10px 16px",
                         backgroundColor:
                           soilMoistureSensor === sensorOption
                             ? "#fa4616"
@@ -634,41 +552,16 @@ function CottonIrrigationManagementForm() {
                 </div>
                 <p></p>
 
-                <div>
+                {/* <div>
                   {isApplicationTypeConfirmed1 && (
                     <div>
                       <p style={{ textAlign: "justify" }}>
                         Selected Sensor: {soilMoistureSensor}
                       </p>
-                      {/* Render any additional information about the sensor here */}
                     </div>
                   )}
-                  {/* Other component markup */}
                 </div>
-                <p></p>
-                {/* <div className="control">
-              <p style={{ textAlign: "justify" }}></p>
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel htmlFor="soilMoistureSensor">
-                  Select Sensor
-                </InputLabel>
-                <Select
-                  id="soilMoistureSensor"
-                  name="soilMoistureSensor"
-                  label="Soil moisture sensor"
-                  value={soilMoistureSensor}
-                  onChange={(e) => setSoilMoistureSensor(e.target.value)}
-                  //disabled={!!soilMoistureSensor} //fix the sensor once selected
-                >
-                  <MenuItem value="None">None</MenuItem>
-                  <MenuItem value="Sentek probe (Holder Ag)">
-                    Sentek probe (Holder Ag)
-                  </MenuItem>
-                  <MenuItem value="BMP logic">BMP logic</MenuItem>
-                  <MenuItem value="AquaSpy">AquaSpy</MenuItem>
-                </Select>
-              </FormControl>
-            </div> */}
+                <p></p> */}
               </div>
             </>
           </div>
@@ -696,9 +589,7 @@ function CottonIrrigationManagementForm() {
         )}
 
         {/* {isApplicationTypeConfirmed && ( */}
-        {(selectedOption === "soil-moisture"
-          ? isApplicationTypeConfirmed && isApplicationTypeConfirmed1
-          : isApplicationTypeConfirmed) && (
+        {isApplicationTypeConfirmed && isApplicationTypeConfirmed1 && (
           <>
             <div
               id="irri-mgmnt-option-tabs"
@@ -759,34 +650,15 @@ function CottonIrrigationManagementForm() {
                         key={option}
                         onClick={() => handleAmountCardClick(option)}
                         sx={{
-                          width: "10%",
-                          minWidth: "200px",
                           cursor: "pointer",
-                          marginRight: "10px",
-                          marginBottom: "10px",
+                          padding: "8px",
                           backgroundColor:
-                            amount === option ? "#fa4616" : "#F5F5F5",
-                          border:
-                            amount === option
-                              ? "2px solid rgb(255, 255, 255)"
-                              : "2px solid rgb(37, 106, 185)",
-                          borderRadius: "12px",
-                          color: amount === option ? "white" : "#333",
-                          boxShadow:
-                            amount === option
-                              ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
-                              : "none",
-                          transition: "all 0.3s ease-in-out",
-                          display: "flex",
-                          justifyContent: "center", // Center horizontally
-                          alignItems: "center", // Center vertically
-                          textAlign: "center", // Ensures text stays centered
-                          height: "50px", // Fixed height for better alignment
-                          "&:hover": {
-                            backgroundColor:
-                              amount === option ? "#d73a12" : "#E0E0E0",
-                            transform: "scale(1.05)",
-                          },
+                            amount === option ? "#fa4616" : "#D8D4D7",
+                          marginBottom: "8px",
+                          marginRight: "2px",
+                          textAlign: "center",
+                          fontWeight: "bold",
+                          border: "2px solid #fa4616",
                         }}
                       >
                         <CardContent>
@@ -796,39 +668,6 @@ function CottonIrrigationManagementForm() {
                     ))}
                   </div>
                   <br></br>
-                  {/* <FormControl variant="outlined" fullWidth>
-                <InputLabel htmlFor="select-planting-v10">
-                  Amount (Inches)
-                </InputLabel>
-
-                <Select
-                  id="select-planting-v10"
-                  name="amount"
-                  label="Amount (Inches)"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                >
-                  <MenuItem value="None">None</MenuItem>
-                  <MenuItem value="0.05">0.05</MenuItem>
-                  <MenuItem value="0.10">0.10</MenuItem>
-                  <MenuItem value="0.15">0.15</MenuItem>
-                  <MenuItem value="0.20">0.20</MenuItem>
-                  <MenuItem value="0.25">0.25</MenuItem>
-                  <MenuItem value="0.30">0.30</MenuItem>
-                  <MenuItem value="0.35">0.35</MenuItem>
-                  <MenuItem value="0.40">0.40</MenuItem>
-                  <MenuItem value="0.45">0.45</MenuItem>
-                  <MenuItem value="0.50">0.50</MenuItem>
-                </Select>
-              </FormControl> */}
-                  {/* <Button
-              id={`irri-mgmnt-planting-v10-add`}
-              variant="outlined"
-              color="primary"
-              onClick={handleAddApplication}
-            >
-              Add Application
-            </Button> */}
                 </div>
                 {/* Add a submit button */}
                 <div>

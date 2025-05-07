@@ -40,6 +40,10 @@ function CottonSeedingRateForm() {
     setSeedingRate(selectedSeeding);
   };
 
+  const handleSeedingMethodClick = (selectedMethod) => {
+    setSeedingMethod(selectedMethod);
+  };
+
   const fetchSubmittedForms = async () => {
     try {
       const username = localStorage.getItem("username");
@@ -181,7 +185,7 @@ function CottonSeedingRateForm() {
               {seedingMethods.map((option) => (
                 <Card
                   key={option}
-                  onClick={() => setSeedingMethod(option)}
+                  onClick={() => handleSeedingMethodClick(option)}
                   sx={{
                     cursor: "pointer",
                     margin: "4px",
