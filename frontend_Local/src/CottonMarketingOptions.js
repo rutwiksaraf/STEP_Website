@@ -60,16 +60,18 @@ function CottonMarketingOptionsForm() {
   };
 
   const bushels = [
-    "100",
     "200",
-    "300",
     "400",
-    "500",
     "600",
-    "700",
     "800",
-    "900",
     "1000",
+    "1200",
+    "1400",
+    "1600",
+    "1800",
+    "2000",
+    "2200",
+    "2400",
   ];
 
   const handleQuantityCardClick = (selectedLevel) => {

@@ -57,9 +57,9 @@ router.post("/cottonnitrogenmanagementsubmit", async (req, res) => {
 
 
 router.get("/cottonfetchNitrogenManagementData", async (req, res) => {
-  const { applicationType, teamName } = req.query; // Extract the applicationType and teamName from the query parameters
+  const { teamName } = req.query; // Extract the applicationType and teamName from the query parameters
 
-  if (!applicationType || !teamName) {
+  if (!teamName) {
     return res.status(400).json({
       message:
         "Application type and team name are required as query parameters",
@@ -71,12 +71,11 @@ router.get("/cottonfetchNitrogenManagementData", async (req, res) => {
     const request = pool.request(); // Create a new request object
 
     // Add parameters to your SQL query
-    request.input("applicationType", sql.VarChar, applicationType);
     request.input("teamName", sql.VarChar, teamName);
 
     // Query the database based on the applicationType and teamName
     const result = await request.query(`
-      SELECT * FROM [2025_cotton_nitrogen_management_form] WHERE applicationType = @applicationType AND teamName = @teamName
+      SELECT * FROM [2025_cotton_nitrogen_management_form] WHERE teamName = @teamName
     `);
 
     // Send the fetched data as a JSON response
@@ -272,8 +271,8 @@ router.get("/getCottonApplicationTypeConfirmation", async (req, res) => {
     if (result.recordset.length === 0) {
       // No records found
       res
-        .status(404)
-        .send("No application type confirmation found for the specified team");
+        .status(200)
+        .json({});
     } else {
       // Assuming you want to return the first result if multiple entries exist
       res.status(200).json(result.recordset[0]);
@@ -335,7 +334,7 @@ router.get("/cottonfetchStarterData", async (req, res) => {
     // Prepare the SQL query using teamName
     request.input("teamName", sql.VarChar, teamName);
     const result = await request.query(
-      `SELECT * FROM nitrogenstarter WHERE teamName = @teamName` // Adjust the table name and fields as necessary
+      `SELECT * FROM [2025_nitrogenstarter] WHERE teamName = @teamName` // Adjust the table name and fields as necessary
     );
 
     if (result.recordset.length === 0) {
@@ -359,7 +358,7 @@ router.get("/cottonfetchAllStarterData", async (req, res) => {
     const request = pool.request();
 
     const result = await request.query(
-      `SELECT * FROM nitrogenstarter` // Adjust the table name and fields as necessary
+      `SELECT * FROM [2025_nitrogenstarter]` // Adjust the table name and fields as necessary
     );
 
     res.status(200).json(result.recordset);

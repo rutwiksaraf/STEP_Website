@@ -74,7 +74,7 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
     const data = {
       teamName: teamName,
       applicationType: applicationType,
-      isConfirmed: true,
+      isConfirmed: 1,
     };
 
     axios
@@ -102,8 +102,6 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
   const productOptions = ["Pursell: 44.5-0-0", "Harrell: 43-0-0​"];
 
   const handleproductClick = (selected) => {
-    if (selected === "Harrell: 43-0-0​") setProductType("Harrell: 43-0-0​");
-    if (selected === "Pursell: 44.5-0-0") setProductType("Pursell: 44.5-0-0");
     setProductType(selected);
     if (selectedCard1 === selected) {
       setSelectedCard1(null);
@@ -369,6 +367,32 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
       </Box>
       <p></p>
 
+      <Typography variant="h6" gutterBottom>
+      Fertilizer Application at Planting
+      </Typography>
+      <TableContainer>
+        <Table id={`table-n2-mgmnt-${sectionData}`} size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>#</TableCell>
+              <TableCell>Amount</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {[...starterTableData].map((app, index) => (
+              <TableRow key={app.id}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>{app.amount}</TableCell>
+                {/* Optionally render additional cell based on condition */}
+                {/* {applicationType === "in-season" && (
+                        <TableCell>{app.placement}</TableCell>
+                    )} */}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
       <form onSubmit={handleAddApplication}>
         {/* <Typography variant="h6" gutterBottom>
           Add Application
@@ -409,9 +433,9 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
                   handleCardClick("in-season");
                 }
               }}
-              
+              disabled={isApplicationTypeConfirmed}
               sx={{
-                cursor: "pointer",
+                cursor: isApplicationTypeConfirmed ? "not-allowed" : "pointer",
                 margin: "4px",
                       padding: "10px 16px",
                 backgroundColor:
@@ -455,9 +479,12 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
                   handleCardClick("controlled-release");
                 }
               }}
+
+              disabled={isApplicationTypeConfirmed}
+
               
               sx={{
-                cursor: "pointer",
+                cursor: isApplicationTypeConfirmed ? "not-allowed" : "pointer",
                 margin: "4px",
                       padding: "10px 16px",
                 backgroundColor:
@@ -748,7 +775,6 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
               <br></br>
             </>
           )}
-        {isApplicationTypeConfirmed && (
           <>
             <br></br>
 
@@ -793,34 +819,9 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
               Add Application
             </Button>
           </>
-        )}
       </form>
       <br></br>
-      <Typography variant="h6" gutterBottom>
-      Fertilizer Application at Planting
-      </Typography>
-      <TableContainer>
-        <Table id={`table-n2-mgmnt-${sectionData}`} size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>#</TableCell>
-              <TableCell>Amount</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {[...starterTableData].map((app, index) => (
-              <TableRow key={app.id}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{app.amount}</TableCell>
-                {/* Optionally render additional cell based on condition */}
-                {/* {applicationType === "in-season" && (
-                        <TableCell>{app.placement}</TableCell>
-                    )} */}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      
       {isApplicationTypeConfirmed && (
         <>
           <br></br>
