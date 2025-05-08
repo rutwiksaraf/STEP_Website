@@ -4653,6 +4653,8 @@ function AdminPage() {
                                   <TableCell>Regulator</TableCell>
                                   <TableCell>Rate</TableCell>
                                   <TableCell>Applied</TableCell>
+                                  <TableCell>Date Applied</TableCell>
+
                                   <TableCell>
                                     <EditIcon />
                                   </TableCell>
@@ -4674,7 +4676,7 @@ function AdminPage() {
                                         <button
                                           style={{
                                             backgroundColor:
-                                              option.applied === "no"
+                                              option.applied === false
                                                 ? "red"
                                                 : "green",
                                             color: "white", // Assuming you want white text for contrast
@@ -4682,7 +4684,7 @@ function AdminPage() {
                                             // Add any other styling you need here
                                           }}
                                         >
-                                          {option.applied === "no" ? (
+                                          {option.applied === false ? (
                                             <HighlightOffIcon
                                               onClick={() =>
                                                 handleGrowthChangeApplied(
@@ -4695,6 +4697,7 @@ function AdminPage() {
                                           )}
                                         </button>
                                       </TableCell>
+                                      <TableCell> {new Date(option.dateToday).toISOString().slice(0, 10)} </TableCell>
                                       <TableCell>
                                         <button
                                           style={{

@@ -9,6 +9,10 @@ export const ApplicationProviders = ({ children }) => {
   const [isApplicationTypeConfirmed1, setIsApplicationTypeConfirmed1] =
     useState(false);
 
+  console.log(
+    "soilMoistureSensor: ",
+    soilMoistureSensor
+  );
   return (
     <ApplicationContext.Provider
       value={{

@@ -10,6 +10,7 @@ export const ApplicationProvideri = ({ children }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [isApplicationTypeConfirmed, setIsApplicationTypeConfirmed] =
     useState(false);
+  
 
   return (
     <ApplicationContext.Provider

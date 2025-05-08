@@ -30,6 +30,8 @@ function CottonGrowthRegulationForm() {
   const [rate, setRate] = useState("");
   const [date, setDate] = useState("");
   const [formData, setFormData] = useState([]);
+  const [dateToday, setDateToday] = useState(new Date().toISOString());
+
   const teamName = localStorage.getItem("username");
   const token = localStorage.getItem("token");
 
@@ -93,6 +95,8 @@ function CottonGrowthRegulationForm() {
         date: date, // Assuming you want to capture the date
         regulator: regulator,
         rate: rate,
+        applied: false,
+        dateToday: dateToday,
       };
 
       // Send a POST request to your backend endpoint
@@ -146,26 +150,32 @@ function CottonGrowthRegulationForm() {
                   marginRight: "20px",
                   backgroundColor:
                     regulator === "Pix (Mepiquat Chloride)"
-                      ? "#fa4616" : "#F5F5F5",
-                      border:
+                      ? "#fa4616"
+                      : "#F5F5F5",
+                  border:
+                    regulator === "Pix (Mepiquat Chloride)"
+                      ? "2px solid rgb(255, 255, 255)"
+                      : "2px solid rgb(37, 106, 185)",
+                  borderRadius: "12px",
+                  color:
+                    regulator === "Pix (Mepiquat Chloride)" ? "white" : "#333",
+                  boxShadow:
+                    regulator === "Pix (Mepiquat Chloride)"
+                      ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                      : "none",
+                  transition: "all 0.3s ease-in-out",
+                  display: "flex",
+                  justifyContent: "center", // Center horizontally
+                  alignItems: "center", // Center vertically
+                  textAlign: "center", // Ensures text stays centered
+                  height: "50px", // Fixed height for better alignment
+                  "&:hover": {
+                    backgroundColor:
                       regulator === "Pix (Mepiquat Chloride)"
-                        ? "2px solid rgb(255, 255, 255)"
-                        : "2px solid rgb(37, 106, 185)",
-                        borderRadius: "12px",
-                        color: regulator === "Pix (Mepiquat Chloride)" ? "white" : "#333",
-                        boxShadow:
-                          regulator === "Pix (Mepiquat Chloride)"                          ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
-                            : "none",
-                        transition: "all 0.3s ease-in-out",
-                        display: "flex",
-                        justifyContent: "center", // Center horizontally
-                        alignItems: "center", // Center vertically
-                        textAlign: "center", // Ensures text stays centered
-                        height: "50px", // Fixed height for better alignment
-                        "&:hover": {
-                          backgroundColor:
-                            regulator === "Pix (Mepiquat Chloride)" ? "#d73a12" : "#E0E0E0",
-                          transform: "scale(1.05)",}
+                        ? "#d73a12"
+                        : "#E0E0E0",
+                    transform: "scale(1.05)",
+                  },
                 }}
               >
                 <CardContent>
@@ -181,25 +191,27 @@ function CottonGrowthRegulationForm() {
                   padding: "10px",
                   backgroundColor:
                     regulator === "Stance" ? "#fa4616" : "#F5F5F5", // Highlight the selected card
-                    border:
+                  border:
                     regulator === "Stance"
                       ? "2px solid rgb(255, 255, 255)"
                       : "2px solid rgb(37, 106, 185)",
-                      borderRadius: "12px",
-                      color: regulator === "Stance" ? "white" : "#333",
-                      boxShadow:
-                        regulator === "Stance"                          ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
-                          : "none",
-                      transition: "all 0.3s ease-in-out",
-                      display: "flex",
-                      justifyContent: "center", // Center horizontally
-                      alignItems: "center", // Center vertically
-                      textAlign: "center", // Ensures text stays centered
-                      height: "50px", // Fixed height for better alignment
-                      "&:hover": {
-                        backgroundColor:
-                          regulator === "Stance" ? "#d73a12" : "#E0E0E0",
-                        transform: "scale(1.05)",}
+                  borderRadius: "12px",
+                  color: regulator === "Stance" ? "white" : "#333",
+                  boxShadow:
+                    regulator === "Stance"
+                      ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                      : "none",
+                  transition: "all 0.3s ease-in-out",
+                  display: "flex",
+                  justifyContent: "center", // Center horizontally
+                  alignItems: "center", // Center vertically
+                  textAlign: "center", // Ensures text stays centered
+                  height: "50px", // Fixed height for better alignment
+                  "&:hover": {
+                    backgroundColor:
+                      regulator === "Stance" ? "#d73a12" : "#E0E0E0",
+                    transform: "scale(1.05)",
+                  },
                 }}
               >
                 <CardContent>
@@ -305,13 +317,13 @@ function CottonGrowthRegulationForm() {
                     <button
                       style={{
                         backgroundColor:
-                          data.applied === "no" ? "red" : "green",
+                          data.applied === false ? "red" : "green",
                         color: "white", // Assuming you want white text for contrast
                         border: "none", // Remove default button border styling
                         // Add any other styling you need here
                       }}
                     >
-                      {data.applied === "no" ? (
+                      {data.applied === false ? (
                         <HighlightOffIcon />
                       ) : (
                         <DoneIcon />
