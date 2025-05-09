@@ -966,17 +966,7 @@ function WelcomeCotton() {
                         premiums and discounts will be estimated after harvest.
                       </p>
 
-                      <p style={{ textAlign: "justify" }}>
-                        All contracts will be flat-price contracts. The contract
-                        price for base grade cotton lint will be the ICE
-                        December Futures closing price on the contract date plus
-                        the basis posted for that week for the STEP competition.
-                        Adjustments to the price for classing scores will be
-                        made after classing. The price will be further adjusted
-                        to account for estimated hauling, classing, ginning,
-                        warehousing, brokerage, and promotion fees, as well as a
-                        cottonseed credit.
-                      </p>
+                    
 
                       <p style={{ textAlign: "justify" }}>
                         All contracts must be in increments of 200 bales

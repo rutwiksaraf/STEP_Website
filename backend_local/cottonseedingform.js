@@ -16,7 +16,7 @@ router.post("/cottonseedingratesubmit", async (req, res) => {
     request.input("teamName", sql.VarChar, teamName);
     request.input("seedingRate", sql.VarChar, seedingRate); // Use the appropriate SQL data type
     request.input("notes", sql.Text, notes);
-    request.input("seedingMethod", sql.Text, seedingMethod); // Use the appropriate SQL data type
+    request.input("seedingMethod", sql.VarChar, seedingMethod); // Use the appropriate SQL data type
 
     // Check if a row with the same teamName already exists
     const checkResult = await request.query(

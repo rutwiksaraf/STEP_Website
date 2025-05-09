@@ -133,6 +133,8 @@ function CottonHybridForm() {
 
   const isHybridSubmitted = submittedForms.length > 0;
 
+  console.log("Submitted Forms:", submittedForms);
+
   return (
     <Container>
       <Grid item xs={12}>
@@ -251,7 +253,7 @@ function CottonHybridForm() {
               variant="contained"
               color="primary"
               type="submit"
-              disabled={isHybridSubmitted}
+              disabled={isHybridSubmitted || hybrid === ""}
             >
               Submit (This cannot be changed once submitted)
             </Button>

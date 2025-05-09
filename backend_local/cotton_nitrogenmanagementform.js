@@ -26,6 +26,8 @@ router.post("/cottonnitrogenmanagementsubmit", async (req, res) => {
     product,
   } = req.body;
 
+  console.log(req.body)
+
   try {
     const pool = await setupDatabase(); // Obtain a connection pool
     const request = pool.request(); // Create a new request object

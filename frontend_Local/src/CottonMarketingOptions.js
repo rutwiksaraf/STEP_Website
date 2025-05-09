@@ -192,7 +192,7 @@ function CottonMarketingOptionsForm() {
             }}
           >
             <CardContent>
-              <Typography variant="body2">Flat-price Contract</Typography>
+              <Typography variant="body2">Forward Contract</Typography>
             </CardContent>
           </Card>
           {/* <Card
@@ -243,7 +243,7 @@ function CottonMarketingOptionsForm() {
                 marginRight: "2px",
                 textAlign: "center",
                 fontWeight: "bold",
-                border: "2px solid #fa4616",
+                border: "2px solid rgb(255, 255, 255)",
               }}
             >
               <CardContent>
@@ -251,7 +251,7 @@ function CottonMarketingOptionsForm() {
               </CardContent>
             </Card>
 
-            {bushels.map((option) => (
+            {bushels?.map((option) => (
               <Card
                 key={option}
                 onClick={() => handleQuantityCardClick(option)}
@@ -324,10 +324,13 @@ function CottonMarketingOptionsForm() {
           <div className="control">
             <Button
               id="marketing-option-add"
-              variant="outlined"
-              color="primary"
+              variant="contained"
+                    color="primary"
               type="submit"
               style={{ marginTop: "16px" }}
+              disabled={
+                !contractType === "" || quantityBushels === ""
+              }
             >
               Submit
             </Button>
@@ -350,7 +353,7 @@ function CottonMarketingOptionsForm() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {marketingOptions.map((option, index) => (
+              {marketingOptions?.map((option, index) => (
                 <TableRow key={index}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{option.date.slice(0, 10)}</TableCell>

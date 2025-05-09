@@ -784,6 +784,7 @@ function CottonIrrigationManagementForm() {
                     color="primary"
                     onClick={submitForm}
                     style={{ marginTop: "16px" }}
+                    disabled={!soilMoistureSensor || !selectedOption || !date || !amount} 
                   >
                     Submit
                   </Button>
@@ -791,7 +792,6 @@ function CottonIrrigationManagementForm() {
               </section>
               {selectedOption === "soil-moisture" && (
                 <TableContainer component={Paper}>
-                  <card> Selected sensor: </card>
                   <Table
                     id="irri-mgmnt-v10-harvest-table"
                     aria-label="Irrigation Management Table"

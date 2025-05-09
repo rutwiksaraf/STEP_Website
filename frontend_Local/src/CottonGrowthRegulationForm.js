@@ -350,6 +350,7 @@ function CottonGrowthRegulationForm() {
                     type="submit"
                     style={{ marginTop: "16px" }}
                     // onClick={handleSubmit}
+                    disabled={!regulator || !rate || !date}
                   >
                     Submit
                   </Button>

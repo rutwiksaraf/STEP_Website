@@ -250,7 +250,7 @@ function CottonSeedingRateForm() {
               variant="contained"
               color="primary"
               type="submit"
-              disabled={isSeedingRateSelected} // Disable button if no seeding rate is selected
+              disabled={isSeedingRateSelected || !seedingMethod || !seedingRate} // Disable button if no seeding rate is selected
             >
               Submit (This cannot be changed after submission)
             </Button>

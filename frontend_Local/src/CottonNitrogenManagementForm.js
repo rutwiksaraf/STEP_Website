@@ -76,7 +76,7 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
     const data = {
       teamName: teamName,
       applicationType: applicationType,
-      isApplicationTypeConfirmed: 1,
+      isApplicationTypeConfirmed: 1,   
     };
 
     console.log("Saving application type confirmation:", data);
@@ -103,9 +103,10 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
 
   const controlledreleaseOptions = ["Broadcast", "Side-Dressed"];
 
-  const productOptions = ["Pursell: 44.5-0-0", "Harrell: 43-0-0​"];
+  const productOptions = ["Pursell: 44.5-0-0", "Harrell: 42-0-0"];
 
   const handleproductClick = (selected) => {
+    console.log("Selected product:", selected);
     setProductType(selected);
     if (selectedCard1 === selected) {
       setSelectedCard1(null);
@@ -399,6 +400,8 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
       setDate(selectedDate);
     }
   };
+
+  console.log("Product Type:", productType);
 
   return (
     <Container>
@@ -890,6 +893,7 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
             color="primary"
             type="submit"
             onClick={() => handleConfirmApplicationType()}
+            disabled={!applicationType || !productType}
           >
             Add Application
           </Button>
@@ -950,7 +954,7 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
                           )}
                         </button>
                       </TableCell>
-                      <TableCell>{app.product || "Urea: 46-0-0"}</TableCell>
+                      <TableCell>{app.applicationType === "controlled-release" ? app.product : "Urea: 46-0-0"}</TableCell>
                       <TableCell>
                         <button>
                           {app.applied === "no" ? (

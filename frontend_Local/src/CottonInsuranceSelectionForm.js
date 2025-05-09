@@ -321,7 +321,7 @@ function CottonInsuranceSelectionForm() {
                     color="primary"
                     type="submit"
                     style={{ marginTop: "16px" }}
-                    disabled={isInsuranceSelected} // Disable button if insurance is already selected
+                    disabled={isInsuranceSelected || !level} // Disable button if insurance is already selected
                   >
                     Submit
                   </Button>
