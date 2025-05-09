@@ -38,6 +38,8 @@ import { useApplication1 } from "./SensorContext";
 function CottonIrrigationManagementForm() {
   const [sectionData, setSectionData] = useState("v10-harvest");
   const [date, setDate] = useState("");
+  const [error, setError] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [amount, setAmount] = useState("");
   const [applications, setApplications] = useState([]);
   const teamName = localStorage.getItem("username");
@@ -270,11 +272,10 @@ function CottonIrrigationManagementForm() {
       teamName,
       sensorType: soilMoistureSensor, // always include
       dateToday: dateToday,
-      applicationType: selectedOption, 
-      sensorConfirmed: isApplicationTypeConfirmed1, 
+      applicationType: selectedOption,
+      sensorConfirmed: isApplicationTypeConfirmed1,
       optionConfirmed: isApplicationTypeConfirmed,
     };
-    
 
     // Send a POST request to your backend endpoint
     axios
@@ -304,7 +305,6 @@ function CottonIrrigationManagementForm() {
     // Handle card click event to select the sensor
     //if (!soilMoistureSensor)
     setSoilMoistureSensor(selectedSensor);
-    
   };
 
   const formatDate = (dateString) => {
@@ -312,8 +312,75 @@ function CottonIrrigationManagementForm() {
     return date.toLocaleDateString();
   };
 
-  console.log(isApplicationTypeConfirmed1);
+  const usHolidays = [
+    "2025-01-01", // New Year's Day
+    "2025-07-04", // Independence Day
+    "2025-11-11", // Veterans Day
+    "2025-12-25", // Christmas Day
+  ];
 
+  const getDynamicHolidays = (year) => {
+    const holidays = [];
+
+    // Martin Luther King Jr. Day (Third Monday of January)
+    const mlkDay = new Date(year, 0, 1);
+    while (mlkDay.getDay() !== 1) mlkDay.setDate(mlkDay.getDate() + 1);
+    mlkDay.setDate(mlkDay.getDate() + 14); // Third Monday
+    holidays.push(mlkDay.toISOString().split("T")[0]);
+
+    // Presidents' Day (Third Monday of February)
+    const presidentsDay = new Date(year, 1, 1);
+    while (presidentsDay.getDay() !== 1)
+      presidentsDay.setDate(presidentsDay.getDate() + 1);
+    presidentsDay.setDate(presidentsDay.getDate() + 14);
+    holidays.push(presidentsDay.toISOString().split("T")[0]);
+
+    // Memorial Day (Last Monday of May)
+    const memorialDay = new Date(year, 4, 31);
+    while (memorialDay.getDay() !== 1)
+      memorialDay.setDate(memorialDay.getDate() - 1);
+    holidays.push(memorialDay.toISOString().split("T")[0]);
+
+    // Labor Day (First Monday of September)
+    const laborDay = new Date(year, 8, 1);
+    while (laborDay.getDay() !== 1) laborDay.setDate(laborDay.getDate() + 1);
+    holidays.push(laborDay.toISOString().split("T")[0]);
+
+    // Thanksgiving (Fourth Thursday of November)
+    const thanksgiving = new Date(year, 10, 1);
+    while (thanksgiving.getDay() !== 4)
+      thanksgiving.setDate(thanksgiving.getDate() + 1);
+    thanksgiving.setDate(thanksgiving.getDate() + 21);
+    holidays.push(thanksgiving.toISOString().split("T")[0]);
+
+    return holidays;
+  };
+
+  const handleDateChange = (e) => {
+    const selectedDate = e.target.value;
+    const dateObj = new Date(selectedDate);
+    const dayOfWeek = dateObj.getDay(); // 0 = Sunday, 6 = Saturday
+    const year = dateObj.getFullYear();
+
+    // Get full list of holidays
+    const allHolidays = [...usHolidays, ...getDynamicHolidays(year)];
+
+    if (dayOfWeek === 5 || dayOfWeek === 6) {
+      setError(true);
+      setErrorMessage("No Irrigation inputs can be applied on weekends.");
+    } else if (allHolidays.includes(selectedDate)) {
+      setError(true);
+      setErrorMessage(
+        "Selected date is a U.S. public holiday. No Irrigation inputs can be applied on public holidays."
+      );
+    } else {
+      setError(false);
+      setErrorMessage("");
+      setDate(selectedDate);
+    }
+  };
+
+  const issensorSelected = applications.length > 0;
   return (
     <Container>
       <form onSubmit={submitForm}>
@@ -321,10 +388,13 @@ function CottonIrrigationManagementForm() {
           <h4>You have three options for irrigation management:</h4>
           <div style={{ display: "flex", flexWrap: "wrap" }}>
             <Card
-              onClick={() => handleCardClick("soil-moisture")}
-              disabled={isApplicationTypeConfirmed}
+              onClick={() =>
+                !issensorSelected && handleCardClick("soil-moisture")
+              }
               sx={{
-                cursor: isApplicationTypeConfirmed ? "not-allowed" : "pointer",
+                cursor: issensorSelected ? "not-allowed" : "pointer",
+                pointerEvents: issensorSelected ? "none" : "auto",
+                opacity: issensorSelected ? 0.6 : 1,
                 margin: "4px",
                 padding: "10px 16px",
                 backgroundColor:
@@ -359,9 +429,13 @@ function CottonIrrigationManagementForm() {
               </CardContent>
             </Card>
             <Card
-              onClick={() => handleCardClick("evapotranspiration")}
+              onClick={() =>
+                !issensorSelected && handleCardClick("evapotranspiration")
+              }
               sx={{
-                cursor: "pointer",
+                cursor: issensorSelected ? "not-allowed" : "pointer",
+                pointerEvents: issensorSelected ? "none" : "auto",
+                opacity: issensorSelected ? 0.6 : 1,
                 margin: "4px",
                 padding: "10px 16px",
                 backgroundColor:
@@ -401,9 +475,11 @@ function CottonIrrigationManagementForm() {
               </CardContent>
             </Card>
             <Card
-              onClick={() => handleCardClick("calendar")}
+              onClick={() => !issensorSelected && handleCardClick("calendar")}
               sx={{
-                cursor: "pointer",
+                cursor: issensorSelected ? "not-allowed" : "pointer",
+                pointerEvents: issensorSelected ? "none" : "auto",
+                opacity: issensorSelected ? 0.6 : 1,
                 margin: "4px",
                 padding: "10px 16px",
                 backgroundColor:
@@ -499,10 +575,13 @@ function CottonIrrigationManagementForm() {
                   {sensorOptions.map((sensorOption) => (
                     <Card
                       key={sensorOption}
-                      onClick={() => handleSensorCardClick(sensorOption)}
-                      disabled={isApplicationTypeConfirmed1}
+                      onClick={() =>
+                        !issensorSelected && handleSensorCardClick(sensorOption)
+                      }
                       sx={{
-                        cursor: isApplicationTypeConfirmed1 ? "not-allowed" : "pointer",
+                        cursor: issensorSelected ? "not-allowed" : "pointer",
+                        pointerEvents: issensorSelected ? "none" : "auto",
+                        opacity: issensorSelected ? 0.6 : 1,
                         margin: "4px",
                         padding: "10px 16px",
                         backgroundColor:
@@ -545,7 +624,7 @@ function CottonIrrigationManagementForm() {
                   <p style={{ textAlign: "justify" }}></p>
                   {/* {!isApplicationTypeConfirmed1 && ( */}
                   <br></br>
-                  
+
                   {/* )} */}
                   <p style={{ textAlign: "justify" }}></p>
                 </div>
@@ -563,17 +642,19 @@ function CottonIrrigationManagementForm() {
                 <p></p> */}
               </div>
               <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleConfirmApplicationType1}
-                    disabled={isApplicationTypeConfirmed1} // Technically redundant because of the conditional rendering
-                  >
-                    Submit Soil Moisture Sensor Selection (this cannot be
-                    changed later)
-                  </Button>
+                variant="contained"
+                color="primary"
+                onClick={handleConfirmApplicationType1}
+                disabled={isApplicationTypeConfirmed1} // Technically redundant because of the conditional rendering
+              >
+                Submit Soil Moisture Sensor Selection (this cannot be changed
+                later)
+              </Button>
             </>
           </div>
         )}
+
+        <p>Soil-Moisture Sensor Selected: {soilMoistureSensor}</p>
 
         {selectedOption === "evapotranspiration" && (
           <>
@@ -627,10 +708,12 @@ function CottonIrrigationManagementForm() {
                     fullWidth
                     type="date"
                     value={date}
-                    onChange={(e) => setDate(e.target.value)}
+                    onChange={handleDateChange}
                     InputLabelProps={{
                       shrink: true,
                     }}
+                    error={error}
+                    helperText={error ? errorMessage : ""}
                   />
                   <br></br>
                   <br></br>
@@ -659,14 +742,31 @@ function CottonIrrigationManagementForm() {
                         onClick={() => handleAmountCardClick(option)}
                         sx={{
                           cursor: "pointer",
-                          padding: "8px",
+                          margin: "4px",
+                          padding: "10px 16px",
                           backgroundColor:
-                            amount === option ? "#fa4616" : "#D8D4D7",
-                          marginBottom: "8px",
-                          marginRight: "2px",
-                          textAlign: "center",
-                          fontWeight: "bold",
-                          border: "2px solid #fa4616",
+                            amount === option ? "#fa4616" : "#F5F5F5",
+                          border:
+                            amount === option
+                              ? "2px solid rgb(255, 255, 255)"
+                              : "2px solid rgb(37, 106, 185)",
+                          borderRadius: "12px",
+                          color: amount === option ? "white" : "#333",
+                          boxShadow:
+                            amount === option
+                              ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                              : "none",
+                          transition: "all 0.3s ease-in-out",
+                          display: "flex",
+                          justifyContent: "center", // Center horizontally
+                          alignItems: "center", // Center vertically
+                          textAlign: "center", // Ensures text stays centered
+                          height: "50px", // Fixed height for better alignment
+                          "&:hover": {
+                            backgroundColor:
+                              amount === option ? "#d73a12" : "#E0E0E0",
+                            transform: "scale(1.05)",
+                          },
                         }}
                       >
                         <CardContent>

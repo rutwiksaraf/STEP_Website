@@ -131,6 +131,8 @@ function CottonHybridForm() {
     }
   };
 
+  const isHybridSubmitted = submittedForms.length > 0;
+
   return (
     <Container>
       <Grid item xs={12}>
@@ -139,20 +141,24 @@ function CottonHybridForm() {
           {hybridOptions.map((option) => (
             <Card
               key={option.name}
-              onClick={() => handleHybridClick(option.name)}
+              onClick={() =>
+                !isHybridSubmitted && handleHybridClick(option.name)
+              }
               sx={{
-                cursor: "pointer",
+                cursor: isHybridSubmitted ? "not-allowed" : "pointer",
+                pointerEvents: isHybridSubmitted ? "none" : "auto",
+                opacity: isHybridSubmitted ? 0.6 : 1,
                 margin: "4px",
                 padding: "10px 16px",
-                backgroundColor: hybrid === option ? "#fa4616" : "#F5F5F5",
+                backgroundColor: hybrid === option.name ? "#fa4616" : "#F5F5F5",
                 border:
-                  hybrid === option
+                  hybrid === option.name
                     ? "2px solid rgb(255, 255, 255)"
                     : "2px solid rgb(37, 106, 185)",
                 borderRadius: "12px",
-                color: hybrid === option ? "white" : "#333",
+                color: hybrid === option.name ? "white" : "#333",
                 boxShadow:
-                  hybrid === option
+                  hybrid === option.name
                     ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
                     : "none",
                 transition: "all 0.3s ease-in-out",
@@ -162,7 +168,8 @@ function CottonHybridForm() {
                 textAlign: "center", // Ensures text stays centered
                 height: "50px", // Fixed height for better alignment
                 "&:hover": {
-                  backgroundColor: hybrid === option ? "#d73a12" : "#E0E0E0",
+                  backgroundColor:
+                    hybrid === option.name ? "#d73a12" : "#E0E0E0",
                   transform: "scale(1.05)",
                 },
               }}
@@ -244,8 +251,9 @@ function CottonHybridForm() {
               variant="contained"
               color="primary"
               type="submit"
+              disabled={isHybridSubmitted}
             >
-              Submit
+              Submit (This cannot be changed once submitted)
             </Button>
           </Grid>
           <Grid item xs={12} sx={{ textAlign: "right" }}>

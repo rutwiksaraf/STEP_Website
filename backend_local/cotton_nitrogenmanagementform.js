@@ -217,6 +217,8 @@ router.post("/updateCottonNitrogenApplied/:appId", async (req, res) => {
 router.post("/saveCottonApplicationTypeConfirmation", async (req, res) => {
   const { teamName, applicationType, isConfirmed } = req.body;
 
+  console.log(req.body)
+
   try {
     const pool = await setupDatabase(); // Obtain a connection pool
     const request = pool.request(); // Create a new request object
@@ -337,11 +339,7 @@ router.get("/cottonfetchStarterData", async (req, res) => {
       `SELECT * FROM [2025_nitrogenstarter] WHERE teamName = @teamName` // Adjust the table name and fields as necessary
     );
 
-    if (result.recordset.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No data found for the specified team" });
-    }
+    
 
     res.status(200).json(result.recordset);
   } catch (error) {

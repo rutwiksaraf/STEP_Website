@@ -112,6 +112,8 @@ function CottonSeedingRateForm() {
     }
   };
 
+  const isSeedingRateSelected = submittedForms.length > 0;
+
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
@@ -133,9 +135,13 @@ function CottonSeedingRateForm() {
               {seedingOptions.map((option) => (
                 <Card
                   key={option}
-                  onClick={() => handleSeedingClick(option)}
+                  onClick={() =>
+                    !isSeedingRateSelected && handleSeedingClick(option)
+                  }
                   sx={{
-                    cursor: "pointer",
+                    cursor: isSeedingRateSelected ? "not-allowed" : "pointer",
+                    pointerEvents: isSeedingRateSelected ? "none" : "auto",
+                    opacity: isSeedingRateSelected ? 0.6 : 1,
                     margin: "4px",
                     padding: "10px 16px",
                     backgroundColor:
@@ -170,12 +176,12 @@ function CottonSeedingRateForm() {
               ))}
             </div>
 
-            <br></br> 
+            <br></br>
             <Typography variant="h5" gutterBottom>
-            Method
-          </Typography>
+              Method
+            </Typography>
 
-          <div
+            <div
               style={{
                 display: "flex",
                 flexWrap: "wrap",
@@ -185,9 +191,11 @@ function CottonSeedingRateForm() {
               {seedingMethods.map((option) => (
                 <Card
                   key={option}
-                  onClick={() => handleSeedingMethodClick(option)}
+                  onClick={() => !isSeedingRateSelected && handleSeedingMethodClick(option)}
                   sx={{
-                    cursor: "pointer",
+                    cursor: isSeedingRateSelected ? "not-allowed" : "pointer",
+                    pointerEvents: isSeedingRateSelected ? "none" : "auto",
+                    opacity: isSeedingRateSelected ? 0.6 : 1,
                     margin: "4px",
                     padding: "10px 16px",
                     backgroundColor:
@@ -221,10 +229,8 @@ function CottonSeedingRateForm() {
                 </Card>
               ))}
             </div>
-
-          
           </Grid>
-          
+
           <Grid item xs={12}>
             <TextField
               id="seedingrate-notes-input"
@@ -244,8 +250,9 @@ function CottonSeedingRateForm() {
               variant="contained"
               color="primary"
               type="submit"
+              disabled={isSeedingRateSelected} // Disable button if no seeding rate is selected
             >
-              Submit
+              Submit (This cannot be changed after submission)
             </Button>
           </Grid>
           <Grid item xs={12} sx={{ textAlign: "right" }}>

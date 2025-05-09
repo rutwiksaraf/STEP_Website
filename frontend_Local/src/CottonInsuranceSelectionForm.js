@@ -116,6 +116,8 @@ function CottonInsuranceSelectionForm() {
     }
   };
 
+  const isInsuranceSelected = formData.length > 0;
+
   return (
     <Container>
       <form onSubmit={handleSubmit}>
@@ -125,9 +127,11 @@ function CottonInsuranceSelectionForm() {
         <div style={{ display: "flex" }}>
           {/* Cards for selecting contract type */}
           <Card
-            onClick={() => handleCardClick("Yield protection")}
+            onClick={() => !isInsuranceSelected && handleCardClick("Yield protection")}
             sx={{
-              cursor: "pointer",
+              cursor: isInsuranceSelected ? "not-allowed" : "pointer",
+                pointerEvents: isInsuranceSelected ? "none" : "auto",
+                opacity: isInsuranceSelected ? 0.6 : 1,
               margin: "4px",
               padding: "10px 16px",
               backgroundColor:
@@ -160,9 +164,11 @@ function CottonInsuranceSelectionForm() {
             </CardContent>
           </Card>
           <Card
-            onClick={() => handleCardClick("Revenue protection")}
+            onClick={() => !isInsuranceSelected && handleCardClick("Revenue protection")}
             sx={{
-              cursor: "pointer",
+              cursor: isInsuranceSelected ? "not-allowed" : "pointer",
+                pointerEvents: isInsuranceSelected ? "none" : "auto",
+                opacity: isInsuranceSelected ? 0.6 : 1,
               margin: "4px",
               padding: "10px 16px",
               backgroundColor:
@@ -240,9 +246,11 @@ function CottonInsuranceSelectionForm() {
             {insuranceLevel.map((option) => (
               <Card
                 key={option}
-                onClick={() => handleLevelCardClick(option)}
+                onClick={() => !isInsuranceSelected && handleLevelCardClick(option)}
                 sx={{
-                  cursor: "pointer",
+                  cursor: isInsuranceSelected ? "not-allowed" : "pointer",
+                pointerEvents: isInsuranceSelected ? "none" : "auto",
+                opacity: isInsuranceSelected ? 0.6 : 1,
               margin: "4px",
               padding: "10px 16px",
               backgroundColor:
@@ -313,6 +321,7 @@ function CottonInsuranceSelectionForm() {
                     color="primary"
                     type="submit"
                     style={{ marginTop: "16px" }}
+                    disabled={isInsuranceSelected} // Disable button if insurance is already selected
                   >
                     Submit
                   </Button>

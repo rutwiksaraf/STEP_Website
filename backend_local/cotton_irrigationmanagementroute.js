@@ -34,22 +34,12 @@ router.post("/cottonsoilmoisturesensorsubmit", async (req, res) => {
 
     // Insert a new row without checking for duplicates
     await request.query(`
-      IF EXISTS (SELECT 1 FROM [2025_cotton_soil_moisture_sensor_data] WHERE teamName = @teamName)
-      BEGIN
-        UPDATE [2025_cotton_soil_moisture_sensor_data]
-        SET
-          sensorType = @sensorType,
-          date = @date,
-          reading = @reading,
-          options = @options,
-          applied = @applied,
-          dateToday = @dateToday,
-          applicationType = @applicationType,
-          sensorConfirmed = @sensorConfirmed,
-          optionConfirmed = @optionConfirmed
-        WHERE teamName = @teamName;
-      END
+      INSERT INTO [2025_cotton_soil_moisture_sensor_data]
+        (teamName, sensorType, date, reading, options, applied, dateToday, applicationType, sensorConfirmed, optionConfirmed)
+      VALUES
+        (@teamName, @sensorType, @date, @reading, @options, @applied, @dateToday, @applicationType, @sensorConfirmed, @optionConfirmed);
     `);
+    
     
 
     res.status(200).json({

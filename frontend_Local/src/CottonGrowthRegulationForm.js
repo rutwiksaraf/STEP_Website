@@ -29,6 +29,8 @@ function CottonGrowthRegulationForm() {
   const [regulator, setRegulator] = useState("");
   const [rate, setRate] = useState("");
   const [date, setDate] = useState("");
+  const [error, setError] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [formData, setFormData] = useState([]);
   const [dateToday, setDateToday] = useState(new Date().toISOString());
 
@@ -129,6 +131,74 @@ function CottonGrowthRegulationForm() {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString();
+  };
+
+  const usHolidays = [
+    "2025-01-01", // New Year's Day
+    "2025-07-04", // Independence Day
+    "2025-11-11", // Veterans Day
+    "2025-12-25", // Christmas Day
+  ];
+
+  const getDynamicHolidays = (year) => {
+    const holidays = [];
+
+    // Martin Luther King Jr. Day (Third Monday of January)
+    const mlkDay = new Date(year, 0, 1);
+    while (mlkDay.getDay() !== 1) mlkDay.setDate(mlkDay.getDate() + 1);
+    mlkDay.setDate(mlkDay.getDate() + 14); // Third Monday
+    holidays.push(mlkDay.toISOString().split("T")[0]);
+
+    // Presidents' Day (Third Monday of February)
+    const presidentsDay = new Date(year, 1, 1);
+    while (presidentsDay.getDay() !== 1)
+      presidentsDay.setDate(presidentsDay.getDate() + 1);
+    presidentsDay.setDate(presidentsDay.getDate() + 14);
+    holidays.push(presidentsDay.toISOString().split("T")[0]);
+
+    // Memorial Day (Last Monday of May)
+    const memorialDay = new Date(year, 4, 31);
+    while (memorialDay.getDay() !== 1)
+      memorialDay.setDate(memorialDay.getDate() - 1);
+    holidays.push(memorialDay.toISOString().split("T")[0]);
+
+    // Labor Day (First Monday of September)
+    const laborDay = new Date(year, 8, 1);
+    while (laborDay.getDay() !== 1) laborDay.setDate(laborDay.getDate() + 1);
+    holidays.push(laborDay.toISOString().split("T")[0]);
+
+    // Thanksgiving (Fourth Thursday of November)
+    const thanksgiving = new Date(year, 10, 1);
+    while (thanksgiving.getDay() !== 4)
+      thanksgiving.setDate(thanksgiving.getDate() + 1);
+    thanksgiving.setDate(thanksgiving.getDate() + 21);
+    holidays.push(thanksgiving.toISOString().split("T")[0]);
+
+    return holidays;
+  };
+
+  const handleDateChange = (e) => {
+    const selectedDate = e.target.value;
+    const dateObj = new Date(selectedDate);
+    const dayOfWeek = dateObj.getDay(); // 0 = Sunday, 6 = Saturday
+    const year = dateObj.getFullYear();
+
+    // Get full list of holidays
+    const allHolidays = [...usHolidays, ...getDynamicHolidays(year)];
+
+    if (dayOfWeek === 5 || dayOfWeek === 6) {
+      setError(true);
+      setErrorMessage("No Growth Regulators can be applied on weekends.");
+    } else if (allHolidays.includes(selectedDate)) {
+      setError(true);
+      setErrorMessage(
+        "Selected date is a U.S. public holiday. No Growth Regulators can be applied on public holidays."
+      );
+    } else {
+      setError(false);
+      setErrorMessage("");
+      setDate(selectedDate);
+    }
   };
 
   return (
@@ -247,10 +317,12 @@ function CottonGrowthRegulationForm() {
             fullWidth
             type="date"
             value={date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={handleDateChange}
             InputLabelProps={{
               shrink: true,
             }}
+            error={error}
+            helperText={error ? errorMessage : ""}
           />
           <br></br>
           <br></br>

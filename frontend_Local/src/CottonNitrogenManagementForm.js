@@ -37,6 +37,8 @@ import { useApplication } from "./ApplicationContext";
 
 function CottonNitrogenManagementForm({ sectionData, hintText }) {
   //const [applicationType, setApplicationType] = useState("in-season");
+  const [error, setError] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [selectedCard, setSelectedCard] = useState(null);
   const [selectedCard1, setSelectedCard1] = useState(null);
   const [date, setDate] = useState("");
@@ -74,8 +76,10 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
     const data = {
       teamName: teamName,
       applicationType: applicationType,
-      isConfirmed: 1,
+      isApplicationTypeConfirmed: 1,
     };
+
+    console.log("Saving application type confirmation:", data);
 
     axios
       .post("/api/saveCottonApplicationTypeConfirmation", data, {
@@ -105,8 +109,7 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
     setProductType(selected);
     if (selectedCard1 === selected) {
       setSelectedCard1(null);
-    } else
-    setSelectedCard1(selected);
+    } else setSelectedCard1(selected);
   };
 
   const handleClick = (selected) => {
@@ -129,7 +132,7 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
     fetchStarterDataFromBackend();
     fetchCottonApplicationTypeConfirmation();
     fetchDataFromBackend();
-  }, [applicationType]); // Fetch data whenever applicationType changes
+  }, []); // Fetch data whenever applicationType changes
 
   const fetchCottonApplicationTypeConfirmation = () => {
     axios
@@ -327,6 +330,76 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
     }));
   };
 
+  const isStarterSelected = starterTableData.length > 0;
+
+  const usHolidays = [
+    "2025-01-01", // New Year's Day
+    "2025-07-04", // Independence Day
+    "2025-11-11", // Veterans Day
+    "2025-12-25", // Christmas Day
+  ];
+
+  const getDynamicHolidays = (year) => {
+    const holidays = [];
+
+    // Martin Luther King Jr. Day (Third Monday of January)
+    const mlkDay = new Date(year, 0, 1);
+    while (mlkDay.getDay() !== 1) mlkDay.setDate(mlkDay.getDate() + 1);
+    mlkDay.setDate(mlkDay.getDate() + 14); // Third Monday
+    holidays.push(mlkDay.toISOString().split("T")[0]);
+
+    // Presidents' Day (Third Monday of February)
+    const presidentsDay = new Date(year, 1, 1);
+    while (presidentsDay.getDay() !== 1)
+      presidentsDay.setDate(presidentsDay.getDate() + 1);
+    presidentsDay.setDate(presidentsDay.getDate() + 14);
+    holidays.push(presidentsDay.toISOString().split("T")[0]);
+
+    // Memorial Day (Last Monday of May)
+    const memorialDay = new Date(year, 4, 31);
+    while (memorialDay.getDay() !== 1)
+      memorialDay.setDate(memorialDay.getDate() - 1);
+    holidays.push(memorialDay.toISOString().split("T")[0]);
+
+    // Labor Day (First Monday of September)
+    const laborDay = new Date(year, 8, 1);
+    while (laborDay.getDay() !== 1) laborDay.setDate(laborDay.getDate() + 1);
+    holidays.push(laborDay.toISOString().split("T")[0]);
+
+    // Thanksgiving (Fourth Thursday of November)
+    const thanksgiving = new Date(year, 10, 1);
+    while (thanksgiving.getDay() !== 4)
+      thanksgiving.setDate(thanksgiving.getDate() + 1);
+    thanksgiving.setDate(thanksgiving.getDate() + 21);
+    holidays.push(thanksgiving.toISOString().split("T")[0]);
+
+    return holidays;
+  };
+
+  const handleDateChange = (e) => {
+    const selectedDate = e.target.value;
+    const dateObj = new Date(selectedDate);
+    const dayOfWeek = dateObj.getDay(); // 0 = Sunday, 6 = Saturday
+    const year = dateObj.getFullYear();
+
+    // Get full list of holidays
+    const allHolidays = [...usHolidays, ...getDynamicHolidays(year)];
+
+    if (dayOfWeek === 5 || dayOfWeek === 6) {
+      setError(true);
+      setErrorMessage("No Nitrogen inputs can be applied on weekends.");
+    } else if (allHolidays.includes(selectedDate)) {
+      setError(true);
+      setErrorMessage(
+        "Selected date is a U.S. public holiday. No Nitrogen inputs can be applied on public holidays."
+      );
+    } else {
+      setError(false);
+      setErrorMessage("");
+      setDate(selectedDate);
+    }
+  };
+
   return (
     <Container>
       <Box
@@ -338,12 +411,13 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
       >
         <Typography variant="h6">Fertilizer Application Form</Typography>
         <p>
-        Enter the amount of nitrogen fertilizer (46-0-0) at the time of planning. Do not fill the form if no fertilizer is required at planting.”
+          Enter the amount of nitrogen fertilizer (46-0-0) at the time of
+          planning. Do not fill the form if no fertilizer is required at
+          planting.”
         </p>
-        
 
         <Typography variant="h6" color="text.secondary">
-        Fertilizer Application at Planting
+          Fertilizer Application at Planting
         </Typography>
         {/* <Typography variant="body1">
               {formValues.starter || "No starter fertilizer selected"}
@@ -359,16 +433,22 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
           onChange={handleInputChange}
           required
           sx={{ mb: 2 }}
+          disabled={isStarterSelected} // Disable if starter is selected
         />
 
-        <Button type="submit" variant="contained" color="primary">
-          Submit
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={isStarterSelected}
+        >
+          Submit (This cannot be changed once selected)
         </Button>
       </Box>
       <p></p>
 
       <Typography variant="h6" gutterBottom>
-      Fertilizer Application at Planting
+        Fertilizer Application at Planting
       </Typography>
       <TableContainer>
         <Table id={`table-n2-mgmnt-${sectionData}`} size="small">
@@ -398,7 +478,7 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
           Add Application
         </Typography> */}
 
-{/* <div style={{ display: "flex", flexWrap: "wrap" }}>
+        {/* <div style={{ display: "flex", flexWrap: "wrap" }}>
                 
                   <Card
                     key={option}
@@ -429,40 +509,36 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
           <Grid item xs={6}>
             <Card
               onClick={() => {
-                if (!isApplicationTypeConfirmed) {
-                  handleCardClick("in-season");
-                }
+                handleCardClick("in-season");
               }}
-              disabled={isApplicationTypeConfirmed}
               sx={{
-                cursor: isApplicationTypeConfirmed ? "not-allowed" : "pointer",
+                cursor: "pointer",
                 margin: "4px",
-                      padding: "10px 16px",
+                padding: "10px 16px",
                 backgroundColor:
                   applicationType === "in-season" ? "#fa4616" : "#F5F5F5",
-                  border:
+                border:
                   applicationType === "in-season"
                     ? "2px solid rgb(255, 255, 255)"
                     : "2px solid rgb(37, 106, 185)",
                 borderRadius: "8px",
                 borderRadius: "12px",
-                      color: applicationType === "in-season" ? "white" : "#333",
-                      boxShadow:
-                        applicationType === "in-season"
-                          ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
-                          : "none",
-                      transition: "all 0.3s ease-in-out",
-                      display: "flex",
-                      justifyContent: "center", // Center horizontally
-                      alignItems: "center", // Center vertically
-                      textAlign: "center", // Ensures text stays centered
-                      height: "50px", // Fixed height for better alignment
-                      "&:hover": {
-                        backgroundColor:
-                        applicationType === "in-season" ? "#d73a12" : "#E0E0E0",
-                        transform: "scale(1.05)",
-                      },
-                
+                color: applicationType === "in-season" ? "white" : "#333",
+                boxShadow:
+                  applicationType === "in-season"
+                    ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                    : "none",
+                transition: "all 0.3s ease-in-out",
+                display: "flex",
+                justifyContent: "center", // Center horizontally
+                alignItems: "center", // Center vertically
+                textAlign: "center", // Ensures text stays centered
+                height: "50px", // Fixed height for better alignment
+                "&:hover": {
+                  backgroundColor:
+                    applicationType === "in-season" ? "#d73a12" : "#E0E0E0",
+                  transform: "scale(1.05)",
+                },
               }}
             >
               <CardContent>
@@ -473,45 +549,43 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
             </Card>
           </Grid>
           <Grid item xs={6}>
-          <Card
+            <Card
               onClick={() => {
-                if (!isApplicationTypeConfirmed) {
-                  handleCardClick("controlled-release");
-                }
+                handleCardClick("controlled-release");
               }}
-
-              disabled={isApplicationTypeConfirmed}
-
-              
               sx={{
-                cursor: isApplicationTypeConfirmed ? "not-allowed" : "pointer",
+                cursor: "pointer",
                 margin: "4px",
-                      padding: "10px 16px",
+                padding: "10px 16px",
                 backgroundColor:
-                  applicationType === "controlled-release" ? "#fa4616" : "#F5F5F5",
-                  border:
+                  applicationType === "controlled-release"
+                    ? "#fa4616"
+                    : "#F5F5F5",
+                border:
                   applicationType === "controlled-release"
                     ? "2px solid rgb(255, 255, 255)"
                     : "2px solid rgb(37, 106, 185)",
                 borderRadius: "8px",
                 borderRadius: "12px",
-                      color: applicationType === "controlled-release" ? "white" : "#333",
-                      boxShadow:
-                        applicationType === "controlled-release"
-                          ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
-                          : "none",
-                      transition: "all 0.3s ease-in-out",
-                      display: "flex",
-                      justifyContent: "center", // Center horizontally
-                      alignItems: "center", // Center vertically
-                      textAlign: "center", // Ensures text stays centered
-                      height: "50px", // Fixed height for better alignment
-                      "&:hover": {
-                        backgroundColor:
-                        applicationType === "controlled-release" ? "#d73a12" : "#E0E0E0",
-                        transform: "scale(1.05)",
-                      },
-                
+                color:
+                  applicationType === "controlled-release" ? "white" : "#333",
+                boxShadow:
+                  applicationType === "controlled-release"
+                    ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                    : "none",
+                transition: "all 0.3s ease-in-out",
+                display: "flex",
+                justifyContent: "center", // Center horizontally
+                alignItems: "center", // Center vertically
+                textAlign: "center", // Ensures text stays centered
+                height: "50px", // Fixed height for better alignment
+                "&:hover": {
+                  backgroundColor:
+                    applicationType === "controlled-release"
+                      ? "#d73a12"
+                      : "#E0E0E0",
+                  transform: "scale(1.05)",
+                },
               }}
             >
               <CardContent>
@@ -523,13 +597,14 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
           </Grid>
         </Grid>
         <br></br>
-        <Button
+        {/* <Button
+        disabled={isApplicationTypeConfirmed}
           variant="contained"
           color="primary"
-          onClick={() => handleConfirmApplicationType()}
+          onClick={}
         >
           Submit application type
-        </Button>
+        </Button> */}
         <br></br>
         <br></br>
         {/* <FormControlLabel
@@ -665,29 +740,28 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
             </Grid> */}
           </>
         )}
-        {
-          applicationType === "controlled-release" && (
-            <>
-              <p style={{ textAlign: "justify" }}>
-                Controlled Release Fertilizer Program: You have the flexibility
-                to choose any Controlled Release Fertilizer (CRF) blend at any
-                rate. All the CRF applications will be applied at planting.
-              </p>
+        {applicationType === "controlled-release" && (
+          <>
+            <p style={{ textAlign: "justify" }}>
+              Controlled Release Fertilizer Program: You have the flexibility to
+              choose any Controlled Release Fertilizer (CRF) blend at any rate.
+              All the CRF applications will be applied at planting.
+            </p>
 
-              <p style={{ textAlign: "justify" }}>
-                In case of a leaching rain event (determined by the project
-                management team), an additional application of Nitrogen at 30
-                Pounds/Acre will be allowed. Participating teams will be
-                responsible to communicate their decision at least three days in
-                advance.
-              </p>
-              <Grid item xs={12}>
-                <Typography variant="h5">
-                  Controlled Release application methods:
-                </Typography>
-                <div style={{ display: "flex", flexWrap: "wrap" }}>
-                  {controlledreleaseOptions.map((option) => (
-                    <Card
+            <p style={{ textAlign: "justify" }}>
+              In case of a leaching rain event (determined by the project
+              management team), an additional application of Nitrogen at 30
+              Pounds/Acre will be allowed. Participating teams will be
+              responsible to communicate their decision at least three days in
+              advance.
+            </p>
+            <Grid item xs={12}>
+              <Typography variant="h5">
+                Controlled Release application methods:
+              </Typography>
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {controlledreleaseOptions.map((option) => (
+                  <Card
                     key={option}
                     onClick={() => handleClick(option)}
                     sx={{
@@ -719,21 +793,19 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
                       },
                     }}
                   >
-                      <CardContent>
-                        <Typography variant="body2">{option}</Typography>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </Grid>
-              <br></br>
-              <Grid item xs={12}>
-                <Typography variant="h5">
-                  Controlled Release Product:
-                </Typography>
-                <div style={{ display: "flex", flexWrap: "wrap" }}>
-                  {productOptions.map((option) => (
-                    <Card
+                    <CardContent>
+                      <Typography variant="body2">{option}</Typography>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </Grid>
+            <br></br>
+            <Grid item xs={12}>
+              <Typography variant="h5">Controlled Release Product:</Typography>
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {productOptions.map((option) => (
+                  <Card
                     key={option}
                     onClick={() => handleproductClick(option)}
                     sx={{
@@ -743,13 +815,13 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
                       backgroundColor:
                         productType === option ? "#fa4616" : "#F5F5F5",
                       border:
-                      productType === option
+                        productType === option
                           ? "2px solid rgb(255, 255, 255)"
                           : "2px solid rgb(37, 106, 185)",
                       borderRadius: "12px",
                       color: productType === option ? "white" : "#333",
                       boxShadow:
-                      productType === option
+                        productType === option
                           ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
                           : "none",
                       transition: "all 0.3s ease-in-out",
@@ -760,151 +832,147 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
                       height: "50px", // Fixed height for better alignment
                       "&:hover": {
                         backgroundColor:
-                        productType === option ? "#d73a12" : "#E0E0E0",
+                          productType === option ? "#d73a12" : "#E0E0E0",
                         transform: "scale(1.05)",
                       },
                     }}
                   >
-                      <CardContent>
-                        <Typography variant="body2">{option}</Typography>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </Grid>
-              <br></br>
-            </>
-          )}
-          <>
+                    <CardContent>
+                      <Typography variant="body2">{option}</Typography>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </Grid>
             <br></br>
-
-            <TextField
-              id={`${sectionData}-date-input`}
-              label="Date"
-              variant="outlined"
-              fullWidth
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              required
-              // InputProps={{
-              //   endAdornment: (
-              //     <InputAdornment position="end">mm/dd/yy</InputAdornment>
-              //   ),
-              // }}
-            />
-            <br></br>
-            <br></br>
-            <TextField
-              id={`${sectionData}-amount-input`}
-              label="Amount (Pound/Acre of Nitrogen)"
-              variant="outlined"
-              fullWidth
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              helperText={hintText}
-              required
-            />
-            <br></br>
-            <br></br>
-            <Button
-              id={`n2-mgmnt-${sectionData}-add`}
-              variant="contained"
-              color="primary"
-              type="submit"
-            >
-              Add Application
-            </Button>
           </>
-      </form>
-      <br></br>
-      
-      {isApplicationTypeConfirmed && (
+        )}
         <>
           <br></br>
-          <Typography variant="h6" gutterBottom>
-            Application Data
-          </Typography>
+
+          <TextField
+            id={`${sectionData}-date-input`}
+            label="Date"
+            variant="outlined"
+            fullWidth
+            type="date"
+            value={date}
+            onChange={handleDateChange}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            required
+            error={error}
+            helperText={error ? errorMessage : ""}
+            // InputProps={{
+            //   endAdornment: (
+            //     <InputAdornment position="end">mm/dd/yy</InputAdornment>
+            //   ),
+            // }}
+          />
           <br></br>
-          <TableContainer>
-            <Table id={`table-n2-mgmnt-${sectionData}`} size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>#</TableCell>
-                  <TableCell>Date</TableCell>
-                  <TableCell>Amount</TableCell>
+          <br></br>
+          <TextField
+            id={`${sectionData}-amount-input`}
+            label="Amount (Pound/Acre of Nitrogen)"
+            variant="outlined"
+            fullWidth
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            helperText={hintText}
+            required
+          />
+          <br></br>
+          <br></br>
+          <Button
+            id={`n2-mgmnt-${sectionData}-add`}
+            variant="contained"
+            color="primary"
+            type="submit"
+            onClick={() => handleConfirmApplicationType()}
+          >
+            Add Application
+          </Button>
+        </>
+      </form>
+      <br></br>
 
-                  <TableCell>Placement</TableCell>
+      <>
+        <br></br>
+        <Typography variant="h6" gutterBottom>
+          Application Data
+        </Typography>
+        <br></br>
+        <TableContainer>
+          <Table id={`table-n2-mgmnt-${sectionData}`} size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>#</TableCell>
+                <TableCell>Date</TableCell>
+                <TableCell>Amount</TableCell>
 
-                  <TableCell>Applied</TableCell>
-                  <TableCell>Source</TableCell>
+                <TableCell>Placement</TableCell>
 
-                  {applicationType === "controlled-release" && (
-                    <TableCell>Product</TableCell>
-                  )}
-                  <TableCell>
-                    <EditIcon />
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {[...tableData]
-                  .sort((a, b) => new Date(a.date) - new Date(b.date))
-                  .map((app, index) => {
-                    // Format the date to display only the date part (YYYY-MM-DD)
-                    //const formattedDate = new Date(app.date.substring(0, 10)).toLocaleDateString();
-                    return (
-                      <TableRow key={app.id}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>{app.date.substring(0, 10)}</TableCell>
-                        <TableCell>{app.amount}</TableCell>
-                        <TableCell>{app.placement}</TableCell>
-                        <TableCell>
-                          <button
-                            style={{
-                              backgroundColor:
-                                app.applied === "no" ? "red" : "green",
-                              color: "white", // Assuming you want white text for contrast
-                              border: "none", // Remove default button border styling
-                              // Add any other styling you need here
-                            }}
-                          >
-                            {app.applied === "no" ? (
-                              <HighlightOffIcon />
-                            ) : (
-                              <DoneIcon />
-                            )}
-                          </button>
-                        </TableCell>
-                        {applicationType === "controlled-release" && (
-                          <TableCell>{app.product}</TableCell>
-                        )}
-                        <TableCell>
-                          <button>
-                            {app.applied === "no" ? (
-                              <DeleteIcon
-                                onClick={() => handleDeleteApplication(app.id)}
-                              />
-                            ) : (
-                              <EditOffIcon />
-                            )}
-                          </button>
-                        </TableCell>
+                <TableCell>Applied</TableCell>
+                <TableCell>Source</TableCell>
 
-                        {/*  {applicationType === "in-season" && (
+                <TableCell>
+                  <EditIcon />
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {[...tableData]
+                .sort((a, b) => new Date(a.date) - new Date(b.date))
+                .map((app, index) => {
+                  // Format the date to display only the date part (YYYY-MM-DD)
+                  //const formattedDate = new Date(app.date.substring(0, 10)).toLocaleDateString();
+                  return (
+                    <TableRow key={app.id}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{app.date.substring(0, 10)}</TableCell>
+                      <TableCell>{app.amount}</TableCell>
+                      <TableCell>{app.placement}</TableCell>
+                      <TableCell>
+                        <button
+                          style={{
+                            backgroundColor:
+                              app.applied === "no" ? "red" : "green",
+                            color: "white", // Assuming you want white text for contrast
+                            border: "none", // Remove default button border styling
+                            // Add any other styling you need here
+                          }}
+                        >
+                          {app.applied === "no" ? (
+                            <HighlightOffIcon />
+                          ) : (
+                            <DoneIcon />
+                          )}
+                        </button>
+                      </TableCell>
+                      <TableCell>{app.product || "Urea: 46-0-0"}</TableCell>
+                      <TableCell>
+                        <button>
+                          {app.applied === "no" ? (
+                            <DeleteIcon
+                              onClick={() => handleDeleteApplication(app.id)}
+                            />
+                          ) : (
+                            <EditOffIcon />
+                          )}
+                        </button>
+                      </TableCell>
+
+                      {/*  {applicationType === "in-season" && (
                   <TableCell>{app.placement}</TableCell> 
                 )}*/}
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </>
-      )}
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </>
     </Container>
   );
   //               return (

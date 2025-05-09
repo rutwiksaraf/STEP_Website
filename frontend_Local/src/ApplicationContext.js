@@ -8,8 +8,9 @@ export const useApplication = () => useContext(ApplicationContext);
 
 export const ApplicationProvider = ({ children }) => {
   const [applicationType, setApplicationType] = useState(null);
+  console.log("Application Type in context:", applicationType);
   const [isApplicationTypeConfirmed, setIsApplicationTypeConfirmed] =
-    useState(false);
+    useState(0);
 
 
   return (

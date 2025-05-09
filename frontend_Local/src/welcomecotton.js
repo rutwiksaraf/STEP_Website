@@ -34,7 +34,6 @@ import { saveAs } from "file-saver";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CottonWeatherGraph from "./CottonWeatherChart";
 
-
 // import GrowthRegulationForm from "./GrowthRegulationForm"; // Import the Growth Regulation form
 
 function WelcomeCotton() {
@@ -145,7 +144,7 @@ function WelcomeCotton() {
     "Insurance Selection",
     "Marketing Contracts",
     "Bulletin",
-    "Weather"
+    "Weather",
   ];
 
   // Function to handle tab selection
@@ -379,266 +378,260 @@ function WelcomeCotton() {
             {/* Content for other tabs (Hybrid Selection, Seeding Rate, etc.) */}
             {selectedTab === 0 && (
               <div
-                  style={{
-                    backgroundImage:
-                      "url('https://source.unsplash.com/random/1920x1080?nature')",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                    minHeight: "50vh",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    padding: "40px",
-                  }}
-                >
-                  <Container maxWidth="lg">
-                    <Paper
-                      elevation={5}
-                      style={{
-                        padding: "40px",
-                        backgroundColor: "rgba(255, 255, 255, 0.95)",
-                        borderRadius: "20px",
-                        boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
-                      }}
-                    >
-                      <Grid container spacing={4}>
-                        {/* Left Section: Profile Image and User Details */}
-                        <Grid item xs={12} md={4}>
-                          <div style={{ textAlign: "center" }}>
-                            <Typography
-                              variant="h4"
-                              gutterBottom
-                              style={{ fontWeight: "bold", color: "#333" }}
-                            >
-                              Welcome, {username}!
-                            </Typography>
-                            <Avatar
-                              alt="Profile Image"
-                              src={profileImageUrl}
-                              sx={{
-                                width: 200,
-                                height: 200,
-                                margin: "20px auto",
-                                border: "5px solid #fff",
-                                boxShadow: "0 5px 15px rgba(0, 0, 0, 0.2)",
-                              }}
-                            />
-                            <Paper
-                              elevation={2}
-                              style={{
-                                padding: "25px",
-                                borderRadius: "10px",
-                                marginBottom: "20px",
-                              }}
-                            >
-                              <Typography
-                                variant="h5"
-                                gutterBottom
-                                style={{ fontWeight: "bold", color: "#333" }}
-                              >
-                                Update Profile Image
-                              </Typography>
-                              <form
-                                onSubmit={handleUpload}
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  gap: "15px",
-                                }}
-                              >
-                                <FormControl>
-                                  <Input
-                                    id="file-input"
-                                    type="file"
-                                    onChange={handleFileChange}
-                                    style={{ display: "none" }}
-                                  />
-                                  <label htmlFor="file-input">
-                                    <Button
-                                      variant="outlined"
-                                      component="span"
-                                      startIcon={<CloudUploadIcon />}
-                                      style={{ marginRight: "10px" }}
-                                    >
-                                      Choose File
-                                    </Button>
-                                  </label>
-                                  <FormHelperText>
-                                    Select your profile image (jpg, jpeg, png
-                                    format)
-                                  </FormHelperText>
-                                </FormControl>
-                                <Button
-                                  variant="contained"
-                                  color="primary"
-                                  type="submit"
-                                  style={{
-                                    borderRadius: "8px",
-                                    padding: "10px 20px",
-                                    alignSelf: "flex-start",
-                                  }}
-                                >
-                                  Upload Profile Image
-                                </Button>
-                              </form>
-                            </Paper>
-                          </div>
-                        </Grid>
-
-                        {/* Right Section: User Details and Image Upload */}
-                        <Grid item xs={12} md={8}>
+                style={{
+                  backgroundImage:
+                    "url('https://source.unsplash.com/random/1920x1080?nature')",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                  minHeight: "50vh",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: "40px",
+                }}
+              >
+                <Container maxWidth="lg">
+                  <Paper
+                    elevation={5}
+                    style={{
+                      padding: "40px",
+                      backgroundColor: "rgba(255, 255, 255, 0.95)",
+                      borderRadius: "20px",
+                      boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
+                    }}
+                  >
+                    <Grid container spacing={4}>
+                      {/* Left Section: Profile Image and User Details */}
+                      <Grid item xs={12} md={4}>
+                        <div style={{ textAlign: "center" }}>
+                          <Typography
+                            variant="h4"
+                            gutterBottom
+                            style={{ fontWeight: "bold", color: "#333" }}
+                          >
+                            Welcome, {username}!
+                          </Typography>
+                          <Avatar
+                            alt="Profile Image"
+                            src={profileImageUrl}
+                            sx={{
+                              width: 200,
+                              height: 200,
+                              margin: "20px auto",
+                              border: "5px solid #fff",
+                              boxShadow: "0 5px 15px rgba(0, 0, 0, 0.2)",
+                            }}
+                          />
                           <Paper
                             elevation={2}
                             style={{
-                              padding: "20px",
+                              padding: "25px",
                               borderRadius: "10px",
-                              marginTop: "30px",
                               marginBottom: "20px",
                             }}
                           >
                             <Typography
-                              variant="h6"
-                              style={{
-                                fontWeight: "bold",
-                                marginBottom: "10px",
-                              }}
+                              variant="h5"
+                              gutterBottom
+                              style={{ fontWeight: "bold", color: "#333" }}
                             >
-                              User Information
+                              Update Profile Image
                             </Typography>
-                            {cornuser1.length > 0 && (
-                              <>
-                                <Typography>
-                                  Username/TeamName: {cornuser1[0].teamName}
-                                </Typography>
-                                <Typography>
-                                  Crop Type: {cornuser1[0].cropType}
-                                </Typography>
-                                <Typography>
-                                  Captain: {cornuser1[0].captainFirstName}{" "}
-                                  {cornuser1[0].captainLastName}
-                                </Typography>
-                              </>
-                            )}
-                          </Paper>
-                          {cornuser1.length > 0 && (
-                            <Grid container spacing={3}>
-                              <Grid item xs={12} sm={6}>
-                                <Paper
-                                  elevation={2}
-                                  style={{
-                                    padding: "20px",
-                                    borderRadius: "10px",
-                                    height: "100%", // Ensures both papers are the same height
-                                    display: "flex", // Enables flexbox
-                                    flexDirection: "column", // Aligns content properly
-                                    justifyContent: "space-between", // Distributes content evenly
-                                  }}
-                                >
-                                  <Typography
-                                    variant="h6"
-                                    style={{
-                                      fontWeight: "bold",
-                                      marginBottom: "10px",
-                                    }}
-                                  >
-                                    Location
-                                  </Typography>
-                                  <Typography>
-                                    {cornuser1[0].address1}
-                                  </Typography>
-                                  <Typography>
-                                    {cornuser1[0].address2}
-                                  </Typography>
-                                  <Typography>
-                                    {cornuser1[0].city}, {cornuser1[0].state}{" "}
-                                    {cornuser1[0].zipCode}
-                                  </Typography>
-                                  <Typography>{cornuser1[0].country}</Typography>
-                                </Paper>
-                              </Grid>
-
-                              <Grid item xs={12} sm={6}>
-                                <Paper
-                                  elevation={2}
-                                  style={{
-                                    padding: "20px",
-                                    borderRadius: "10px",
-                                    height: "100%", // Ensures both papers are the same height
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    justifyContent: "space-between",
-                                  }}
-                                >
-                                  <Typography
-                                    variant="h6"
-                                    style={{
-                                      fontWeight: "bold",
-                                      marginBottom: "10px",
-                                    }}
-                                  >
-                                    Contact Information
-                                  </Typography>
-                                  <Typography>
-                                    Email: {cornuser1[0].email}
-                                  </Typography>
-                                  <Typography>
-                                    Phone: {cornuser1[0].phone}
-                                  </Typography>
-                                </Paper>
-                              </Grid>
-                            </Grid>
-                          )}
-
-                          {teamMembers1.length > 0 && (
-                            <Paper
-                              elevation={2}
+                            <form
+                              onSubmit={handleUpload}
                               style={{
-                                padding: "25px",
-                                borderRadius: "10px",
-                                marginTop: "20px",
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: "15px",
                               }}
                             >
-                              <Typography
-                                variant="h5"
-                                gutterBottom
-                                style={{ fontWeight: "bold", color: "#333" }}
+                              <FormControl>
+                                <Input
+                                  id="file-input"
+                                  type="file"
+                                  onChange={handleFileChange}
+                                  style={{ display: "none" }}
+                                />
+                                <label htmlFor="file-input">
+                                  <Button
+                                    variant="outlined"
+                                    component="span"
+                                    startIcon={<CloudUploadIcon />}
+                                    style={{ marginRight: "10px" }}
+                                  >
+                                    Choose File
+                                  </Button>
+                                </label>
+                                <FormHelperText>
+                                  Select your profile image (jpg, jpeg, png
+                                  format)
+                                </FormHelperText>
+                              </FormControl>
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                type="submit"
+                                style={{
+                                  borderRadius: "8px",
+                                  padding: "10px 20px",
+                                  alignSelf: "flex-start",
+                                }}
                               >
-                                Team Members
-                              </Typography>
-                              <Grid container spacing={2}>
-                                {teamMembers1.map((member, index) => (
-                                  <Grid item xs={12} sm={6} key={index}>
-                                    <Paper
-                                      elevation={1}
-                                      style={{
-                                        padding: "15px",
-                                        borderRadius: "8px",
-                                      }}
-                                    >
-                                      <Typography
-                                        variant="subtitle1"
-                                        style={{ fontWeight: "bold" }}
-                                      >
-                                        Team Member {index + 1}
-                                      </Typography>
-                                      <Typography>
-                                        Name: {member.name}
-                                      </Typography>
-                                      <Typography>
-                                        Email: {member.email}
-                                      </Typography>
-                                    </Paper>
-                                  </Grid>
-                                ))}
-                              </Grid>
-                            </Paper>
-                          )}
-                        </Grid>
+                                Upload Profile Image
+                              </Button>
+                            </form>
+                          </Paper>
+                        </div>
                       </Grid>
-                    </Paper>
-                  </Container>
-                </div>
+
+                      {/* Right Section: User Details and Image Upload */}
+                      <Grid item xs={12} md={8}>
+                        <Paper
+                          elevation={2}
+                          style={{
+                            padding: "20px",
+                            borderRadius: "10px",
+                            marginTop: "30px",
+                            marginBottom: "20px",
+                          }}
+                        >
+                          <Typography
+                            variant="h6"
+                            style={{
+                              fontWeight: "bold",
+                              marginBottom: "10px",
+                            }}
+                          >
+                            User Information
+                          </Typography>
+                          {cornuser1.length > 0 && (
+                            <>
+                              <Typography>
+                                Username/TeamName: {cornuser1[0].teamName}
+                              </Typography>
+                              <Typography>
+                                Crop Type: {cornuser1[0].cropType}
+                              </Typography>
+                              <Typography>
+                                Captain: {cornuser1[0].captainFirstName}{" "}
+                                {cornuser1[0].captainLastName}
+                              </Typography>
+                            </>
+                          )}
+                        </Paper>
+                        {cornuser1.length > 0 && (
+                          <Grid container spacing={3}>
+                            <Grid item xs={12} sm={6}>
+                              <Paper
+                                elevation={2}
+                                style={{
+                                  padding: "20px",
+                                  borderRadius: "10px",
+                                  height: "100%", // Ensures both papers are the same height
+                                  display: "flex", // Enables flexbox
+                                  flexDirection: "column", // Aligns content properly
+                                  justifyContent: "space-between", // Distributes content evenly
+                                }}
+                              >
+                                <Typography
+                                  variant="h6"
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  Location
+                                </Typography>
+                                <Typography>{cornuser1[0].address1}</Typography>
+                                <Typography>{cornuser1[0].address2}</Typography>
+                                <Typography>
+                                  {cornuser1[0].city}, {cornuser1[0].state}{" "}
+                                  {cornuser1[0].zipCode}
+                                </Typography>
+                                <Typography>{cornuser1[0].country}</Typography>
+                              </Paper>
+                            </Grid>
+
+                            <Grid item xs={12} sm={6}>
+                              <Paper
+                                elevation={2}
+                                style={{
+                                  padding: "20px",
+                                  borderRadius: "10px",
+                                  height: "100%", // Ensures both papers are the same height
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <Typography
+                                  variant="h6"
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  Contact Information
+                                </Typography>
+                                <Typography>
+                                  Email: {cornuser1[0].email}
+                                </Typography>
+                                <Typography>
+                                  Phone: {cornuser1[0].phone}
+                                </Typography>
+                              </Paper>
+                            </Grid>
+                          </Grid>
+                        )}
+
+                        {teamMembers1.length > 0 && (
+                          <Paper
+                            elevation={2}
+                            style={{
+                              padding: "25px",
+                              borderRadius: "10px",
+                              marginTop: "20px",
+                            }}
+                          >
+                            <Typography
+                              variant="h5"
+                              gutterBottom
+                              style={{ fontWeight: "bold", color: "#333" }}
+                            >
+                              Team Members
+                            </Typography>
+                            <Grid container spacing={2}>
+                              {teamMembers1.map((member, index) => (
+                                <Grid item xs={12} sm={6} key={index}>
+                                  <Paper
+                                    elevation={1}
+                                    style={{
+                                      padding: "15px",
+                                      borderRadius: "8px",
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="subtitle1"
+                                      style={{ fontWeight: "bold" }}
+                                    >
+                                      Team Member {index + 1}
+                                    </Typography>
+                                    <Typography>Name: {member.name}</Typography>
+                                    <Typography>
+                                      Email: {member.email}
+                                    </Typography>
+                                  </Paper>
+                                </Grid>
+                              ))}
+                            </Grid>
+                          </Paper>
+                        )}
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                </Container>
+              </div>
             )}
             {selectedTab === 1 && (
               <Container component="main" maxWidth="70%">
@@ -654,9 +647,8 @@ function WelcomeCotton() {
                     source your own seed. If sourcing your own seed, 15 lbs to 2
                     bags of seed must be delivered to the West Florida Research
                     and Education Center located at 4253 Experiment Dr, Jay FL,
-                    32565 till May 10th. You must provide
-                    documentation of the retail price for any seed that you
-                    source.
+                    32565 till May 10th. You must provide documentation of the
+                    retail price for any seed that you source.
                   </p>
                   <CottonHybridForm />
                 </div>
@@ -727,7 +719,7 @@ function WelcomeCotton() {
               <Container component="main" maxWidth="90%">
                 <div>
                   <p style={{ textAlign: "justify" }}>
-                    Select a crop insurance plan and a coverage level. Options
+                    Choose a crop insurance plan and coverage level. Options
                     include Yield Protection and Revenue Protection plans at
                     coverage levels ranging from 50% to 85%. Yield Protection
                     insures against low yields relative to a producer’s historic
@@ -736,17 +728,18 @@ function WelcomeCotton() {
                   </p>
 
                   <p style={{ textAlign: "justify" }}>
-                    Please download the document showing insurance premiums and
-                    minimum guarantees for each option. The crop insurance
-                    calculator can be used to see indemnity payments under
-                    different scenarios.
+                    Insurance selection must be made by June 2nd. If you do not
+                    choose a plan, Yield Protection at the 50% level will be the
+                    default. Once your insurance choice has been submitted, it
+                    cannot be changed for this year’s contest.
                   </p>
                   <p style={{ textAlign: "justify" }}>
-                    Insurance selections must be made by May 15th. If you do not
-                    choose a plan, Yield Protection at the 50% level will be
-                    assigned to your team as the default choice. Once an
-                    insurance choice has been submitted, it cannot be changed
-                    for this year’s contest.
+                    To assist with your decision, please see the Insurance Rules
+                    & Premiums document and the Crop Insurance Calculator shown
+                    on the right side of this webpage.
+                  </p>
+                  <p style={{ textAlign: "justify" }}>
+                  Please choose a plan and coverage level below.
                   </p>
                   <div style={{ display: "flex", flexWrap: "wrap" }}>
                     <div style={{ flex: 3, minWidth: "400px" }}>
@@ -966,10 +959,11 @@ function WelcomeCotton() {
                       }}
                     >
                       <p style={{ textAlign: "justify" }}>
-                        You may forward contract cotton lint on any day between
-                        the program start date and September 30th. Select the
-                        number of bales (in 100-bale increments) that you want
-                        to contract on that date, then click Submit Button.
+                        Select the number of bales you would like to forward
+                        contract today. Then click Submit. All contracts will be
+                        flat-price contracts. The contracted bales will be
+                        assigned today’s December futures closing price. Quality
+                        premiums and discounts will be estimated after harvest.
                       </p>
 
                       <p style={{ textAlign: "justify" }}>
@@ -985,17 +979,12 @@ function WelcomeCotton() {
                       </p>
 
                       <p style={{ textAlign: "justify" }}>
-                        You may contract multiple times on different dates. The
-                        total quantity sold by your team will be the average
-                        lint yield per acre harvested from your team’s plots
-                        times 1,000 acres. Any cotton lint harvested from your
-                        simulated 1,000 acres that is not contracted by
-                        September 30th, will be assigned the spot price after
-                        harvest, ginning, and classing. If you contract more
-                        bales than your simulated 1000-acre harvest, you will be
-                        charged a $0.05/lb fee, plus the difference between the
-                        spot price and highest contract price (if the spot price
-                        is higher), on the number of bales over contracted.
+                        All contracts must be in increments of 200 bales
+                        (~100,000 lbs). You may contract multiple times on
+                        different dates up to a maximum of 2400 bales during the
+                        season. The forward contract deadline is October 31st.
+                        Any bales from your 1000-acre harvest not contracted by
+                        October 31st will be spot priced 2 weeks after harvest.
                       </p>
                     </div>
                     <p style={{ textAlign: "justify" }}></p>
@@ -1096,10 +1085,10 @@ function WelcomeCotton() {
               </Container>
             )}
             {selectedTab === 9 && (
-                <Container component="main" maxWidth="90%">
-                  <CottonWeatherGraph stationId="170" />
-                </Container>
-              )}
+              <Container component="main" maxWidth="90%">
+                <CottonWeatherGraph stationId="170" />
+              </Container>
+            )}
           </div>
         </Container>
       </div>
