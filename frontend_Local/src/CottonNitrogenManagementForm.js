@@ -893,7 +893,9 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
             color="primary"
             type="submit"
             onClick={() => handleConfirmApplicationType()}
-            disabled={!applicationType || !productType}
+            disabled={!applicationType || // applicationType is not selected
+              !subapplicationType || // method not selected
+              (applicationType === "controlled-release" && !productType)}
           >
             Add Application
           </Button>

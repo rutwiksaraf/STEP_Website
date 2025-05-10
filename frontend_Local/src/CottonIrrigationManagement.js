@@ -660,7 +660,7 @@ function CottonIrrigationManagementForm() {
           <>
             <p style={{ textAlign: "justify" }}>
               {" "}
-              Recommonded Corn Irrigation apps for evapotranspiration based
+              Recommonded Irrigation apps for evapotranspiration based
               irrigation scheduling{" "}
               <a href="https://smartirrigationapps.org/cotton-app/">
                 https://smartirrigationapps.org/cotton-app/
@@ -784,7 +784,9 @@ function CottonIrrigationManagementForm() {
                     color="primary"
                     onClick={submitForm}
                     style={{ marginTop: "16px" }}
-                    disabled={!soilMoistureSensor || !selectedOption || !date || !amount} 
+                    disabled={
+                      !soilMoistureSensor || !selectedOption || !date || !amount
+                    }
                   >
                     Submit
                   </Button>
@@ -821,11 +823,26 @@ function CottonIrrigationManagementForm() {
                             {/* <TableCell>{app.applied}</TableCell> */}
                             <TableCell>
                               {" "}
-                              {app.applied === "no" ? (
+                              {/* {app.applied === "no" ? (
                                 <HighlightOffIcon />
                               ) : (
-                                <DoneIcon />
-                              )}
+                                <DoneIcon />  
+                              )} */}
+                              <button
+                                style={{
+                                  backgroundColor:
+                                    app.applied === "no" ? "red" : "green",
+                                  color: "white", // Assuming you want white text for contrast
+                                  border: "none", // Remove default button border styling
+                                  // Add any other styling you need here
+                                }}
+                              >
+                                {app.applied === "no" ? (
+                                  <HighlightOffIcon />
+                                ) : (
+                                  <DoneIcon />
+                                )}
+                              </button>
                             </TableCell>
                             {/* <TableCell>Icon</TableCell> */}
                             <TableCell>
@@ -876,11 +893,26 @@ function CottonIrrigationManagementForm() {
                             <TableCell>{app.reading}</TableCell>
                             <TableCell>
                               {" "}
-                              {app.applied === "no" ? (
+                              {/* {app.applied === "no" ? (
                                 <HighlightOffIcon />
                               ) : (
-                                <DoneIcon />
-                              )}
+                                <DoneIcon />  
+                              )} */}
+                              <button
+                                style={{
+                                  backgroundColor:
+                                    app.applied === "no" ? "red" : "green",
+                                  color: "white", // Assuming you want white text for contrast
+                                  border: "none", // Remove default button border styling
+                                  // Add any other styling you need here
+                                }}
+                              >
+                                {app.applied === "no" ? (
+                                  <HighlightOffIcon />
+                                ) : (
+                                  <DoneIcon />
+                                )}
+                              </button>
                             </TableCell>
                             <TableCell>
                               <button>
@@ -929,11 +961,27 @@ function CottonIrrigationManagementForm() {
                             <TableCell>{app.date.substring(0, 10)}</TableCell>
                             <TableCell>{app.reading}</TableCell>
                             <TableCell>
-                              {app.applied === "no" ? (
+                              {" "}
+                              {/* {app.applied === "no" ? (
                                 <HighlightOffIcon />
                               ) : (
-                                <DoneIcon />
-                              )}
+                                <DoneIcon />  
+                              )} */}
+                              <button
+                                style={{
+                                  backgroundColor:
+                                    app.applied === "no" ? "red" : "green",
+                                  color: "white", // Assuming you want white text for contrast
+                                  border: "none", // Remove default button border styling
+                                  // Add any other styling you need here
+                                }}
+                              >
+                                {app.applied === "no" ? (
+                                  <HighlightOffIcon />
+                                ) : (
+                                  <DoneIcon />
+                                )}
+                              </button>
                             </TableCell>
                             <TableCell>
                               <button>

@@ -21,7 +21,7 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import DoneIcon from "@mui/icons-material/Done";
 
 function CottonMarketingOptionsForm() {
-  const [contractType, setContractType] = useState("Flat-price");
+  const [contractType, setContractType] = useState("");
   const [quantityBushels, setQuantityBushels] = useState("");
   const [marketingOptions, setMarketingOptions] = useState([]);
   const [dateToday, setDateToday] = useState(new Date().toISOString());

@@ -330,7 +330,7 @@ function CottonGrowthRegulationForm() {
           <div className="block control">
             <TextField
               id="rate"
-              label="Rate (any)"
+              label="Rate (oz/acre)"
               variant="outlined"
               fullWidth
               value={rate}
