@@ -176,6 +176,9 @@ function MarketingOptionsForm() {
     return date.toLocaleDateString();
   };
 
+
+  console.log("Marketing Options:", marketingOptions);
+
   return (
     <Container maxWidth="100%">
       <Typography variant="h6" gutterBottom>
@@ -406,7 +409,7 @@ function MarketingOptionsForm() {
               {marketingOptions.map((option, index) => (
                 <TableRow key={index}>
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>{formatDate(option.date)}</TableCell>
+                  <TableCell>{option.date}</TableCell>
                   <TableCell>{option.contractType}</TableCell>
                   <TableCell>{option.quantityBushels}</TableCell>
                   {/* <TableCell>{option.complete}</TableCell> */}
@@ -434,7 +437,7 @@ function MarketingOptionsForm() {
                   <TableCell>
                     {option.complete === "yes" ? (
                       <p style={{ textAlign: "justify" }}>
-                        {formatDate(option.completedon)}
+                        {option.completedon}
                       </p>
                     ) : (
                       <></>

@@ -2873,6 +2873,7 @@ function AdminPage() {
                                       Seeding Rate: {form.seedingRate}{" "}
                                       Seeds/Acre
                                     </Typography>
+                                    
                                     <Typography variant="body2">
                                       Notes: {form.notes}
                                     </Typography>
@@ -4042,6 +4043,9 @@ function AdminPage() {
                                         Seeding Rate: {form.seedingRate}{" "}
                                         Seeds/Acre
                                       </Typography>
+                                      <Typography variant="body2">
+                                      Method: {form.seedingMethod}
+                                    </Typography>
                                       <Typography variant="body2">
                                         Notes: {form.notes}
                                       </Typography>
