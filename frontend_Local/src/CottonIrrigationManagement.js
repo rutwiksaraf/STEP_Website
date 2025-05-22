@@ -109,7 +109,6 @@ function CottonIrrigationManagementForm() {
       sensorType: soilMoistureSensor,
       sensorConfirmed: 1,
     };
-    console.log("data", data);
     axios
       .post("/api/saveMoistureApplicationTypeConfirmationCotton", data, {
         headers: {
@@ -336,10 +335,10 @@ function CottonIrrigationManagementForm() {
     holidays.push(presidentsDay.toISOString().split("T")[0]);
 
     // Memorial Day (Last Monday of May)
-    const memorialDay = new Date(year, 4, 31);
-    while (memorialDay.getDay() !== 1)
-      memorialDay.setDate(memorialDay.getDate() - 1);
-    holidays.push(memorialDay.toISOString().split("T")[0]);
+    // const memorialDay = new Date(year, 4, 31);
+    // while (memorialDay.getDay() !== 1)
+    //   memorialDay.setDate(memorialDay.getDate() - 1);
+    // holidays.push(memorialDay.toISOString().split("T")[0]);
 
     // Labor Day (First Monday of September)
     const laborDay = new Date(year, 8, 1);
@@ -381,6 +380,8 @@ function CottonIrrigationManagementForm() {
   };
 
   const issensorSelected = applications.length > 0;
+
+  console.log("Sensor selected", issensorSelected);
   return (
     <Container>
       <form onSubmit={submitForm}>
@@ -576,12 +577,17 @@ function CottonIrrigationManagementForm() {
                     <Card
                       key={sensorOption}
                       onClick={() =>
-                        !issensorSelected && handleSensorCardClick(sensorOption)
+                        !isApplicationTypeConfirmed1 &&
+                        handleSensorCardClick(sensorOption)
                       }
                       sx={{
-                        cursor: issensorSelected ? "not-allowed" : "pointer",
-                        pointerEvents: issensorSelected ? "none" : "auto",
-                        opacity: issensorSelected ? 0.6 : 1,
+                        cursor: isApplicationTypeConfirmed1
+                          ? "not-allowed"
+                          : "pointer",
+                        pointerEvents: isApplicationTypeConfirmed1
+                          ? "none"
+                          : "auto",
+                        opacity: isApplicationTypeConfirmed1 ? 0.6 : 1,
                         margin: "4px",
                         padding: "10px 16px",
                         backgroundColor:
@@ -603,10 +609,10 @@ function CottonIrrigationManagementForm() {
                             : "none",
                         transition: "all 0.3s ease-in-out",
                         display: "flex",
-                        justifyContent: "center", // Center horizontally
-                        alignItems: "center", // Center vertically
-                        textAlign: "center", // Ensures text stays centered
-                        height: "50px", // Fixed height for better alignment
+                        justifyContent: "center",
+                        alignItems: "center",
+                        textAlign: "center",
+                        height: "50px",
                         "&:hover": {
                           backgroundColor:
                             soilMoistureSensor === sensorOption

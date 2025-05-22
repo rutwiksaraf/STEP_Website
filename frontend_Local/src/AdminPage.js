@@ -427,7 +427,7 @@ function AdminPage() {
       .then((response) => {
         if (response.status === 200 && response.data) {
           // Assuming response.data has the structure { applicationType, isConfirmed }
-          setSoilMoistureSensor(response.data.applicationType);
+          setSoilMoistureSensor(response.data.sensorType);
           setIsApplicationTypeConfirmed1(response.data.isConfirmed);
         } else {
           setSoilMoistureSensor("");
@@ -483,7 +483,7 @@ function AdminPage() {
       .then((response) => {
         if (response.status === 200 && response.data) {
           // Assuming response.data has the structure { applicationType, isConfirmed }
-          setSoilMoistureSensor(response.data.applicationType);
+          setSoilMoistureSensor(response.data.sensorType);
           setIsApplicationTypeConfirmed1(response.data.isConfirmed);
         } else {
           setSoilMoistureSensor("");
@@ -2873,7 +2873,7 @@ function AdminPage() {
                                       Seeding Rate: {form.seedingRate}{" "}
                                       Seeds/Acre
                                     </Typography>
-                                    
+
                                     <Typography variant="body2">
                                       Notes: {form.notes}
                                     </Typography>
@@ -3116,7 +3116,7 @@ function AdminPage() {
                         </Typography>
 
                         <div>
-                          {isApplicationTypeConfirmed && (
+                          
                             <div>
                               <p style={{ textAlign: "justify" }}>
                                 Selected Irrigation Management option:{" "}
@@ -3124,7 +3124,7 @@ function AdminPage() {
                               </p>
                               {/* Render any additional information about the sensor here */}
                             </div>
-                          )}
+                          
                           {/* Other component markup */}
                         </div>
 
@@ -4044,8 +4044,8 @@ function AdminPage() {
                                         Seeds/Acre
                                       </Typography>
                                       <Typography variant="body2">
-                                      Method: {form.seedingMethod}
-                                    </Typography>
+                                        Method: {form.seedingMethod}
+                                      </Typography>
                                       <Typography variant="body2">
                                         Notes: {form.notes}
                                       </Typography>
@@ -4315,28 +4315,38 @@ function AdminPage() {
                           Irrigation Management
                         </Typography>
                         <div>
-                          {isApplicationTypeConfirmed && (
-                            <div>
-                              <p style={{ textAlign: "justify" }}>
-                                Selected Irrigation Management option:{" "}
-                                {selectedOption}
-                              </p>
-                              {/* Render any additional information about the sensor here */}
-                            </div>
-                          )}
+                          <div>
+                            <p style={{ textAlign: "justify" }}>
+                              Selected Irrigation Management option:&nbsp;
+                              <strong>
+                                {selectedOption
+                                  ? selectedOption
+                                      .split("-")
+                                      .map(
+                                        (word) =>
+                                          word.charAt(0).toUpperCase() +
+                                          word.slice(1).toLowerCase()
+                                      )
+                                      .join(" ")
+                                  : "Not selected"}
+                              </strong>
+                            </p>
+                            {/* Render any additional information about the sensor here */}
+                          </div>
+
                           {/* Other component markup */}
                         </div>
 
                         <div>
-                          {isApplicationTypeConfirmed1 && (
-                            <div>
-                              <p style={{ textAlign: "justify" }}>
-                                Selected Soil Moisture Sensor:{" "}
-                                {soilMoistureSensor}
-                              </p>
-                              {/* Render any additional information about the sensor here */}
-                            </div>
-                          )}
+                          <div>
+                            <p style={{ textAlign: "justify" }}>
+                              Selected Soil Moisture Sensor:{" "}
+                              {soilMoistureSensor || "Not selected"}
+                            </p>
+                            
+                            {/* Render any additional information about the sensor here */}
+                          </div>
+
                           {/* Other component markup */}
                         </div>
 
@@ -4701,7 +4711,12 @@ function AdminPage() {
                                           )}
                                         </button>
                                       </TableCell>
-                                      <TableCell> {new Date(option.dateToday).toISOString().slice(0, 10)} </TableCell>
+                                      <TableCell>
+                                        {" "}
+                                        {new Date(option.dateToday)
+                                          .toISOString()
+                                          .slice(0, 10)}{" "}
+                                      </TableCell>
                                       <TableCell>
                                         <button
                                           style={{

@@ -2722,23 +2722,20 @@ function CottonAdminPage() {
                       Irrigation Management
                     </Typography>
                     <div>
-                      {isApplicationTypeConfirmed && (
                         <div>
                           <p style={{ textAlign: "justify" }}>
-                            Selected Irrigation Management option:{" "}
-                            {selectedOption}
+                            Selected Irrigation Management option:
+                            {selectedOption || "Not Selected"}
                           </p>
-                          {/* Render any additional information about the sensor here */}
                         </div>
-                      )}
-                      {/* Other component markup */}
+                      
                     </div>
 
                     <div>
-                      {isApplicationTypeConfirmed1 && (
+                      {(
                         <div>
                           <p style={{ textAlign: "justify" }}>
-                            Selected Soil Moisture Sensor: {soilMoistureSensor}
+                            Selected Soil Moisture Sensor: {soilMoistureSensor || "Not Selected"}
                           </p>
                           {/* Render any additional information about the sensor here */}
                         </div>
