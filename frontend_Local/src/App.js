@@ -31,7 +31,7 @@ import { ApplicationProvider } from "./ApplicationContext";
 import { ApplicationProvideri } from "./IrrigationContext";
 import { ApplicationProviders } from "./SensorContext";
 
-// axios.defaults.baseURL = 'http://localhost:3002';
+axios.defaults.baseURL = 'http://localhost:3002';
 
 axios.interceptors.response.use(
   (response) => {

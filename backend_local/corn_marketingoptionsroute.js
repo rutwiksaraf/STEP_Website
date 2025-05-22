@@ -6,8 +6,8 @@ const sql = require("mssql");
 // Define a route for inserting marketing options
 router.post("/insertMarketingOption", async (req, res) => {
   const { teamName, date, contractType, quantityBushels, complete } = req.body;
-  const submitteddate = new Date().toISOString().slice(0, 10); // ISO format date string
-  const today = new Date().toISOString().slice(0, 10);
+  const submitteddate = new Date().toISOString(); // ISO format date string
+  const today = new Date().toISOString();
   try {
     const pool = await setupDatabase(); // Obtain a connection pool
     const request = pool.request(); // Create a new request object
