@@ -4340,8 +4340,10 @@ function AdminPage() {
                         <div>
                           <div>
                             <p style={{ textAlign: "justify" }}>
-                              Selected Soil Moisture Sensor:{" "}
+                              Selected Soil Moisture Sensor:&nbsp;
+                              <strong>
                               {soilMoistureSensor || "Not selected"}
+                              </strong>
                             </p>
                             
                             {/* Render any additional information about the sensor here */}

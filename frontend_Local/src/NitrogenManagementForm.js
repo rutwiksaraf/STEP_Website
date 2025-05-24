@@ -347,36 +347,36 @@ function NitrogenManagementForm({ sectionData, hintText }) {
   const getDynamicHolidays = (year) => {
     const holidays = [];
 
-    // Martin Luther King Jr. Day (Third Monday of January)
-    const mlkDay = new Date(year, 0, 1);
-    while (mlkDay.getDay() !== 1) mlkDay.setDate(mlkDay.getDate() + 1);
-    mlkDay.setDate(mlkDay.getDate() + 14); // Third Monday
-    holidays.push(mlkDay.toISOString().split("T")[0]);
+    // // Martin Luther King Jr. Day (Third Monday of January)
+    // const mlkDay = new Date(year, 0, 1);
+    // while (mlkDay.getDay() !== 1) mlkDay.setDate(mlkDay.getDate() + 1);
+    // mlkDay.setDate(mlkDay.getDate() + 14); // Third Monday
+    // holidays.push(mlkDay.toISOString().split("T")[0]);
 
-    // Presidents' Day (Third Monday of February)
-    const presidentsDay = new Date(year, 1, 1);
-    while (presidentsDay.getDay() !== 1)
-      presidentsDay.setDate(presidentsDay.getDate() + 1);
-    presidentsDay.setDate(presidentsDay.getDate() + 14);
-    holidays.push(presidentsDay.toISOString().split("T")[0]);
+    // // Presidents' Day (Third Monday of February)
+    // const presidentsDay = new Date(year, 1, 1);
+    // while (presidentsDay.getDay() !== 1)
+    //   presidentsDay.setDate(presidentsDay.getDate() + 1);
+    // presidentsDay.setDate(presidentsDay.getDate() + 14);
+    // holidays.push(presidentsDay.toISOString().split("T")[0]);
 
-    // Memorial Day (Last Monday of May)
-    const memorialDay = new Date(year, 4, 31);
-    while (memorialDay.getDay() !== 1)
-      memorialDay.setDate(memorialDay.getDate() - 1);
-    holidays.push(memorialDay.toISOString().split("T")[0]);
+    // // Memorial Day (Last Monday of May)
+    // const memorialDay = new Date(year, 4, 31);
+    // while (memorialDay.getDay() !== 1)
+    //   memorialDay.setDate(memorialDay.getDate() - 1);
+    // holidays.push(memorialDay.toISOString().split("T")[0]);
 
-    // Labor Day (First Monday of September)
-    const laborDay = new Date(year, 8, 1);
-    while (laborDay.getDay() !== 1) laborDay.setDate(laborDay.getDate() + 1);
-    holidays.push(laborDay.toISOString().split("T")[0]);
+    // // Labor Day (First Monday of September)
+    // const laborDay = new Date(year, 8, 1);
+    // while (laborDay.getDay() !== 1) laborDay.setDate(laborDay.getDate() + 1);
+    // holidays.push(laborDay.toISOString().split("T")[0]);
 
-    // Thanksgiving (Fourth Thursday of November)
-    const thanksgiving = new Date(year, 10, 1);
-    while (thanksgiving.getDay() !== 4)
-      thanksgiving.setDate(thanksgiving.getDate() + 1);
-    thanksgiving.setDate(thanksgiving.getDate() + 21);
-    holidays.push(thanksgiving.toISOString().split("T")[0]);
+    // // Thanksgiving (Fourth Thursday of November)
+    // const thanksgiving = new Date(year, 10, 1);
+    // while (thanksgiving.getDay() !== 4)
+    //   thanksgiving.setDate(thanksgiving.getDate() + 1);
+    // thanksgiving.setDate(thanksgiving.getDate() + 21);
+    // holidays.push(thanksgiving.toISOString().split("T")[0]);
 
     return holidays;
   };

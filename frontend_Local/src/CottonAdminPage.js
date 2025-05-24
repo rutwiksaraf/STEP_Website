@@ -400,7 +400,7 @@ function CottonAdminPage() {
       .then((response) => {
         if (response.status === 200 && response.data) {
           // Assuming response.data has the structure { applicationType, isConfirmed }
-          setSoilMoistureSensor(response.data.applicationType);
+          setSoilMoistureSensor(response.data.sensorType);
           setIsApplicationTypeConfirmed1(response.data.isConfirmed);
         } else {
           setSoilMoistureSensor("");
@@ -456,7 +456,7 @@ function CottonAdminPage() {
       .then((response) => {
         if (response.status === 200 && response.data) {
           // Assuming response.data has the structure { applicationType, isConfirmed }
-          setSoilMoistureSensor(response.data.applicationType);
+          setSoilMoistureSensor(response.data.sensorType);
           setIsApplicationTypeConfirmed1(response.data.isConfirmed);
         } else {
           setSoilMoistureSensor("");
@@ -2724,22 +2724,37 @@ function CottonAdminPage() {
                     <div>
                         <div>
                           <p style={{ textAlign: "justify" }}>
-                            Selected Irrigation Management option:
-                            {selectedOption || "Not Selected"}
-                          </p>
+                              Selected Irrigation Management option:&nbsp;
+                              <strong>
+                                {selectedOption
+                                  ? selectedOption
+                                      .split("-")
+                                      .map(
+                                        (word) =>
+                                          word.charAt(0).toUpperCase() +
+                                          word.slice(1).toLowerCase()
+                                      )
+                                      .join(" ")
+                                  : "Not selected"}
+                              </strong>
+                            </p>
                         </div>
                       
                     </div>
 
                     <div>
-                      {(
+                      
                         <div>
                           <p style={{ textAlign: "justify" }}>
-                            Selected Soil Moisture Sensor: {soilMoistureSensor || "Not Selected"}
-                          </p>
+                            
+                            Selected Soil Moisture Sensor:&nbsp; 
+                            <strong>
+                            {soilMoistureSensor || "Not Selected"}
+                          </strong>
+                            </p>
                           {/* Render any additional information about the sensor here */}
                         </div>
-                      )}
+                      
                       {/* Other component markup */}
                     </div>
 
