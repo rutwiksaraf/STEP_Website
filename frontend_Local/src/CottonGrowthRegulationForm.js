@@ -24,7 +24,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import EditIcon from "@mui/icons-material/Edit";
 import EditOffIcon from "@mui/icons-material/EditOff";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { fromZonedTime, format  } from "date-fns-tz";
+import { fromZonedTime, format, toZonedTime  } from "date-fns-tz";
 
 function CottonGrowthRegulationForm() {
   const [regulator, setRegulator] = useState("");
@@ -191,30 +191,34 @@ const [dateToday, setDateToday] = useState(getLocalMidnightUTC());
     return holidays;
   };
   const handleDateChange = (e) => {
-    const selectedDate = e.target.value; // "2025-05-30"
-    const timeZone = "America/Chicago";
+  const selectedDate = e.target.value; // e.g., "2025-05-30"
+  const timeZone = "America/Chicago";
 
-    const localMidnight = new Date(`${selectedDate}T00:00:00`);
-    const utcDate = fromZonedTime(localMidnight, timeZone); // JS Date in UTC
+  const localMidnight = new Date(`${selectedDate}T00:00:00`);
+  const utcDate = fromZonedTime(localMidnight, timeZone); // This will be stored in UTC
 
-    const dayOfWeek = localMidnight.getDay();
-    const year = localMidnight.getFullYear();
-    const allHolidays = [...usHolidays, ...getDynamicHolidays(year)];
+  // ✅ Ensure weekday is based on Chicago time, not browser time
+  const zoned = toZonedTime(localMidnight, timeZone);
+  const dayOfWeek = zoned.getDay();
 
-    if (dayOfWeek === 5 || dayOfWeek === 6) {
-      setError(true);
-      setErrorMessage("No Growth Regulators can be applied on weekends.");
-    } else if (allHolidays.includes(selectedDate)) {
-      setError(true);
-      setErrorMessage("Selected date is a U.S. public holiday.");
-    } else {
-      setError(false);
-      setErrorMessage("");
+  const year = zoned.getFullYear();
+  const allHolidays = [...usHolidays, ...getDynamicHolidays(year)];
 
-      setDisplayDate(selectedDate); // ✅ show this in the date picker
-      setDate(utcDate.toISOString()); // ✅ send this to backend
-    }
-  };
+  if (dayOfWeek === 0 || dayOfWeek === 6) {
+    setError(true);
+    setErrorMessage("No Growth Regulators can be applied on weekends.");
+  } else if (allHolidays.includes(selectedDate)) {
+    setError(true);
+    setErrorMessage("Selected date is a U.S. public holiday.");
+  } else {
+    setError(false);
+    setErrorMessage("");
+
+    setDisplayDate(selectedDate); // Show in input
+    setDate(utcDate.toISOString()); // Save in UTC
+  }
+};
+
 
   const formatDateForDisplay = (isoString) => {
   if (!isoString) return "";

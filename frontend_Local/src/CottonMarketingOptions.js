@@ -32,23 +32,28 @@ function CottonMarketingOptionsForm() {
 
 
 // Get today's date in the America/Chicago timezone
-const timeZone = "America/Chicago";
+const getChicagoMidnightUTC = () => {
+  const timeZone = "America/Chicago";
 
-// Get now in the *correct* zone
-const now = new Date();
-const zonedNow = toZonedTime(now, timeZone); // now in CDT
+  // Get the current time in Chicago
+  const now = new Date();
+  const zoned = toZonedTime(now, timeZone);
 
-// Extract only the date part (e.g., 2025-05-26) in that zone
-const year = zonedNow.getFullYear();
-const month = zonedNow.getMonth(); // 0-indexed
-const day = zonedNow.getDate();
+  // Build a date string like 2025-05-26T00:00:00 in Chicago time
+  const yyyy = zoned.getFullYear();
+  const mm = String(zoned.getMonth() + 1).padStart(2, "0");
+  const dd = String(zoned.getDate()).padStart(2, "0");
 
-// Create a new Date that represents *midnight CDT*
-const localMidnight = new Date(year, month, day, 0, 0, 0);
-const centralMidnightUTC = toZonedTime(localMidnight, timeZone); // back to zoned time
+  const chicagoMidnightString = `${yyyy}-${mm}-${dd}T00:00:00`;
 
-// Convert to UTC ISO string
-const [dateToday, setDateToday] = useState(new Date(centralMidnightUTC).toISOString());
+  // Interpret that string as in Chicago time
+  const utcDate = fromZonedTime(chicagoMidnightString, timeZone);
+
+  return utcDate.toISOString(); // correct UTC midnight equivalent
+};
+
+const [dateToday, setDateToday] = useState(getChicagoMidnightUTC());
+
 
 
   const handleCardClick = (value) => {

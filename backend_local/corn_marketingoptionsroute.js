@@ -6,21 +6,23 @@ const sql = require("mssql");
 // Define a route for inserting marketing options
 router.post("/insertMarketingOption", async (req, res) => {
   const { teamName, date, contractType, quantityBushels, complete } = req.body;
-  const submitteddate = new Date().toISOString(); // ISO format date string
-  const today = new Date().toISOString();
+
+  const submitteddate = new Date().toISOString(); // current timestamp in ISO format
+  const today = new Date().toISOString(); // reuse if needed
+
   try {
     const pool = await setupDatabase(); // Obtain a connection pool
     const request = pool.request(); // Create a new request object
 
     // Add parameters to your SQL query
     request.input("teamName", sql.VarChar, teamName);
-    request.input("date", sql.Date, date);
+    request.input("date", sql.DateTime, new Date(date));
     request.input("contractType", sql.VarChar, contractType);
     request.input("quantityBushels", sql.VarChar, quantityBushels);
     request.input("complete", sql.VarChar, complete);
-    request.input("submitteddate", sql.Date, submitteddate);
+    request.input("submitteddate", sql.DateTime, new Date(submitteddate));
 
-    request.input("today", sql.Date, today);
+    request.input("today", sql.DateTime, new Date(today));
 
     // Insert a new marketing option
     await request.query(`
@@ -74,7 +76,9 @@ router.get("/fetchAllMarketingOptions", async (req, res) => {
     const request = pool.request(); // Create a new request object
 
     // Execute the query to fetch all marketing options
-    const result = await request.query("SELECT * FROM [2025_marketing_options]");
+    const result = await request.query(
+      "SELECT * FROM [2025_marketing_options]"
+    );
 
     // Send the fetched data as a JSON response
     res.status(200).json(result.recordset);
@@ -85,24 +89,37 @@ router.get("/fetchAllMarketingOptions", async (req, res) => {
 });
 
 router.post("/updateCompleted/:appId", async (req, res) => {
-  const appId = req.params.appId; // Extract the application ID from the request parameters
-  const newCompleteValue = "yes"; // Define the new value for the "complete" field
-  const today = new Date().toISOString().slice(0, 10); // Get today's date in YYYY-MM-DD format
+  const appId = req.params.appId;
+  const newCompleteValue = "yes";
 
   if (!appId) {
     return res.status(400).json({ message: "Application ID is required" });
   }
 
-  try {
-    const pool = await setupDatabase(); // Obtain a connection pool
-    const request = pool.request(); // Create a new request object
+  // === Manual EST/EDT offset approach ===
+  const now = new Date();
 
-    // Add parameters to your SQL query
+  // Get current EST/EDT offset in minutes
+  const estOffsetMinutes = new Date().toLocaleString("en-US", {
+    timeZone: "America/New_York",
+    hour12: false,
+    hour: "2-digit",
+  }) ===
+  new Date().getUTCHours().toString().padStart(2, "0")
+    ? 300 // EST (UTC-5)
+    : 240; // EDT (UTC-4)
+
+  const localMidnight = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0));
+  const estMidnightUTC = new Date(localMidnight.getTime() + estOffsetMinutes * 60 * 1000);
+
+  try {
+    const pool = await setupDatabase();
+    const request = pool.request();
+
     request.input("newCompleteValue", sql.VarChar, newCompleteValue);
-    request.input("today", sql.Date, today);
+    request.input("today", sql.DateTime, estMidnightUTC);
     request.input("appId", sql.Int, appId);
 
-    // Perform the database update operation
     await request.query(`
       UPDATE [2025_marketing_options] 
       SET complete = @newCompleteValue, completedon = @today 
@@ -115,6 +132,7 @@ router.post("/updateCompleted/:appId", async (req, res) => {
     res.status(500).json({ message: "Error updating the record" });
   }
 });
+
 
 router.delete("/deletemarketingApplication/:appId", async (req, res) => {
   const appId = req.params.appId; // Extract the application ID from the request parameters
@@ -131,7 +149,9 @@ router.delete("/deletemarketingApplication/:appId", async (req, res) => {
     request.input("appId", sql.Int, appId);
 
     // Perform the database delete operation
-    await request.query("DELETE FROM [2025_marketing_options] WHERE id = @appId");
+    await request.query(
+      "DELETE FROM [2025_marketing_options] WHERE id = @appId"
+    );
 
     res
       .status(200)

@@ -32,6 +32,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import EditIcon from "@mui/icons-material/Edit";
 import EditOffIcon from "@mui/icons-material/EditOff";
 import { useApplication } from "./ApplicationContext";
+import { toZonedTime } from "date-fns-tz";
 
 function NitrogenManagementForm({ sectionData, hintText }) {
   // const [applicationType, setApplicationType] = useState("in-season");
@@ -44,9 +45,25 @@ function NitrogenManagementForm({ sectionData, hintText }) {
   const teamName = localStorage.getItem("username");
   const [tableData, setTableData] = useState([]);
   const [subapplicationType, setSubApplicationType] = useState("");
-  const [dateToday, setDateToday] = useState(new Date().toISOString());
+
   const token = localStorage.getItem("token");
   const [productOption, setProductOption] = useState("");
+  const [displayDate, setDisplayDate] = useState(""); // for binding to date input
+
+  const getTodayESTAsUTC = () => {
+  const timeZone = "America/New_York";
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const day = now.getDate();
+  const localMidnight = new Date(year, month, day, 0, 0, 0); // midnight EST
+  const zoned = toZonedTime(localMidnight, timeZone);
+  return new Date(zoned).toISOString(); // converted to UTC ISO string
+};
+
+const [dateToday, setDateToday] = useState(getTodayESTAsUTC());
+
+
   const [isProductOptionConfirmed, setIsProductOptionConfirmed] =
     useState(false);
   // const [ApplicationType, setApplicationType] = useState("None");
@@ -94,7 +111,6 @@ function NitrogenManagementForm({ sectionData, hintText }) {
 
     if (!isProductOptionConfirmed) {
       setProductOption(option);
-      
     }
   };
 
@@ -144,21 +160,17 @@ function NitrogenManagementForm({ sectionData, hintText }) {
     "Florikan: 44-0-0",
   ];
 
-  
-
   const handleClick = (selected) => {
     const subApplicationMapping = {
-      "Broadcast": "Broadcast",
-      "Banding": "Banding",
-      "Incorporated": "Incorporated",
+      Broadcast: "Broadcast",
+      Banding: "Banding",
+      Incorporated: "Incorporated",
       "Liquidside-Dressing": "liquidside-dressing",
-      "Fertigation": "fertigation",
-      "Harrell's: 43-0-0" : "Harrell's: 43-0-0",
-      "Pursell: 44.5-0-0" : "Pursell: 44.5-0-0",
-      "Florikan: 44-0-0" : "Florikan: 44-0-0",
+      Fertigation: "fertigation",
+      "Harrell's: 43-0-0": "Harrell's: 43-0-0",
+      "Pursell: 44.5-0-0": "Pursell: 44.5-0-0",
+      "Florikan: 44-0-0": "Florikan: 44-0-0",
     };
-
-    
 
     if (subApplicationMapping[selected]) {
       setSubApplicationType(subApplicationMapping[selected]);
@@ -194,7 +206,6 @@ function NitrogenManagementForm({ sectionData, hintText }) {
         console.error("Error fetching product option confirmation:", error);
       });
   };
-  
 
   const fetchApplicationTypeConfirmation = () => {
     axios
@@ -278,7 +289,7 @@ function NitrogenManagementForm({ sectionData, hintText }) {
         teamName,
         applied: "no",
         dateToday: dateToday,
-        productOption: ""
+        productOption: "",
       };
 
       // Add placement options to the array if they are true
@@ -384,10 +395,9 @@ function NitrogenManagementForm({ sectionData, hintText }) {
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
     const dateObj = new Date(selectedDate);
-    const dayOfWeek = dateObj.getDay(); // 0 = Sunday, 6 = Saturday
+    const dayOfWeek = dateObj.getDay();
     const year = dateObj.getFullYear();
 
-    // Get full list of holidays
     const allHolidays = [...usHolidays, ...getDynamicHolidays(year)];
 
     if (dayOfWeek === 5 || dayOfWeek === 6) {
@@ -395,14 +405,22 @@ function NitrogenManagementForm({ sectionData, hintText }) {
       setErrorMessage("No Nitrogen inputs can be applied on weekends.");
     } else if (allHolidays.includes(selectedDate)) {
       setError(true);
-      setErrorMessage(
-        "Selected date is a U.S. public holiday. No Nitrogen inputs can be applied on public holidays."
-      );
+      setErrorMessage("Selected date is a U.S. public holiday.");
     } else {
       setError(false);
       setErrorMessage("");
-      setDate(selectedDate);
+
+      const utcDate = getUtcFromLocalESTDate(selectedDate);
+      setDate(utcDate); // ✅ backend value
+      setDisplayDate(selectedDate); // ✅ input field display value
     }
+  };
+
+  const getUtcFromLocalESTDate = (dateStr) => {
+    const timeZone = "America/New_York";
+    const localMidnight = new Date(`${dateStr}T00:00:00`);
+    const zoned = toZonedTime(localMidnight, timeZone);
+    return new Date(zoned).toISOString(); // This will be like 2025-06-01T04:00:00.000Z
   };
 
   return (
@@ -679,13 +697,13 @@ function NitrogenManagementForm({ sectionData, hintText }) {
                       backgroundColor:
                         productOption === option ? "#fa4616" : "#F5F5F5",
                       border:
-                      productOption === option
+                        productOption === option
                           ? "2px solid rgb(255, 255, 255)"
                           : "2px solid rgb(37, 106, 185)",
                       borderRadius: "12px",
                       color: productOption === option ? "white" : "#333",
                       boxShadow:
-                      productOption === option
+                        productOption === option
                           ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
                           : "none",
                       transition: "all 0.3s ease-in-out",
@@ -696,7 +714,7 @@ function NitrogenManagementForm({ sectionData, hintText }) {
                       height: "50px", // Fixed height for better alignment
                       "&:hover": {
                         backgroundColor:
-                        productOption === option ? "#d73a12" : "#E0E0E0",
+                          productOption === option ? "#d73a12" : "#E0E0E0",
                         transform: "scale(1.05)",
                       },
                     }}
@@ -803,7 +821,7 @@ function NitrogenManagementForm({ sectionData, hintText }) {
           variant="outlined"
           fullWidth
           type="date"
-          value={date}
+          value={displayDate}
           onChange={handleDateChange}
           required
           InputLabelProps={{ shrink: true, required: true }}
@@ -878,7 +896,11 @@ function NitrogenManagementForm({ sectionData, hintText }) {
                 return (
                   <TableRow key={app.id}>
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell>{app.date.substring(0, 10)}</TableCell>
+                    <TableCell>
+                      {new Date(app.date).toLocaleDateString("en-US", {
+                        timeZone: "America/New_York",
+                      })}
+                    </TableCell>
                     <TableCell>{app.amount}</TableCell>
                     <TableCell>{app.placement}</TableCell>
                     <TableCell>{app.productOption}</TableCell>

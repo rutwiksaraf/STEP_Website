@@ -34,10 +34,10 @@ router.post("/nitrogenmanagementsubmit", async (req, res) => {
     request.input("teamName", sql.VarChar, teamName);
     request.input("applicationType", sql.VarChar, applicationType);
     request.input("placement", sql.VarChar, placement);
-    request.input("date", sql.Date, date);
+    request.input("date", sql.DateTime, new Date(date));
     request.input("amount", sql.VarChar, amount); // Use sql.Decimal if 'amount' is a decimal value
     request.input("applied", sql.VarChar, applied);
-    request.input("dateToday", sql.Date, dateToday);
+    request.input("dateToday", sql.DateTime, new Date(dateToday));
     request.input("productOption", sql.VarChar, productOption);
 
     // Insert a new row without checking for duplicates
@@ -161,7 +161,7 @@ router.post("/updateNitrogenApplied/:appId", async (req, res) => {
       return res.status(404).json({ message: "Application not found" });
     } else {
       teamName = fetchTeamNameResult.recordset[0].teamName;
-      dateOfApplication = fetchTeamNameResult.recordset[0].date;
+      dateOfApplication = fetchTeamNameResult.recordset[0].date.slice(0, 10); 
     }
 
     const updateRequest = new sql.Request(transaction);

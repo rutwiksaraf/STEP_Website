@@ -23,12 +23,29 @@ import EditIcon from "@mui/icons-material/Edit";
 import EditOffIcon from "@mui/icons-material/EditOff";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import DoneIcon from "@mui/icons-material/Done";
+import { toZonedTime, format, fromZonedTime } from "date-fns-tz";
+
 
 function MarketingOptionsForm() {
   const [contractType, setContractType] = useState("");
   const [quantityBushels, setQuantityBushels] = useState("");
   const [marketingOptions, setMarketingOptions] = useState([]);
-  const [dateToday, setDateToday] = useState(new Date().toISOString());
+
+  const getDateTodayUTC = () => {
+  const timeZone = "America/New_York";
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth(); // 0-indexed
+  const day = now.getDate();
+
+  const localMidnight = new Date(year, month, day, 0, 0, 0); // midnight local
+  const zoned = toZonedTime(localMidnight, timeZone);        // shift to EST
+  return new Date(zoned).toISOString();                      // convert to UTC ISO string
+};
+
+const [dateToday, setDateToday] = useState(getDateTodayUTC());
+
+
   const teamName = localStorage.getItem("username");
   const token = localStorage.getItem("token");
 
@@ -177,7 +194,11 @@ function MarketingOptionsForm() {
   };
 
 
-  console.log("Marketing Options:", marketingOptions);
+  const formatToEST = (isoString) => {
+  const timeZone = "America/New_York";
+  const zoned = fromZonedTime(isoString, timeZone);
+  return format(zoned, "yyyy-MM-dd");
+};
 
   return (
     <Container maxWidth="100%">
@@ -409,7 +430,8 @@ function MarketingOptionsForm() {
               {marketingOptions.map((option, index) => (
                 <TableRow key={index}>
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>{option.date}</TableCell>
+                  <TableCell>{formatToEST(option.date)}</TableCell>
+
                   <TableCell>{option.contractType}</TableCell>
                   <TableCell>{option.quantityBushels}</TableCell>
                   {/* <TableCell>{option.complete}</TableCell> */}
@@ -437,7 +459,7 @@ function MarketingOptionsForm() {
                   <TableCell>
                     {option.complete === "yes" ? (
                       <p style={{ textAlign: "justify" }}>
-                        {option.completedon}
+                        {formatToEST(option.completedon)}
                       </p>
                     ) : (
                       <></>

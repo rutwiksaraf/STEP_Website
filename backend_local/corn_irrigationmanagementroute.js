@@ -15,11 +15,11 @@ router.post("/soilmoisturesensorsubmit", async (req, res) => {
     // Add parameters to your SQL query
     request.input("teamName", sql.VarChar, teamName);
     request.input("sensorType", sql.VarChar, sensorType);
-    request.input("date", sql.Date, date);
+    request.input("date", sql.DateTime, new Date(date));
     request.input("reading", sql.Float, reading);
     request.input("options", sql.VarChar, options);
     request.input("applied", sql.VarChar, applied);
-    request.input("dateToday", sql.Date, dateToday);
+    request.input("dateToday", sql.DateTime, new Date(dateToday));
 
     // Insert a new row without checking for duplicates
     await request.query(

@@ -34,6 +34,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import EditOffIcon from "@mui/icons-material/EditOff";
 import { useApplication } from "./IrrigationContext";
 import { useApplication1 } from "./SensorContext";
+import { toZonedTime } from "date-fns-tz";
+
 
 function IrrigationManagementForm() {
   //const [soilMoistureSensor, setSoilMoistureSensor] = useState("");
@@ -46,7 +48,22 @@ function IrrigationManagementForm() {
   const teamName = localStorage.getItem("username");
   const sensorOptions = ["BMP logic", "AquaSpy"];
   //const [selectedOption, setSelectedOption] = useState("null");
-  const [dateToday, setDateToday] = useState(new Date().toISOString());
+  
+  const [displayDate, setDisplayDate] = useState(""); // for date input field
+
+  const getTodayESTAsUTC = () => {
+    const timeZone = "America/New_York";
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const day = now.getDate();
+    const localMidnight = new Date(year, month, day, 0, 0, 0); // midnight EST
+    const zoned = toZonedTime(localMidnight, timeZone);
+    return new Date(zoned).toISOString(); // converted to UTC ISO string
+  };
+  
+  const [dateToday, setDateToday] = useState(getTodayESTAsUTC());
+
   const token = localStorage.getItem("token");
 
   //const [isApplicationTypeConfirmed, setIsApplicationTypeConfirmed] =useState(false);
@@ -378,29 +395,39 @@ function IrrigationManagementForm() {
     return holidays;
   };
 
-  const handleDateChange = (e) => {
-    const selectedDate = e.target.value;
-    const dateObj = new Date(selectedDate);
-    const dayOfWeek = dateObj.getDay(); // 0 = Sunday, 6 = Saturday
-    const year = dateObj.getFullYear();
+const handleDateChange = (e) => {
+  const selectedDate = e.target.value;
+  const dateObj = new Date(selectedDate);
+  const dayOfWeek = dateObj.getDay();
+  const year = dateObj.getFullYear();
 
-    // Get full list of holidays
-    const allHolidays = [...usHolidays, ...getDynamicHolidays(year)];
+  const allHolidays = [...usHolidays, ...getDynamicHolidays(year)];
 
-    if (dayOfWeek === 5 || dayOfWeek === 6) {
-      setError(true);
-      setErrorMessage("No Irrigation inputs can be applied on weekends.");
-    } else if (allHolidays.includes(selectedDate)) {
-      setError(true);
-      setErrorMessage(
-        "Selected date is a U.S. public holiday. No Irrigation inputs can be applied on public holidays."
-      );
-    } else {
-      setError(false);
-      setErrorMessage("");
-      setDate(selectedDate);
-    }
-  };
+  if (dayOfWeek === 5 || dayOfWeek === 6) {
+    setError(true);
+    setErrorMessage("No Irrigation inputs can be applied on weekends.");
+  } else if (allHolidays.includes(selectedDate)) {
+    setError(true);
+    setErrorMessage(
+      "Selected date is a U.S. public holiday. No Irrigation inputs can be applied on public holidays."
+    );
+  } else {
+    setError(false);
+    setErrorMessage("");
+
+    setDisplayDate(selectedDate); // ✅ bind to input field
+    setDate(getUtcFromLocalESTDate(selectedDate)); // ✅ store as UTC for backend
+  }
+};
+
+const getUtcFromLocalESTDate = (dateStr) => {
+  const timeZone = "America/New_York";
+  const localMidnight = new Date(`${dateStr}T00:00:00`);
+  const utcDate = new Date(localMidnight.toLocaleString("en-US", { timeZone }));
+  return utcDate.toISOString();
+};
+
+
 
   return (
     <Container maxWidth="100%">
@@ -743,7 +770,7 @@ function IrrigationManagementForm() {
                 variant="outlined"
                 fullWidth
                 type="date"
-                value={date}
+                value={displayDate}
                 onChange={handleDateChange}
                 required
                 InputLabelProps={{ shrink: true, required: true }}
