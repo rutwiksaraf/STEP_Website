@@ -36,10 +36,10 @@ router.post("/cottonnitrogenmanagementsubmit", async (req, res) => {
     request.input("teamName", sql.VarChar, teamName);
     request.input("applicationType", sql.VarChar, applicationType);
     request.input("placement", sql.VarChar, placement);
-    request.input("date", sql.Date, date);
+    request.input("date", sql.DateTime, new Date(date));
     request.input("amount", sql.VarChar, amount); // Use sql.Decimal if 'amount' is a decimal value
     request.input("applied", sql.VarChar, applied);
-    request.input("dateToday", sql.Date, dateToday);
+    request.input("dateToday", sql.DateTime, new Date(dateToday));
     request.input("product", sql.VarChar, product);
 
     // Insert a new row without checking for duplicates

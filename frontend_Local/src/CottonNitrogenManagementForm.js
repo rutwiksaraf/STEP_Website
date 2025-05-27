@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Box } from "@mui/material";
+import { fromZonedTime, format, toZonedTime } from "date-fns-tz";
 
 import {
   Button,
@@ -49,7 +50,9 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
   const [starterTableData, setStarterTableData] = useState([]);
   const [subapplicationType, setSubApplicationType] = useState("");
   const [productType, setProductType] = useState("");
-  const [dateToday, setDateToday] = useState(new Date().toISOString());
+  const [dateToday, setDateToday] = useState("");
+  const [displayDate, setDisplayDate] = useState("");
+
   const token = localStorage.getItem("token");
   const [formValues, setFormValues] = useState({
     starter: "Fertilizer Application at Planting",
@@ -76,7 +79,7 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
     const data = {
       teamName: teamName,
       applicationType: applicationType,
-      isApplicationTypeConfirmed: 1,   
+      isApplicationTypeConfirmed: 1,
     };
 
     console.log("Saving application type confirmation:", data);
@@ -133,6 +136,16 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
     fetchStarterDataFromBackend();
     fetchCottonApplicationTypeConfirmation();
     fetchDataFromBackend();
+
+    const now = new Date(); // current UTC time
+    const timeZone = "America/Chicago";
+    const localDateString = format(now, "yyyy-MM-dd", { timeZone }); // '2025-05-26'
+    const chicagoMidnight = fromZonedTime(
+      `${localDateString}T00:00:00`,
+      timeZone
+    );
+    const utcDateToday = chicagoMidnight.toISOString(); // will now be 05:00:00Z
+    setDateToday(utcDateToday);
   }, []); // Fetch data whenever applicationType changes
 
   const fetchCottonApplicationTypeConfirmation = () => {
@@ -380,25 +393,39 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
     const dateObj = new Date(selectedDate);
-    const dayOfWeek = dateObj.getDay(); // 0 = Sunday, 6 = Saturday
+    const dayOfWeek = dateObj.getDay();
     const year = dateObj.getFullYear();
 
-    // Get full list of holidays
     const allHolidays = [...usHolidays, ...getDynamicHolidays(year)];
 
     if (dayOfWeek === 5 || dayOfWeek === 6) {
       setError(true);
       setErrorMessage("No Nitrogen inputs can be applied on weekends.");
+      setDisplayDate(""); // Reset if invalid
+      setDate(""); // Reset backend value too
     } else if (allHolidays.includes(selectedDate)) {
       setError(true);
-      setErrorMessage(
-        "Selected date is a U.S. public holiday. No Nitrogen inputs can be applied on public holidays."
-      );
+      setErrorMessage("Selected date is a U.S. public holiday.");
+      setDisplayDate("");
+      setDate("");
     } else {
       setError(false);
       setErrorMessage("");
-      setDate(selectedDate);
+
+      const timeZone = "America/Chicago";
+      const localMidnight = new Date(`${selectedDate}T00:00:00`);
+      const utcDate = fromZonedTime(localMidnight, timeZone);
+
+      setDisplayDate(selectedDate); // shown in textfield
+      setDate(utcDate.toISOString()); // sent to backend
     }
+  };
+
+  const formatDateForDisplay = (isoString) => {
+    if (!isoString) return "";
+    const timeZone = "America/Chicago"; // Jay, FL
+    const zoned = fromZonedTime(isoString, timeZone);
+    return format(zoned, "yyyy-MM-dd");
   };
 
   console.log("Product Type:", productType);
@@ -859,7 +886,7 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
             variant="outlined"
             fullWidth
             type="date"
-            value={date}
+            value={displayDate}
             onChange={handleDateChange}
             InputLabelProps={{
               shrink: true,
@@ -867,12 +894,8 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
             required
             error={error}
             helperText={error ? errorMessage : ""}
-            // InputProps={{
-            //   endAdornment: (
-            //     <InputAdornment position="end">mm/dd/yy</InputAdornment>
-            //   ),
-            // }}
           />
+
           <br></br>
           <br></br>
           <TextField
@@ -893,9 +916,11 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
             color="primary"
             type="submit"
             onClick={() => handleConfirmApplicationType()}
-            disabled={!applicationType || // applicationType is not selected
+            disabled={
+              !applicationType || // applicationType is not selected
               !subapplicationType || // method not selected
-              (applicationType === "controlled-release" && !productType)}
+              (applicationType === "controlled-release" && !productType)
+            }
           >
             Add Application
           </Button>
@@ -936,7 +961,7 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
                   return (
                     <TableRow key={app.id}>
                       <TableCell>{index + 1}</TableCell>
-                      <TableCell>{app.date.substring(0, 10)}</TableCell>
+                      <TableCell>{formatDateForDisplay(app.date)}</TableCell>
                       <TableCell>{app.amount}</TableCell>
                       <TableCell>{app.placement}</TableCell>
                       <TableCell>
@@ -956,7 +981,11 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
                           )}
                         </button>
                       </TableCell>
-                      <TableCell>{app.applicationType === "controlled-release" ? app.product : "Urea: 46-0-0"}</TableCell>
+                      <TableCell>
+                        {app.applicationType === "controlled-release"
+                          ? app.product
+                          : "Urea: 46-0-0"}
+                      </TableCell>
                       <TableCell>
                         <button>
                           {app.applied === "no" ? (
@@ -981,42 +1010,6 @@ function CottonNitrogenManagementForm({ sectionData, hintText }) {
       </>
     </Container>
   );
-  //               return (
-  //                 <TableRow key={app.id}>
-  //                   <TableCell>{index + 1}</TableCell>
-  //                   <TableCell>{app.date.substring(0, 10)}</TableCell>
-  //                   <TableCell>{app.amount}</TableCell>
-  //                   <TableCell>{app.placement}</TableCell>
-  //                   <TableCell>
-  //                     {app.applied === "no" ? (
-  //                       <HighlightOffIcon />
-  //                     ) : (
-  //                       <DoneIcon />
-  //                     )}
-  //                   </TableCell>
-  //                   <TableCell>
-  //                     {" "}
-  //                     <button>
-  //                       {app.applied === "no" ? (
-  //                         <DeleteIcon
-  //                           onClick={() => handleDeleteApplication(app.id)}
-  //                         />
-  //                       ) : (
-  //                         <EditOffIcon />
-  //                       )}
-  //                     </button>
-  //                   </TableCell>
-  //                   {/* {applicationType === "in-season" && (
-  //                 <TableCell>{app.placement}</TableCell>
-  //               )} */}
-  //                 </TableRow>
-  //               );
-  //             })}
-  //         </TableBody>
-  //       </Table>
-  //     </TableContainer>
-  //   </Container>
-  // );
 }
 
 export default CottonNitrogenManagementForm;

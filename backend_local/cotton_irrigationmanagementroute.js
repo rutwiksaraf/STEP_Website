@@ -4,12 +4,22 @@ const { setupDatabase } = require("./database");
 const sql = require("mssql");
 
 router.post("/cottonsoilmoisturesensorsubmit", async (req, res) => {
-  const { teamName, sensorType, date, reading, options, applied, dateToday, applicationType, sensorConfirmed, optionConfirmed } =
-    req.body;
+  const {
+    teamName,
+    sensorType,
+    date,
+    reading,
+    options,
+    applied,
+    dateToday,
+    applicationType,
+    sensorConfirmed,
+    optionConfirmed,
+  } = req.body;
 
-    console.log("Received data:", req.body); // Log the received data for debugging
+  console.log("Received data:", req.body); // Log the received data for debugging
 
-   // Log the received data for debugging
+  // Log the received data for debugging
 
   try {
     const pool = await setupDatabase(); // Obtain a connection pool
@@ -18,19 +28,14 @@ router.post("/cottonsoilmoisturesensorsubmit", async (req, res) => {
     // Add parameters to your SQL query
     request.input("teamName", sql.VarChar, teamName);
     request.input("sensorType", sql.VarChar, sensorType);
-    request.input("date", sql.Date, date);
     request.input("reading", sql.Float, reading);
     request.input("options", sql.VarChar, options);
     request.input("applied", sql.VarChar, applied);
-    request.input("dateToday", sql.Date, dateToday);
     request.input("applicationType", sql.VarChar, applicationType);
     request.input("sensorConfirmed", sql.Bit, sensorConfirmed);
     request.input("optionConfirmed", sql.Bit, optionConfirmed);
-
-
-
-
-
+    request.input("date", sql.DateTime, new Date(date)); // ensures it's a Date object
+    request.input("dateToday", sql.DateTime, new Date(dateToday)); // ensures UTC format
 
     // Insert a new row without checking for duplicates
     await request.query(`
@@ -39,8 +44,6 @@ router.post("/cottonsoilmoisturesensorsubmit", async (req, res) => {
       VALUES
         (@teamName, @sensorType, @date, @reading, @options, @applied, @dateToday, @applicationType, @sensorConfirmed, @optionConfirmed);
     `);
-    
-    
 
     res.status(200).json({
       message: "Sensor data submitted successfully",
@@ -80,7 +83,6 @@ router.get("/cottonfetchSoilMoistureSensorData", async (req, res) => {
   }
 });
 
-
 router.get("/cottonfetchAllSoilMoistureSensorData", async (req, res) => {
   try {
     const pool = await setupDatabase(); // Obtain a connection pool
@@ -98,7 +100,6 @@ router.get("/cottonfetchAllSoilMoistureSensorData", async (req, res) => {
     res.status(500).json({ message: "Error fetching sensor data" });
   }
 });
-
 
 router.delete("/deletecottonirrigationApplication/:appId", async (req, res) => {
   const appId = req.params.appId; // Extract the application ID from the request parameters
@@ -129,7 +130,6 @@ router.delete("/deletecottonirrigationApplication/:appId", async (req, res) => {
       .json({ message: "Error deleting the irrigation application" });
   }
 });
-
 
 router.post("/updateCottonApplied/:appId", async (req, res) => {
   const appId = req.params.appId; // Extract the application ID from the request parameters

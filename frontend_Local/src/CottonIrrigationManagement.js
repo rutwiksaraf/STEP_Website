@@ -34,6 +34,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import EditOffIcon from "@mui/icons-material/EditOff";
 import { useApplication } from "./IrrigationContext";
 import { useApplication1 } from "./SensorContext";
+import { fromZonedTime, format } from "date-fns-tz";
 
 function CottonIrrigationManagementForm() {
   const [sectionData, setSectionData] = useState("v10-harvest");
@@ -45,8 +46,20 @@ function CottonIrrigationManagementForm() {
   const teamName = localStorage.getItem("username");
   const sensorOptions = ["BMP logic", "AquaSpy"];
   // const [selectedOption, setSelectedOption] = useState("");
-  const [dateToday, setDateToday] = useState(new Date().toISOString());
   const token = localStorage.getItem("token");
+  const [displayDate, setDisplayDate] = useState("");
+
+  const getTodayMidnightUTC = () => {
+  const timeZone = "America/Chicago";
+  const now = new Date();
+  const dateOnly = now.toLocaleDateString("en-CA"); // YYYY-MM-DD
+  const localMidnight = new Date(`${dateOnly}T00:00:00`);
+  return fromZonedTime(localMidnight, timeZone).toISOString();
+};
+
+const [dateToday, setDateToday] = useState(getTodayMidnightUTC());
+
+
 
   //const [isApplicationTypeConfirmed, setIsApplicationTypeConfirmed] =useState(false);
 
@@ -306,10 +319,6 @@ function CottonIrrigationManagementForm() {
     setSoilMoistureSensor(selectedSensor);
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString();
-  };
 
   const usHolidays = [
     "2025-01-01", // New Year's Day
@@ -355,33 +364,49 @@ function CottonIrrigationManagementForm() {
     return holidays;
   };
 
-  const handleDateChange = (e) => {
-    const selectedDate = e.target.value;
-    const dateObj = new Date(selectedDate);
-    const dayOfWeek = dateObj.getDay(); // 0 = Sunday, 6 = Saturday
-    const year = dateObj.getFullYear();
+const handleDateChange = (e) => {
+  const selectedDate = e.target.value;
+  const dateObj = new Date(selectedDate);
+  const dayOfWeek = dateObj.getDay();
+  const year = dateObj.getFullYear();
 
-    // Get full list of holidays
-    const allHolidays = [...usHolidays, ...getDynamicHolidays(year)];
+  const allHolidays = [...usHolidays, ...getDynamicHolidays(year)];
 
-    if (dayOfWeek === 5 || dayOfWeek === 6) {
-      setError(true);
-      setErrorMessage("No Irrigation inputs can be applied on weekends.");
-    } else if (allHolidays.includes(selectedDate)) {
-      setError(true);
-      setErrorMessage(
-        "Selected date is a U.S. public holiday. No Irrigation inputs can be applied on public holidays."
-      );
-    } else {
-      setError(false);
-      setErrorMessage("");
-      setDate(selectedDate);
-    }
-  };
+  if (dayOfWeek === 5 || dayOfWeek === 6) {
+    setError(true);
+    setErrorMessage("No Irrigation inputs can be applied on weekends.");
+    setDisplayDate("");
+    setDate("");
+  } else if (allHolidays.includes(selectedDate)) {
+    setError(true);
+    setErrorMessage(
+      "Selected date is a U.S. public holiday. No Irrigation inputs can be applied on public holidays."
+    );
+    setDisplayDate("");
+    setDate("");
+  } else {
+    setError(false);
+    setErrorMessage("");
+
+    const timeZone = "America/Chicago";
+    const localMidnight = new Date(`${selectedDate}T00:00:00`);
+    const utcDate = fromZonedTime(localMidnight, timeZone);
+
+    setDisplayDate(selectedDate);       // For UI display
+    setDate(utcDate.toISOString());     // UTC value for backend
+  }
+};
 
   const issensorSelected = applications.length > 0;
 
-  console.log("Sensor selected", issensorSelected);
+  const formatDateForDisplay = (isoString) => {
+      if (!isoString) return "";
+      const timeZone = "America/Chicago"; // Jay, FL
+      const zoned = fromZonedTime(isoString, timeZone);
+      return format(zoned, "yyyy-MM-dd");
+    };
+
+  
   return (
     <Container>
       <form onSubmit={submitForm}>
@@ -713,7 +738,8 @@ function CottonIrrigationManagementForm() {
                     variant="outlined"
                     fullWidth
                     type="date"
-                    value={date}
+                    value={displayDate}
+
                     onChange={handleDateChange}
                     InputLabelProps={{
                       shrink: true,
@@ -823,7 +849,7 @@ function CottonIrrigationManagementForm() {
                         .map((app, index) => (
                           <TableRow key={app.id}>
                             <TableCell>{index + 1}</TableCell>
-                            <TableCell>{app.date.substring(0, 10)}</TableCell>
+                            <TableCell>{formatDateForDisplay(app.date)}</TableCell>
                             <TableCell>{app.reading}</TableCell>
                             {/* <TableCell>{app.sensorType}</TableCell> */}
                             {/* <TableCell>{app.applied}</TableCell> */}
@@ -895,7 +921,7 @@ function CottonIrrigationManagementForm() {
                         .map((app, index) => (
                           <TableRow key={app.id}>
                             <TableCell>{index + 1}</TableCell>
-                            <TableCell>{app.date.substring(0, 10)}</TableCell>
+                            <TableCell>{formatDateForDisplay(app.date)}</TableCell>
                             <TableCell>{app.reading}</TableCell>
                             <TableCell>
                               {" "}
@@ -964,7 +990,7 @@ function CottonIrrigationManagementForm() {
                         .map((app, index) => (
                           <TableRow key={app.id}>
                             <TableCell>{index + 1}</TableCell>
-                            <TableCell>{app.date.substring(0, 10)}</TableCell>
+                            <TableCell>{formatDateForDisplay(app.date)}</TableCell>
                             <TableCell>{app.reading}</TableCell>
                             <TableCell>
                               {" "}

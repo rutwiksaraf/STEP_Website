@@ -20,13 +20,36 @@ import axios from "axios"; // Import Axios
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import DoneIcon from "@mui/icons-material/Done";
 
+import { fromZonedTime, format, toZonedTime } from "date-fns-tz";
+
 function CottonMarketingOptionsForm() {
   const [contractType, setContractType] = useState("");
   const [quantityBushels, setQuantityBushels] = useState("");
   const [marketingOptions, setMarketingOptions] = useState([]);
-  const [dateToday, setDateToday] = useState(new Date().toISOString());
   const teamName = localStorage.getItem("username");
   const token = localStorage.getItem("token");
+
+
+
+// Get today's date in the America/Chicago timezone
+const timeZone = "America/Chicago";
+
+// Get now in the *correct* zone
+const now = new Date();
+const zonedNow = toZonedTime(now, timeZone); // now in CDT
+
+// Extract only the date part (e.g., 2025-05-26) in that zone
+const year = zonedNow.getFullYear();
+const month = zonedNow.getMonth(); // 0-indexed
+const day = zonedNow.getDate();
+
+// Create a new Date that represents *midnight CDT*
+const localMidnight = new Date(year, month, day, 0, 0, 0);
+const centralMidnightUTC = toZonedTime(localMidnight, timeZone); // back to zoned time
+
+// Convert to UTC ISO string
+const [dateToday, setDateToday] = useState(new Date(centralMidnightUTC).toISOString());
+
 
   const handleCardClick = (value) => {
     setContractType(value);
@@ -150,6 +173,13 @@ function CottonMarketingOptionsForm() {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString();
+  };
+
+  const formatToCentralDate = (isoString) => {
+    if (!isoString) return "";
+    const timeZone = "America/Chicago";
+    const zoned = fromZonedTime(new Date(isoString), timeZone);
+    return format(zoned, "yyyy-MM-dd");
   };
 
   return (
@@ -325,12 +355,10 @@ function CottonMarketingOptionsForm() {
             <Button
               id="marketing-option-add"
               variant="contained"
-                    color="primary"
+              color="primary"
               type="submit"
               style={{ marginTop: "16px" }}
-              disabled={
-                !contractType === "" || quantityBushels === ""
-              }
+              disabled={!contractType === "" || quantityBushels === ""}
             >
               Submit
             </Button>
@@ -356,7 +384,8 @@ function CottonMarketingOptionsForm() {
               {marketingOptions?.map((option, index) => (
                 <TableRow key={index}>
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>{option.date.slice(0, 10)}</TableCell>
+                  <TableCell>{formatToCentralDate(option.date)}</TableCell>
+
                   <TableCell>{option.contractType}</TableCell>
                   <TableCell>{option.quantityBushels}</TableCell>
                   {/* <TableCell>{option.complete}</TableCell> */}

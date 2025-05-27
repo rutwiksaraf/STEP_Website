@@ -3,25 +3,23 @@ const router = express.Router();
 const { setupDatabase } = require("./database");
 const sql = require("mssql");
 
-
-
 router.post("/cottoninsertMarketingOption", async (req, res) => {
   const { teamName, date, contractType, quantityBushels, complete } = req.body;
-  const submitteddate = new Date().toISOString() // ISO format date string
-  const today = new Date().toISOString()
+  const submitteddate = new Date().toISOString(); // ISO format date string
+  const today = new Date().toISOString();
   try {
     const pool = await setupDatabase(); // Obtain a connection pool
     const request = pool.request(); // Create a new request object
 
     // Add parameters to your SQL query
     request.input("teamName", sql.VarChar, teamName);
-    request.input("date", sql.Date, date);
+
     request.input("contractType", sql.VarChar, contractType);
     request.input("quantityBushels", sql.VarChar, quantityBushels);
     request.input("complete", sql.VarChar, complete);
-    request.input("submitteddate", sql.Date, submitteddate);
-
-    request.input("today", sql.Date, today);
+    request.input("date", sql.DateTime, new Date(date));
+    request.input("submitteddate", sql.DateTime, new Date(submitteddate));
+    request.input("today", sql.DateTime, new Date(today));
 
     // Insert a new marketing option
     await request.query(`
@@ -101,7 +99,6 @@ router.get("/cottonfetchMarketingOptions", async (req, res) => {
   }
 });
 
-
 router.get("/cottonfetchAllMarketingOptions", async (req, res) => {
   try {
     const pool = await setupDatabase(); // Obtain a connection pool
@@ -123,7 +120,7 @@ router.get("/cottonfetchAllMarketingOptions", async (req, res) => {
 router.post("/cottonupdateCompleted/:appId", async (req, res) => {
   const appId = req.params.appId; // Extract the application ID from the request parameters
   const newCompleteValue = "yes"; // Define the new value for the "complete" field
-  const today = new Date().toISOString().slice(0, 10); // Get today's date in YYYY-MM-DD format
+  const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
 
   if (!appId) {
     return res.status(400).json({ message: "Application ID is required" });
@@ -135,7 +132,7 @@ router.post("/cottonupdateCompleted/:appId", async (req, res) => {
 
     // Add parameters to your SQL query
     request.input("newCompleteValue", sql.VarChar, newCompleteValue);
-    request.input("today", sql.Date, today);
+    request.input("today", sql.DateTime, new Date(today));
     request.input("appId", sql.Int, appId);
 
     // Perform the database update operation

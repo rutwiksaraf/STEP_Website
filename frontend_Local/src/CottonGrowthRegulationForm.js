@@ -24,15 +24,29 @@ import DoneIcon from "@mui/icons-material/Done";
 import EditIcon from "@mui/icons-material/Edit";
 import EditOffIcon from "@mui/icons-material/EditOff";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { fromZonedTime, format  } from "date-fns-tz";
 
 function CottonGrowthRegulationForm() {
   const [regulator, setRegulator] = useState("");
   const [rate, setRate] = useState("");
   const [date, setDate] = useState("");
+  const [displayDate, setDisplayDate] = useState("");
   const [error, setError] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [formData, setFormData] = useState([]);
-  const [dateToday, setDateToday] = useState(new Date().toISOString());
+  
+  const getLocalMidnightUTC = () => {
+  const timeZone = "America/Chicago";
+  const now = new Date();
+  const localDateString = now.toLocaleDateString("en-CA"); // YYYY-MM-DD
+  const localMidnight = new Date(`${localDateString}T00:00:00`);
+  const utcMidnight = fromZonedTime(localMidnight, timeZone);
+  return utcMidnight.toISOString();
+};
+
+const [dateToday, setDateToday] = useState(getLocalMidnightUTC());
+
+
 
   const teamName = localStorage.getItem("username");
   const token = localStorage.getItem("token");
@@ -176,14 +190,15 @@ function CottonGrowthRegulationForm() {
 
     return holidays;
   };
-
   const handleDateChange = (e) => {
-    const selectedDate = e.target.value;
-    const dateObj = new Date(selectedDate);
-    const dayOfWeek = dateObj.getDay(); // 0 = Sunday, 6 = Saturday
-    const year = dateObj.getFullYear();
+    const selectedDate = e.target.value; // "2025-05-30"
+    const timeZone = "America/Chicago";
 
-    // Get full list of holidays
+    const localMidnight = new Date(`${selectedDate}T00:00:00`);
+    const utcDate = fromZonedTime(localMidnight, timeZone); // JS Date in UTC
+
+    const dayOfWeek = localMidnight.getDay();
+    const year = localMidnight.getFullYear();
     const allHolidays = [...usHolidays, ...getDynamicHolidays(year)];
 
     if (dayOfWeek === 5 || dayOfWeek === 6) {
@@ -191,15 +206,23 @@ function CottonGrowthRegulationForm() {
       setErrorMessage("No Growth Regulators can be applied on weekends.");
     } else if (allHolidays.includes(selectedDate)) {
       setError(true);
-      setErrorMessage(
-        "Selected date is a U.S. public holiday. No Growth Regulators can be applied on public holidays."
-      );
+      setErrorMessage("Selected date is a U.S. public holiday.");
     } else {
       setError(false);
       setErrorMessage("");
-      setDate(selectedDate);
+
+      setDisplayDate(selectedDate); // ✅ show this in the date picker
+      setDate(utcDate.toISOString()); // ✅ send this to backend
     }
   };
+
+  const formatDateForDisplay = (isoString) => {
+  if (!isoString) return "";
+  const timeZone = "America/Chicago"; // Jay, FL
+  const zoned = fromZonedTime(isoString, timeZone);
+  return format(zoned, "yyyy-MM-dd");
+};
+
 
   return (
     <Container>
@@ -316,7 +339,7 @@ function CottonGrowthRegulationForm() {
             variant="outlined"
             fullWidth
             type="date"
-            value={date}
+            value={displayDate}
             onChange={handleDateChange}
             InputLabelProps={{
               shrink: true,
@@ -324,6 +347,7 @@ function CottonGrowthRegulationForm() {
             error={error}
             helperText={error ? errorMessage : ""}
           />
+
           <br></br>
           <br></br>
 
@@ -383,7 +407,8 @@ function CottonGrowthRegulationForm() {
               {formData.map((data, index) => (
                 <TableRow key={index}>
                   {/* <TableCell>{data.teamName}</TableCell> */}
-                  <TableCell>{data.date}</TableCell>
+                  <TableCell>{formatDateForDisplay(data.date)}</TableCell>
+
                   <TableCell>{data.regulator}</TableCell>
                   <TableCell>{data.rate}</TableCell>
                   <TableCell>
@@ -425,158 +450,3 @@ function CottonGrowthRegulationForm() {
 }
 
 export default CottonGrowthRegulationForm;
-
-// import React, { useState, useEffect } from "react";
-// import {
-//   Button,
-//   Container,
-//   FormControl,
-//   InputLabel,
-//   MenuItem,
-//   Select,
-//   Typography,
-//   TextField,
-//   hintText,
-// } from "@mui/material";
-// import axios from "axios";
-
-// function CottonGrowthRegulationForm() {
-//   const [regulator, setRegulator] = useState("");
-//   const [rate, setRate] = useState("");
-//   const [formData, setFormData] = useState([]);
-//   const teamName = localStorage.getItem("username");
-
-//   // Fetch existing insurance selection data for the user
-//   //   const fetchInsuranceSelectionData = () => {
-//   //     axios
-//   //       .post("/api/getInsuranceSelectionForms", {
-//   //         username: teamName,
-//   //       })
-//   //       .then((response) => {
-//   //         if (response.status === 200) {
-//   //           setFormData(response.data);
-//   //         } else {
-//   //           console.error("Failed to fetch data from the backend");
-//   //         }
-//   //       })
-//   //       .catch((error) => {
-//   //         console.error("Error fetching data:", error);
-//   //       });
-//   //   };
-
-//   //   // Fetch existing insurance selection data for the user when the component mounts
-//   //   useEffect(() => {
-//   //     fetchInsuranceSelectionData();
-//   //   }, [teamName]);
-
-//   //   const handleSubmit = async () => {
-//   //     try {
-//   //       // Prepare the data to be sent
-//   //       const formDataToSubmit = {
-//   //         teamName: teamName,
-//   //         coverage: coverage,
-//   //         level: level,
-//   //       };
-
-//   //       // Send a POST request to your backend endpoint
-//   //       const response = await axios
-//   //         .post("/api/insurancesubmit", formDataToSubmit)
-//   //         .then((response) => {
-//   //           // Handle the successful response if needed
-//   //           if (response.status === 200) {
-//   //             console.log("Application data sent to the backend successfully");
-//   //             fetchInsuranceSelectionData();
-//   //           } else {
-//   //             console.error("Failed to send application data to the backend");
-//   //           }
-//   //         })
-//   //         .catch((error) => {
-//   //           // Handle errors
-//   //           console.error("Error submitting form:", error);
-//   //         });
-
-//   //       // Handle the successful response if needed
-
-//   //       // Fetch updated data after submission
-//   //     } catch (error) {
-//   //       // Handle errors
-//   //       console.error("Error submitting form:", error);
-//   //     }
-//   //   };
-
-//   return (
-//     <Container>
-//       <Typography variant="h6" gutterBottom>
-//         Growth Regulation
-//       </Typography>
-//       <div className="field">
-//         <div className="block control">
-//           <FormControl variant="outlined" fullWidth>
-//             <InputLabel htmlFor="select-insurance-coverage">
-//               Growth Regulator
-//             </InputLabel>
-//             <Select
-//               id="select-regulator"
-//               name="regulator"
-//               label="Regulator"
-//               value={regulator}
-//               onChange={(e) => setRegulator(e.target.value)}
-//             >
-//               <MenuItem value="Pix (Mepiquat Chloride)">
-//                 Pix (Mepiquat Chloride)
-//               </MenuItem>
-//               <MenuItem value="Stance">Stance</MenuItem>
-//             </Select>
-//           </FormControl>
-//         </div>
-//         <br />
-//         <div className="block control">
-//           <TextField
-//             id={`rate`}
-//             label="Rate (any)"
-//             variant="outlined"
-//             fullWidth
-//             value={rate}
-//             onChange={(e) => setRate(e.target.value)}
-//             // helperText={hintText}
-//           />
-//         </div>
-//         <div className="columns">
-//           <div className="column">
-//             <div className="field">
-//               <div className="control">
-//                 <Button
-//                   id="regulation-selection-submit"
-//                   variant="contained"
-//                   color="primary"
-//                   //   onClick={handleSubmit}
-//                 >
-//                   Submit
-//                 </Button>
-//               </div>
-//             </div>
-//           </div>
-//           <div className="column has-text-right">
-//             <div className="subtitle is-4" id="insurance-selection-status-msg">
-//               {/* Display status message here */}
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//       <div>
-//         <Typography variant="h6" gutterBottom>
-//           Existing Growth Regulator Data
-//         </Typography>
-//         <ul>
-//           {formData.map((data, index) => (
-//             <li key={index}>
-//               Coverage: {data.coverage}, Level: {data.level}
-//             </li>
-//           ))}
-//         </ul>
-//       </div>
-//     </Container>
-//   );
-// }
-
-// export default CottonGrowthRegulationForm;

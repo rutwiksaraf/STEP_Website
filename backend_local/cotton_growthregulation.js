@@ -16,27 +16,32 @@ let transporter = nodemailer.createTransport({
 
 router.post("/cottonInsertGrowthRegulation", async (req, res) => {
   const { teamName, date, regulator, rate, applied, dateToday } = req.body;
+
   try {
     const pool = await setupDatabase();
     const request = pool.request();
+
     request.input("teamName", sql.VarChar, teamName);
-    request.input("date", sql.Date, date);
+    request.input("date", sql.DateTime, new Date(date));            // updated
     request.input("regulator", sql.VarChar, regulator);
     request.input("rate", sql.VarChar, rate);
     request.input("applied", sql.Bit, applied);
-    request.input("dateToday", sql.Date, dateToday);
-    
+    request.input("dateToday", sql.DateTime, new Date(dateToday));  // updated
 
     await request.query(`
-      INSERT INTO [2025_cotton_growth_regulation] (teamName, date, regulator, rate, applied, dateToday)
-      VALUES (@teamName, @date, @regulator, @rate, @applied, @dateToday)
+      INSERT INTO [2025_cotton_growth_regulation] 
+        (teamName, date, regulator, rate, applied, dateToday)
+      VALUES 
+        (@teamName, @date, @regulator, @rate, @applied, @dateToday)
     `);
+
     res.status(200).json({ message: "Data inserted successfully" });
   } catch (error) {
     console.error("Error inserting growth regulation data:", error);
     res.status(500).json({ message: "Data insertion failed" });
   }
 });
+
 
 
 
