@@ -190,33 +190,43 @@ const [dateToday, setDateToday] = useState(getLocalMidnightUTC());
 
     return holidays;
   };
-  const handleDateChange = (e) => {
-  const selectedDate = e.target.value; // e.g., "2025-05-30"
+const handleDateChange = (e) => {
+  const selectedDate = e.target.value; // e.g., "2025-06-01"
   const timeZone = "America/Chicago";
 
-  const localMidnight = new Date(`${selectedDate}T00:00:00`);
-  const utcDate = fromZonedTime(localMidnight, timeZone); // This will be stored in UTC
+  console.log("Selected date (raw):", selectedDate);
 
-  // ✅ Ensure weekday is based on Chicago time, not browser time
-  const zoned = toZonedTime(localMidnight, timeZone);
+  // Step 1: Convert local date string to zoned Chicago midnight
+  const chicagoMidnight = fromZonedTime(`${selectedDate}T00:00:00`, timeZone); // ✅ correct interpretation
+
+  // Step 2: Get Chicago-local view of this Date object
+  const zoned = toZonedTime(chicagoMidnight, timeZone);
+  console.log("Chicago-local zoned time:", zoned);
+
   const dayOfWeek = zoned.getDay();
-
   const year = zoned.getFullYear();
   const allHolidays = [...usHolidays, ...getDynamicHolidays(year)];
 
   if (dayOfWeek === 0 || dayOfWeek === 6) {
     setError(true);
     setErrorMessage("No Growth Regulators can be applied on weekends.");
-  } else if (allHolidays.includes(selectedDate)) {
+    setDisplayDate("");
+    setDate("");
+    return;
+  }
+
+  if (allHolidays.includes(selectedDate)) {
     setError(true);
     setErrorMessage("Selected date is a U.S. public holiday.");
-  } else {
-    setError(false);
-    setErrorMessage("");
-
-    setDisplayDate(selectedDate); // Show in input
-    setDate(utcDate.toISOString()); // Save in UTC
+    setDisplayDate("");
+    setDate("");
+    return;
   }
+
+  setError(false);
+  setErrorMessage("");
+  setDisplayDate(selectedDate); // what user sees
+  setDate(chicagoMidnight.toISOString()); // what you store (UTC)
 };
 
 
@@ -434,7 +444,7 @@ const [dateToday, setDateToday] = useState(getLocalMidnightUTC());
                   </TableCell>
                   <TableCell>
                     <button>
-                      {data.applied === "no" ? (
+                      {data.applied === false ? (
                         <DeleteIcon
                           onClick={() => handleDeleteGrowthApplication(data.id)}
                         />

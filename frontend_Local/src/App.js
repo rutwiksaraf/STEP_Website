@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 //import { useLocation } from "react-router-dom";
-import { useHistory } from "react-router-dom";
-import { Button, TextField, Container, Grid, Typography } from "@mui/material";
 import Navbar from "./Navbar";
 import LoginForm from "./LoginForm";
 import AdminLoginForm from "./AdminLoginForm";
@@ -17,12 +15,13 @@ import AdminProfile from "./AdminProfile";
 import ResetPasswordForm from "./ResetPasswordForm";
 import ForgotPasswordForm from "./ForgotPasswordForm";
 import ContactForm from "./contact";
+import { initGA, logPageView } from "./analytics";
+import { useLocation } from "react-router-dom";
 
 import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Switch,
 } from "react-router-dom";
 import axios from "axios";
 import "./App.css";
@@ -59,6 +58,16 @@ axios.interceptors.response.use(
 
 function App() {
   //const location = useLocation();
+  const location = useLocation();
+
+  useEffect(() => {
+    initGA();
+  }, []);
+
+  useEffect(() => {
+    logPageView(location.pathname + location.search);
+  }, [location]);
+
   const [formData, setFormData] = useState({
     cropType: "corn",
     teamName: "",

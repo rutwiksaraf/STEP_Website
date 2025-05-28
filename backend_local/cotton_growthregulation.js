@@ -42,6 +42,29 @@ router.post("/cottonInsertGrowthRegulation", async (req, res) => {
   }
 });
 
+router.delete("/deletecottongrowthApplication/:appId", async (req, res) => {
+  const appId = req.params.appId;
+
+  if (!appId) {
+    return res.status(400).json({ message: "Application ID is required" });
+  }
+
+  try {
+    const pool = await setupDatabase();
+    const request = pool.request();
+
+    request.input("appId", sql.Int, appId);
+
+    await request.query(
+      "DELETE FROM [2025_cotton_growth_regulation] WHERE id = @appId"
+    );
+
+    res.status(200).json({ message: "Growth regulator application deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting growth regulation application:", error);
+    res.status(500).json({ message: "Error deleting application" });
+  }
+});
 
 
 

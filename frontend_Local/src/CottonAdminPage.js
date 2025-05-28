@@ -2718,303 +2718,331 @@ function CottonAdminPage() {
                     )}
                   </TabPanel>
                   <TabPanel value={value1} index={4}>
-                    <Typography variant="h4" backgroundColor="secondary">
-                      Irrigation Management
-                    </Typography>
-                    <div>
-                        <div>
-                          <p style={{ textAlign: "justify" }}>
-                              Selected Irrigation Management option:&nbsp;
-                              <strong>
-                                {selectedOption
-                                  ? selectedOption
-                                      .split("-")
-                                      .map(
-                                        (word) =>
-                                          word.charAt(0).toUpperCase() +
-                                          word.slice(1).toLowerCase()
-                                      )
-                                      .join(" ")
-                                  : "Not selected"}
-                              </strong>
-                            </p>
-                        </div>
-                      
-                    </div>
+                        <Typography variant="h4" backgroundColor="secondary">
+                          Irrigation Management
+                        </Typography>
 
-                    <div>
-                      
                         <div>
                           <p style={{ textAlign: "justify" }}>
-                            
-                            Selected Soil Moisture Sensor:&nbsp; 
+                            Selected Irrigation Management option:&nbsp;
                             <strong>
-                            {soilMoistureSensor || "Not Selected"}
-                          </strong>
-                            </p>
-                          {/* Render any additional information about the sensor here */}
+                              {selectedOption
+                                ? selectedOption
+                                    .split("-")
+                                    .map(
+                                      (word) =>
+                                        word.charAt(0).toUpperCase() +
+                                        word.slice(1).toLowerCase()
+                                    )
+                                    .join(" ")
+                                : "Not selected"}
+                            </strong>
+                          </p>
                         </div>
-                      
-                      {/* Other component markup */}
-                    </div>
 
-                    <Typography variant="h6" gutterBottom>
-                      Calendar Based Irrigation Data
-                    </Typography>
-                    <TableContainer>
-                      <Table
-                        size="small"
-                        aria-label="Irrigation Management Table"
-                      >
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>#</TableCell>
-                            <TableCell>Application Date</TableCell>
-                            <TableCell>Submitted Date</TableCell>
-                            <TableCell>Amount</TableCell>
-                            <TableCell>Applied</TableCell>
-                            <TableCell>
-                              <EditIcon />
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {IrrigationCottonapplications.filter(
-                            (app) => app.teamName === selectedUser.teamName
-                          )
-                            .filter((app) => app.options === "calendar") // Filter data for "calendar" option
-                            .sort((a, b) => new Date(a.date) - new Date(b.date))
-                            .map((app, index) => (
-                              <TableRow key={app.id}>
-                                <TableCell>{index + 1}</TableCell>
-                                <TableCell>
-                                  {app.date.substring(0, 10)}
-                                </TableCell>
-                                <TableCell>
-                                  {app.dateToday.substring(0, 10)}
-                                </TableCell>
-                                <TableCell>{app.reading}</TableCell>
-                                <TableCell>
-                                  <button
-                                    style={{
-                                      backgroundColor:
-                                        app.applied === "no" ? "red" : "green",
-                                      color: "white", // Assuming you want white text for contrast
-                                      border: "none", // Remove default button border styling
-                                      // Add any other styling you need here
-                                    }}
-                                  >
-                                    {app.applied === "no" ? (
-                                      <HighlightOffIcon
-                                        onClick={() =>
-                                          handleChangeApplied1(app.id)
-                                        }
-                                      />
-                                    ) : (
-                                      <DoneIcon />
-                                    )}
-                                  </button>
-                                </TableCell>
+                        <div>
+                          <p style={{ textAlign: "justify" }}>
+                            Selected Soil Moisture Sensor:&nbsp;
+                            <strong>
+                              {soilMoistureSensor || "Not selected"}
+                            </strong>
+                          </p>
+                        </div>
 
-                                <TableCell>
-                                  <button
-                                    style={{
-                                      backgroundColor:
-                                        app.applied === "no" ? "red" : "green",
-                                      color: "white", // Assuming you want white text for contrast
-                                      border: "none", // Remove default button border styling
-                                      // Add any other styling you need here
-                                    }}
-                                  >
-                                    {app.applied === "no" ? (
-                                      <DeleteIcon
-                                        onClick={() =>
-                                          handleDeleteApplication1(app.id)
-                                        }
-                                      />
-                                    ) : (
-                                      <EditOffIcon />
-                                    )}
-                                  </button>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
-                      <Typography variant="h6" gutterBottom>
-                        Evapotranspiration based Irrigation Data
-                      </Typography>
-                      <Table
-                        size="small"
-                        aria-label="Irrigation Management Table"
-                      >
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>#</TableCell>
-                            <TableCell>Application Date</TableCell>
-                            <TableCell>Submitted Date</TableCell>
-                            <TableCell>Amount</TableCell>
-                            <TableCell>Applied</TableCell>
-                            <TableCell>
-                              <EditIcon />
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {IrrigationCottonapplications.filter(
-                            (app) => app.teamName === selectedUser.teamName
-                          )
-                            .filter(
-                              (app) => app.options === "evapotranspiration"
-                            ) // Filter data for "evapotranspiration" option
-                            .sort((a, b) => new Date(a.date) - new Date(b.date))
-                            .map((app, index) => (
-                              <TableRow key={app.id}>
-                                <TableCell>{index + 1}</TableCell>
-                                <TableCell>
-                                  {app.date.substring(0, 10)}
-                                </TableCell>
-                                <TableCell>
-                                  {app.dateToday.substring(0, 10)}
-                                </TableCell>
-                                <TableCell>{app.reading}</TableCell>
-                                {/* <TableCell>{app.applied}</TableCell> */}
-                                <TableCell>
-                                  <button
-                                    style={{
-                                      backgroundColor:
-                                        app.applied === "no" ? "red" : "green",
-                                      color: "white", // Assuming you want white text for contrast
-                                      border: "none", // Remove default button border styling
-                                      // Add any other styling you need here
-                                    }}
-                                  >
-                                    {app.applied === "no" ? (
-                                      <HighlightOffIcon
-                                        onClick={() =>
-                                          handleChangeApplied1(app.id)
-                                        }
-                                      />
-                                    ) : (
-                                      <DoneIcon />
-                                    )}
-                                  </button>
-                                </TableCell>
+                        {IrrigationCottonapplications.filter(
+                          (app) =>
+                            app.teamName === selectedUser.teamName &&
+                            app.options === "calendar"
+                        ).length > 0 && (
+                          <>
+                            <Typography variant="h6" gutterBottom>
+                              Calendar Based Irrigation Data
+                            </Typography>
+                            <TableContainer>
+                              <Table
+                                size="small"
+                                aria-label="Irrigation Management Table"
+                              >
+                                <TableHead>
+                                  <TableRow>
+                                    <TableCell>#</TableCell>
+                                    <TableCell>Application Date</TableCell>
+                                    <TableCell>Submitted Date</TableCell>
+                                    <TableCell>Amount</TableCell>
+                                    <TableCell>Applied</TableCell>
+                                    <TableCell>
+                                      <EditIcon />
+                                    </TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {IrrigationCottonapplications.filter(
+                                    (app) =>
+                                      app.teamName === selectedUser.teamName &&
+                                      app.options === "calendar"
+                                  )
+                                    .sort(
+                                      (a, b) =>
+                                        new Date(a.date) - new Date(b.date)
+                                    )
+                                    .map((app, index) => (
+                                      <TableRow key={app.id}>
+                                        <TableCell>{index + 1}</TableCell>
+                                        <TableCell>
+                                          {app.date.substring(0, 10)}
+                                        </TableCell>
+                                        <TableCell>
+                                          {app.dateToday.substring(0, 10)}
+                                        </TableCell>
+                                        <TableCell>{app.reading}</TableCell>
+                                        <TableCell>
+                                          <button
+                                            style={{
+                                              backgroundColor:
+                                                app.applied === "no"
+                                                  ? "red"
+                                                  : "green",
+                                              color: "white",
+                                              border: "none",
+                                            }}
+                                          >
+                                            {app.applied === "no" ? (
+                                              <HighlightOffIcon
+                                                onClick={() =>
+                                                  handleChangeApplied1(app.id)
+                                                }
+                                              />
+                                            ) : (
+                                              <DoneIcon />
+                                            )}
+                                          </button>
+                                        </TableCell>
+                                        <TableCell>
+                                          <button
+                                            style={{
+                                              backgroundColor:
+                                                app.applied === "no"
+                                                  ? "red"
+                                                  : "green",
+                                              color: "white",
+                                              border: "none",
+                                            }}
+                                          >
+                                            {app.applied === "no" ? (
+                                              <DeleteIcon
+                                                onClick={() =>
+                                                  handleDeleteApplication1(
+                                                    app.id
+                                                  )
+                                                }
+                                              />
+                                            ) : (
+                                              <EditOffIcon />
+                                            )}
+                                          </button>
+                                        </TableCell>
+                                      </TableRow>
+                                    ))}
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                          </>
+                        )}
 
-                                <TableCell>
-                                  <button
-                                    style={{
-                                      backgroundColor:
-                                        app.applied === "no" ? "red" : "green",
-                                      color: "white", // Assuming you want white text for contrast
-                                      border: "none", // Remove default button border styling
-                                      // Add any other styling you need here
-                                    }}
-                                  >
-                                    {app.applied === "no" ? (
-                                      <DeleteIcon
-                                        onClick={() =>
-                                          handleDeleteApplication1(app.id)
-                                        }
-                                      />
-                                    ) : (
-                                      <EditOffIcon />
-                                    )}
-                                  </button>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
-                      <Typography variant="h6" gutterBottom>
-                        Soil - Moisture based Irrigation Data
-                      </Typography>
-                      <Table
-                        size="small"
-                        aria-label="Irrigation Management Table"
-                      >
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>#</TableCell>
-                            <TableCell>Application Date</TableCell>
-                            <TableCell>Submitted Date</TableCell>
-                            <TableCell>Amount</TableCell>
-                            {/* <TableCell>Sensor</TableCell> */}
-                            <TableCell>Applied</TableCell>
-                            <TableCell>
-                              <EditIcon />
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {IrrigationCottonapplications.filter(
-                            (app) => app.teamName === selectedUser.teamName
-                          )
-                            .filter((app) => app.options === "soil-moisture") // Filter data for "soil-moisture" option
-                            .sort((a, b) => new Date(a.date) - new Date(b.date))
-                            .map((app, index) => (
-                              <TableRow key={app.id}>
-                                <TableCell>{index + 1}</TableCell>
-                                <TableCell>
-                                  {app.date.substring(0, 10)}
-                                </TableCell>
-                                <TableCell>
-                                  {app.dateToday.substring(0, 10)}
-                                </TableCell>
-                                <TableCell>{app.reading}</TableCell>
-                                {/* <TableCell>{app.sensorType}</TableCell> */}
-                                {/* <TableCell>{app.applied}</TableCell> */}
-                                <TableCell>
-                                  <button
-                                    style={{
-                                      backgroundColor:
-                                        app.applied === "no" ? "red" : "green",
-                                      color: "white", // Assuming you want white text for contrast
-                                      border: "none", // Remove default button border styling
-                                      // Add any other styling you need here
-                                    }}
-                                  >
-                                    {app.applied === "no" ? (
-                                      <HighlightOffIcon
-                                        onClick={() =>
-                                          handleChangeApplied1(app.id)
-                                        }
-                                      />
-                                    ) : (
-                                      <DoneIcon />
-                                    )}
-                                  </button>
-                                </TableCell>
+                        {/* Evapotranspiration Table */}
+                        {IrrigationCottonapplications.some(
+                          (app) =>
+                            app.teamName === selectedUser.teamName &&
+                            app.options === "evapotranspiration"
+                        ) && (
+                          <>
+                            <Typography variant="h6" gutterBottom>
+                              Evapotranspiration based Irrigation Data
+                            </Typography>
+                            <Table
+                              size="small"
+                              aria-label="Evapotranspiration Table"
+                            >
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell>#</TableCell>
+                                  <TableCell>Application Date</TableCell>
+                                  <TableCell>Submitted Date</TableCell>
+                                  <TableCell>Amount</TableCell>
+                                  <TableCell>Applied</TableCell>
+                                  <TableCell>
+                                    <EditIcon />
+                                  </TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {IrrigationCottonapplications.filter(
+                                  (app) =>
+                                    app.teamName === selectedUser.teamName &&
+                                    app.options === "evapotranspiration"
+                                )
+                                  .sort(
+                                    (a, b) =>
+                                      new Date(a.date) - new Date(b.date)
+                                  )
+                                  .map((app, index) => (
+                                    <TableRow key={app.id}>
+                                      <TableCell>{index + 1}</TableCell>
+                                      <TableCell>
+                                        {app.date.substring(0, 10)}
+                                      </TableCell>
+                                      <TableCell>
+                                        {app.dateToday.substring(0, 10)}
+                                      </TableCell>
+                                      <TableCell>{app.reading}</TableCell>
+                                      <TableCell>
+                                        <button
+                                          style={{
+                                            backgroundColor:
+                                              app.applied === "no"
+                                                ? "red"
+                                                : "green",
+                                            color: "white",
+                                            border: "none",
+                                          }}
+                                        >
+                                          {app.applied === "no" ? (
+                                            <HighlightOffIcon
+                                              onClick={() =>
+                                                handleChangeApplied1(app.id)
+                                              }
+                                            />
+                                          ) : (
+                                            <DoneIcon />
+                                          )}
+                                        </button>
+                                      </TableCell>
+                                      <TableCell>
+                                        <button
+                                          style={{
+                                            backgroundColor:
+                                              app.applied === "no"
+                                                ? "red"
+                                                : "green",
+                                            color: "white",
+                                            border: "none",
+                                          }}
+                                        >
+                                          {app.applied === "no" ? (
+                                            <DeleteIcon
+                                              onClick={() =>
+                                                handleDeleteApplication1(app.id)
+                                              }
+                                            />
+                                          ) : (
+                                            <EditOffIcon />
+                                          )}
+                                        </button>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                              </TableBody>
+                            </Table>
+                          </>
+                        )}
 
-                                <TableCell>
-                                  <button
-                                    style={{
-                                      backgroundColor:
-                                        app.applied === "no" ? "red" : "green",
-                                      color: "white", // Assuming you want white text for contrast
-                                      border: "none", // Remove default button border styling
-                                      // Add any other styling you need here
-                                    }}
-                                  >
-                                    {app.applied === "no" ? (
-                                      <DeleteIcon
-                                        onClick={() =>
-                                          handleDeleteApplication1(app.id)
-                                        }
-                                      />
-                                    ) : (
-                                      <EditOffIcon />
-                                    )}
-                                  </button>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-
-                    {/* Seeding Rate content */}
-                  </TabPanel>
+                        {/* Soil-Moisture Table */}
+                        {IrrigationCottonapplications.some(
+                          (app) =>
+                            app.teamName === selectedUser.teamName &&
+                            app.options === "soil-moisture"
+                        ) && (
+                          <>
+                            <Typography variant="h6" gutterBottom>
+                              Soil - Moisture based Irrigation Data
+                            </Typography>
+                            <Table
+                              size="small"
+                              aria-label="Soil-Moisture Table"
+                            >
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell>#</TableCell>
+                                  <TableCell>Application Date</TableCell>
+                                  <TableCell>Submitted Date</TableCell>
+                                  <TableCell>Amount</TableCell>
+                                  <TableCell>Applied</TableCell>
+                                  <TableCell>
+                                    <EditIcon />
+                                  </TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {IrrigationCottonapplications.filter(
+                                  (app) =>
+                                    app.teamName === selectedUser.teamName &&
+                                    app.options === "soil-moisture"
+                                )
+                                  .sort(
+                                    (a, b) =>
+                                      new Date(a.date) - new Date(b.date)
+                                  )
+                                  .map((app, index) => (
+                                    <TableRow key={app.id}>
+                                      <TableCell>{index + 1}</TableCell>
+                                      <TableCell>
+                                        {app.date.substring(0, 10)}
+                                      </TableCell>
+                                      <TableCell>
+                                        {app.dateToday.substring(0, 10)}
+                                      </TableCell>
+                                      <TableCell>{app.reading}</TableCell>
+                                      <TableCell>
+                                        <button
+                                          style={{
+                                            backgroundColor:
+                                              app.applied === "no"
+                                                ? "red"
+                                                : "green",
+                                            color: "white",
+                                            border: "none",
+                                          }}
+                                        >
+                                          {app.applied === "no" ? (
+                                            <HighlightOffIcon
+                                              onClick={() =>
+                                                handleChangeApplied1(app.id)
+                                              }
+                                            />
+                                          ) : (
+                                            <DoneIcon />
+                                          )}
+                                        </button>
+                                      </TableCell>
+                                      <TableCell>
+                                        <button
+                                          style={{
+                                            backgroundColor:
+                                              app.applied === "no"
+                                                ? "red"
+                                                : "green",
+                                            color: "white",
+                                            border: "none",
+                                          }}
+                                        >
+                                          {app.applied === "no" ? (
+                                            <DeleteIcon
+                                              onClick={() =>
+                                                handleDeleteApplication1(app.id)
+                                              }
+                                            />
+                                          ) : (
+                                            <EditOffIcon />
+                                          )}
+                                        </button>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                              </TableBody>
+                            </Table>
+                          </>
+                        )}
+                      </TabPanel>
                   <TabPanel value={value1} index={5}>
                     <Typography variant="h4" backgroundColor="secondary">
                       Insurance Selection
@@ -3049,7 +3077,7 @@ function CottonAdminPage() {
                           <TableHead>
                             <TableRow>
                               <TableCell>#</TableCell>
-                              <TableCell>Date (EST)</TableCell>
+                              <TableCell>Date</TableCell>
                               <TableCell>Regulator</TableCell>
                               <TableCell>Rate</TableCell>
                               <TableCell>Applied</TableCell>
@@ -3067,7 +3095,7 @@ function CottonAdminPage() {
                               .map((option, index) => (
                                 <TableRow key={index}>
                                   <TableCell>{index + 1}</TableCell>
-                                  <TableCell>{option.date}</TableCell>
+                                  <TableCell>{option.date.slice(0, 10)}</TableCell>
                                   <TableCell>{option.regulator}</TableCell>
                                   <TableCell>{option.rate}</TableCell>
                                   <TableCell>
@@ -3136,7 +3164,7 @@ function CottonAdminPage() {
                           <TableHead>
                             <TableRow>
                               <TableCell>#</TableCell>
-                              <TableCell>Date (EST)</TableCell>
+                              <TableCell>Date</TableCell>
                               <TableCell>Contract Type</TableCell>
                               <TableCell>Quantity Bushels</TableCell>
                               {/* <TableCell>Complete</TableCell> */}
@@ -3151,7 +3179,7 @@ function CottonAdminPage() {
                               .map((option, index) => (
                                 <TableRow key={index}>
                                   <TableCell>{index + 1}</TableCell>
-                                  <TableCell>{option.date}</TableCell>
+                                  <TableCell>{option.date.slice(0, 10)}</TableCell>
                                   <TableCell>{option.contractType}</TableCell>
                                   <TableCell>
                                     {option.quantityBushels}

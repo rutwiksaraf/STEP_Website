@@ -8,7 +8,22 @@ router.post("/insertMarketingOption", async (req, res) => {
   const { teamName, date, contractType, quantityBushels, complete } = req.body;
 
   const submitteddate = new Date().toISOString(); // current timestamp in ISO format
-  const today = new Date().toISOString(); // reuse if needed
+  const now = new Date();
+  const estOffsetMinutes =
+    new Date().toLocaleString("en-US", {
+      timeZone: "America/New_York",
+      hour12: false,
+      hour: "2-digit",
+    }) === new Date().getUTCHours().toString().padStart(2, "0")
+      ? 300
+      : 240;
+
+  const localMidnight = new Date(
+    Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0)
+  );
+  const estMidnightUTC = new Date(
+    localMidnight.getTime() + estOffsetMinutes * 60 * 1000
+  );
 
   try {
     const pool = await setupDatabase(); // Obtain a connection pool
@@ -22,7 +37,8 @@ router.post("/insertMarketingOption", async (req, res) => {
     request.input("complete", sql.VarChar, complete);
     request.input("submitteddate", sql.DateTime, new Date(submitteddate));
 
-    request.input("today", sql.DateTime, new Date(today));
+    request.input("today", sql.DateTime, estMidnightUTC);
+
 
     // Insert a new marketing option
     await request.query(`
@@ -100,17 +116,21 @@ router.post("/updateCompleted/:appId", async (req, res) => {
   const now = new Date();
 
   // Get current EST/EDT offset in minutes
-  const estOffsetMinutes = new Date().toLocaleString("en-US", {
-    timeZone: "America/New_York",
-    hour12: false,
-    hour: "2-digit",
-  }) ===
-  new Date().getUTCHours().toString().padStart(2, "0")
-    ? 300 // EST (UTC-5)
-    : 240; // EDT (UTC-4)
+  const estOffsetMinutes =
+    new Date().toLocaleString("en-US", {
+      timeZone: "America/New_York",
+      hour12: false,
+      hour: "2-digit",
+    }) === new Date().getUTCHours().toString().padStart(2, "0")
+      ? 300 // EST (UTC-5)
+      : 240; // EDT (UTC-4)
 
-  const localMidnight = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0));
-  const estMidnightUTC = new Date(localMidnight.getTime() + estOffsetMinutes * 60 * 1000);
+  const localMidnight = new Date(
+    Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0)
+  );
+  const estMidnightUTC = new Date(
+    localMidnight.getTime() + estOffsetMinutes * 60 * 1000
+  );
 
   try {
     const pool = await setupDatabase();
@@ -132,7 +152,6 @@ router.post("/updateCompleted/:appId", async (req, res) => {
     res.status(500).json({ message: "Error updating the record" });
   }
 });
-
 
 router.delete("/deletemarketingApplication/:appId", async (req, res) => {
   const appId = req.params.appId; // Extract the application ID from the request parameters
