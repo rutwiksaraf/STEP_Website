@@ -66,6 +66,8 @@ const WeatherGraph = () => {
   const [forecastStartLabel, setForecastStartLabel] = useState(null);
   const [allChartLabels, setAllChartLabels] = useState([]);
 
+  const startDate = new Date("2025-05-23");
+
   useEffect(() => {
     const fetchCottonWeatherData = async () => {
       try {
@@ -137,13 +139,16 @@ const WeatherGraph = () => {
 
     if (selectedParam === "gdd") {
       const forecastDates = forecastData.map((entry) => formatDate(entry.date));
-      const reversed = [...weatherDataFromDB].reverse();
+      const reversed = [...weatherDataFromDB]
+        .filter((entry) => new Date(entry.date) >= startDate)
+        .reverse();
+
       let cumulative = 0;
-    
+
       const filteredLabels = [];
       const gddPoints = [];
       const cumulativePoints = [];
-    
+
       // Historical GDD
       reversed.forEach((entry) => {
         const dateLabel = formatDate(entry.date);
@@ -151,35 +156,42 @@ const WeatherGraph = () => {
           const fahrenheit = (entry.t2m * 9) / 5 + 32;
           const gdd = Math.max(fahrenheit - 50, 0);
           cumulative += gdd;
-    
+
           filteredLabels.push(dateLabel);
           gddPoints.push(gdd.toFixed(2));
           cumulativePoints.push(cumulative.toFixed(2));
         }
       });
-    
+
       // Forecast GDD
       const forecastLabels = [];
       const forecastGddPoints = [];
       const forecastCumulativePoints = [];
-    
-      forecastData.forEach((entry) => {
+
+      const filteredForecast = forecastData.filter(
+        (entry) => new Date(entry.date) >= startDate
+      );
+
+      filteredForecast.forEach((entry) => {
         const dateLabel = formatDate(entry.date);
         const gdd = Math.max(entry.avgtemp_f - 50, 0);
         cumulative += gdd;
-    
+
         forecastLabels.push(dateLabel);
         forecastGddPoints.push(gdd.toFixed(2));
         forecastCumulativePoints.push(cumulative.toFixed(2));
       });
-    
+
       const allLabels = [...filteredLabels, ...forecastLabels];
       const allGddPoints = [...gddPoints, ...forecastGddPoints];
-      const allCumulativePoints = [...cumulativePoints, ...forecastCumulativePoints];
-    
+      const allCumulativePoints = [
+        ...cumulativePoints,
+        ...forecastCumulativePoints,
+      ];
+
       setAllChartLabels(allLabels);
       setForecastStartLabel(forecastLabels[0]);
-    
+
       setDbChartData({
         labels: allLabels,
         datasets: [
@@ -205,7 +217,7 @@ const WeatherGraph = () => {
           },
         ],
       });
-    
+
       const reversedTableData = filteredLabels
         .map((date, index) => ({
           date,
@@ -213,12 +225,15 @@ const WeatherGraph = () => {
           cumulativeGdd: allCumulativePoints[index],
         }))
         .reverse();
-    
+
       setDbTableData(reversedTableData);
-    }
-     else {
-      const dbLabels = weatherDataFromDB.map((entry) => formatDate(entry.date));
-      const dbDataPoints = weatherDataFromDB.map((entry) => {
+    } else {
+      const filteredDB = weatherDataFromDB.filter(
+        (entry) => new Date(entry.date) >= startDate
+      );
+      const dbLabels = filteredDB.map((entry) => formatDate(entry.date));
+
+      const dbDataPoints = filteredDB.map((entry) => {
         if (selectedParam === "t2m") {
           const fahrenheit = (entry.t2m * 9) / 5 + 32;
           return fahrenheit.toFixed(2);
@@ -227,14 +242,17 @@ const WeatherGraph = () => {
           ? entry[selectedParam].toFixed(2)
           : 0;
       });
+      const filteredForecast = forecastData.filter(
+        (entry) => new Date(entry.date) >= startDate
+      );
 
-      const forecastLabels = Array.isArray(forecastData)
+      const forecastLabels = Array.isArray(filteredForecast)
         ? forecastData.map((entry) => formatDate(entry.date))
         : [];
 
       const forecastKey = forecastKeyMap[selectedParam];
-      const forecastPoints = Array.isArray(forecastData)
-        ? forecastData.map((entry) =>
+      const forecastPoints = Array.isArray(filteredForecast)
+        ? filteredForecast.map((entry) =>
             entry[forecastKey] != null ? entry[forecastKey].toFixed(2) : null
           )
         : [];
@@ -425,7 +443,7 @@ const WeatherGraph = () => {
     scales: {
       x: {
         display: false, // ⬅️ Disables the axis completely
-      },      
+      },
       y: {
         position: "left",
         display: true,
@@ -444,7 +462,6 @@ const WeatherGraph = () => {
           drawTicks: true, // optional: shows small tick marks
           drawBorder: true, // optional: keeps left border visible
         },
-
       },
     },
   };
@@ -550,14 +567,16 @@ const WeatherGraph = () => {
         {/* DB Data Table Container */}
         <div
           style={{
-            width: "500px",
-            height: "500px",
+            minWidth: "400px", // ensures it doesn't shrink
+            maxWidth: "400px", // ensures it doesn't stretch
+            flexShrink: 0, // prevents Flexbox from shrinking it
+            height: "400px",
             overflowY: "auto",
             backgroundColor: "#f4f4f4",
             borderRadius: "10px",
             paddingLeft: "30px",
             paddingRight: "30px",
-            
+            boxSizing: "border-box", // ensures padding stays within width
           }}
         >
           <h3
