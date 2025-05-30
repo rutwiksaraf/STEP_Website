@@ -691,7 +691,7 @@ const handleDateChange = (e) => {
           <>
             <p style={{ textAlign: "justify" }}>
               {" "}
-              Recommonded Irrigation apps for evapotranspiration based
+              Recommended Irrigation apps for evapotranspiration based
               irrigation scheduling{" "}
               <a href="https://smartirrigationapps.org/cotton-app/">
                 https://smartirrigationapps.org/cotton-app/
@@ -702,7 +702,7 @@ const handleDateChange = (e) => {
 
         {selectedOption === "calendar" && (
           <p style={{ textAlign: "justify" }}>
-            Recommonded Resources for calendar based irrigation scheduling . The
+            Recommended Resources for calendar based irrigation scheduling . The
             QR code for resources is available below. Scan the QR code to learn
             more.
           </p>

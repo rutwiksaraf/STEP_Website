@@ -2747,11 +2747,11 @@ function AdminPage() {
                           Crop: {selectedUser.cropType}
                         </p>{" "}
                         <p style={{ textAlign: "justify" }}>
-                          Capitan First Name: {selectedUser.captainFirstName}
+                          Captain First Name: {selectedUser.captainFirstName}
                         </p>{" "}
                         {/* Change to captainFirstName */}
                         <p style={{ textAlign: "justify" }}>
-                          Capitan Last Name: {selectedUser.captainLastName}
+                          Captain Last Name: {selectedUser.captainLastName}
                         </p>{" "}
                         {/* Change to captainLastName */}
                         <p style={{ textAlign: "justify" }}>
@@ -3915,11 +3915,11 @@ function AdminPage() {
                           Crop: {selectedUser.cropType}
                         </p>{" "}
                         <p style={{ textAlign: "justify" }}>
-                          Capitan First Name: {selectedUser.captainFirstName}
+                          Captain First Name: {selectedUser.captainFirstName}
                         </p>{" "}
                         {/* Change to captainFirstName */}
                         <p style={{ textAlign: "justify" }}>
-                          Capitan Last Name: {selectedUser.captainLastName}
+                          Captain Last Name: {selectedUser.captainLastName}
                         </p>{" "}
                         {/* Change to captainLastName */}
                         <p style={{ textAlign: "justify" }}>

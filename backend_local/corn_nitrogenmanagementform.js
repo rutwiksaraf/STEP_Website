@@ -247,6 +247,61 @@ router.post("/saveApplicationTypeConfirmation", async (req, res) => {
   }
 });
 
+router.get("/getProductOptionConfirmation", async (req, res) => {
+  const { teamName } = req.query;
+
+  if (!teamName) {
+    return res.status(400).json({ error: "teamName is required" });
+  }
+
+  try {
+    const pool = await sql.connect(); // Assumes connection is already configured
+    const result = await pool
+      .request()
+      .input("teamName", sql.NVarChar, teamName)
+      .query(`
+        SELECT TOP 1 productOption, isConfirmed
+        FROM [2025_corn_NTMProductOptions]
+        WHERE teamName = @teamName
+      `);
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ error: "No data found for this team" });
+    }
+
+    const { productOption, isConfirmed } = result.recordset[0];
+    return res.json({ productOption, isConfirmed });
+  } catch (error) {
+    console.error("DB Error:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/saveProductOptionConfirmation", async (req, res) => {
+  const { teamName, productOption, isConfirmed } = req.body;
+
+  if (!teamName || !productOption || typeof isConfirmed !== "boolean") {
+    return res.status(400).json({ error: "Missing or invalid data fields" });
+  }
+
+  try {
+    const pool = await sql.connect(); // assumes default config is used
+    await pool.request()
+      .input("teamName", sql.VarChar, teamName)
+      .input("productOption", sql.VarChar, productOption)
+      .input("isConfirmed", sql.Bit, isConfirmed)
+      .query(`
+        INSERT INTO [2025_corn_NTMProductOptions] (teamName, productOption, isConfirmed)
+        VALUES (@teamName, @productOption, @isConfirmed)
+      `);
+
+    res.status(200).json({ message: "Product option confirmation saved" });
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ error: "Failed to save confirmation" });
+  }
+});
+
 router.get("/getApplicationTypeConfirmation", async (req, res) => {
   const teamName = req.query.teamName; // Assume teamName is passed as a query parameter
 

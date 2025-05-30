@@ -63,11 +63,11 @@ function UserDetails() {
       <p style={{ textAlign: "justify" }}>Username: {cornuser1[0].teamName}</p>
       {/* Change to teamName */}
       <p style={{ textAlign: "justify" }}>
-        Capitan First Name: {cornuser1[0].captainFirstName}
+        Captain First Name: {cornuser1[0].captainFirstName}
       </p>
       {/* Change to captainFirstName */}
       <p style={{ textAlign: "justify" }}>
-        Capitan Last Name: {cornuser1[0].captainLastName}
+        Captain Last Name: {cornuser1[0].captainLastName}
       </p>
       {/* Change to captainLastName */}
       <p style={{ textAlign: "justify" }}>Address 1: {cornuser1[0].address1}</p>

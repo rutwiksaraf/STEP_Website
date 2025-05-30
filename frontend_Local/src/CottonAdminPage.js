@@ -2335,7 +2335,7 @@ function CottonAdminPage() {
                       Crop: {selectedUser.cropType}
                     </p>{" "}
                     <p style={{ textAlign: "justify" }}>
-                      Capitan First Name: {selectedUser.captainFirstName}
+                      Captain First Name: {selectedUser.captainFirstName}
                     </p>{" "}
                     {/* Change to captainFirstName */}
                     <p style={{ textAlign: "justify" }}>
