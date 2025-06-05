@@ -567,10 +567,10 @@ const WeatherGraph = () => {
         {/* DB Data Table Container */}
         <div
           style={{
-            minWidth: "400px", // ensures it doesn't shrink
-            maxWidth: "400px", // ensures it doesn't stretch
+            minWidth: "300px", // ensures it doesn't shrink
+            maxWidth: "300px", // ensures it doesn't stretch
             flexShrink: 0, // prevents Flexbox from shrinking it
-            height: "400px",
+            height: "500px",
             overflowY: "auto",
             backgroundColor: "#f4f4f4",
             borderRadius: "10px",

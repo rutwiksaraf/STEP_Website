@@ -675,8 +675,8 @@ const handleDateChange = (e) => {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleConfirmApplicationType1}
-                disabled={isApplicationTypeConfirmed1} // Technically redundant because of the conditional rendering
+                onClick={soilMoistureSensor && handleConfirmApplicationType1}
+                disabled={isApplicationTypeConfirmed1} 
               >
                 Submit Soil Moisture Sensor Selection (this cannot be changed
                 later)

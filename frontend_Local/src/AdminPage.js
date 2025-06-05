@@ -43,6 +43,8 @@ import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import { saveAs } from "file-saver";
 import profileImg from "./profile.jpg";
+import CottonWeatherGraph from "./CottonWeatherChart";
+import RainfallChart from "./weatherChart";
 
 function AdminPage() {
   const [value, setValue] = useState(0);
@@ -2092,6 +2094,7 @@ function AdminPage() {
     "Insurance",
     "Marketing",
     "File Mgmnt",
+    "Weather",
   ];
 
   const tabLabelsCotton = [
@@ -2104,6 +2107,7 @@ function AdminPage() {
     "Growth Regulator",
     "Marketing",
     "File Mgmnt",
+    "Weather",
   ];
 
   const [successMessage, setSuccessMessage] = useState("");
@@ -3496,7 +3500,9 @@ function AdminPage() {
                                   .map((option, index) => (
                                     <TableRow key={index}>
                                       <TableCell>{index + 1}</TableCell>
-                                      <TableCell>{option.date.slice(0, 10)}</TableCell>
+                                      <TableCell>
+                                        {option.date.slice(0, 10)}
+                                      </TableCell>
                                       <TableCell>
                                         {option.contractType}
                                       </TableCell>
@@ -3762,6 +3768,16 @@ function AdminPage() {
                         </Container>
 
                         {/* Hybrid Selection content */}
+                      </TabPanel>
+                      <TabPanel value={value1} index={8}>
+                        <Typography variant="h4" backgroundColor="secondary">
+                          Weather
+                        </Typography>
+                        <div style={{ overflowX: "auto", paddingTop: "25px" }}>
+                          <div style={{ width: "1500px", height: "600px" }}>
+                            <RainfallChart />
+                          </div>
+                        </div>
                       </TabPanel>
                     </div>
                   </div>
@@ -4692,7 +4708,9 @@ function AdminPage() {
                                   .map((option, index) => (
                                     <TableRow key={index}>
                                       <TableCell>{index + 1}</TableCell>
-                                      <TableCell>{option.date.slice(0, 10)}</TableCell>
+                                      <TableCell>
+                                        {option.date.slice(0, 10)}
+                                      </TableCell>
                                       <TableCell>{option.regulator}</TableCell>
                                       <TableCell>{option.rate}</TableCell>
                                       <TableCell>
@@ -4784,7 +4802,9 @@ function AdminPage() {
                                   .map((option, index) => (
                                     <TableRow key={index}>
                                       <TableCell>{index + 1}</TableCell>
-                                      <TableCell>{option.date.slice(0, 10)}</TableCell>
+                                      <TableCell>
+                                        {option.date.slice(0, 10)}
+                                      </TableCell>
                                       <TableCell>
                                         {option.contractType}
                                       </TableCell>
@@ -5043,6 +5063,16 @@ function AdminPage() {
                             </List>
                           </Paper>
                         </Container>
+                      </TabPanel>
+                      <TabPanel value={value1} index={9}>
+                        <Typography variant="h4" backgroundColor="secondary">
+                          Weather
+                        </Typography>
+                        <div style={{ overflowX: "auto", paddingTop: "25px" }}>
+                          <div style={{ width: "1500px", height: "600px" }}>
+                            <CottonWeatherGraph />
+                          </div>
+                        </div>
                       </TabPanel>
                     </div>
                   </div>

@@ -550,14 +550,16 @@ const WeatherGraph = () => {
         {/* DB Data Table Container */}
         <div
           style={{
-            width: "500px",
+            minWidth: "300px", // ensures it doesn't shrink
+            maxWidth: "300px", // ensures it doesn't stretch
+            flexShrink: 0, // prevents Flexbox from shrinking it
             height: "500px",
             overflowY: "auto",
             backgroundColor: "#f4f4f4",
             borderRadius: "10px",
             paddingLeft: "30px",
             paddingRight: "30px",
-            
+            boxSizing: "border-box", // ensures padding stays within width
           }}
         >
           <h3
