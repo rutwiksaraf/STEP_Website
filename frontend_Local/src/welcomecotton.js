@@ -14,10 +14,25 @@ import {
   InputLabel,
   Input,
   FormHelperText,
-  Button,
   List,
   ListItemText,
   ListItem,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  InputAdornment,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
 } from "@mui/material";
 import CottonHybridForm from "./cottonHybridSelectionForm";
 import CottonSeedingRateForm from "./CottonSeedingRateForm";
@@ -51,10 +66,34 @@ function WelcomeCotton() {
   const [cottonmarketingLatest, setCottonMarketingLatest] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [profileImageUrl, setProfileImageUrl] = useState(null);
+  const [contractPriceTableData, setContractPriceTableData] = useState([]);
   const token = localStorage.getItem("token");
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
+  };
+
+  useEffect(() => {
+    fetchContractPrices();
+  }, []);
+
+  const fetchContractPrices = () => {
+    axios
+      .get("/api/cottonGetContractPrices", {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setContractPriceTableData(response.data);
+        } else {
+          console.error("Failed to fetch data from the backend");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
   };
 
   const handleUpload = async (event) => {
@@ -673,13 +712,6 @@ function WelcomeCotton() {
             {selectedTab === 3 && (
               <Container component="main" maxWidth="90%">
                 <div>
-                  {/* <p style={{ textAlign: "justify" }}>
-                    All the plots will receive 13 gals/ac (~ 30-40 lbs/ac of N)
-                    of startup fertilizer (23-9-0) at the time of planting. You
-                    can choose in-season fertilizer applications of dry ammonium
-                    nitrate (34-0-0) and UAN 28% (28-0-0-5), or a controlled
-                    release fertilizer program.
-                  </p> */}
                   <p></p>
                   <CottonNitrogenManagementForm />
                 </div>
@@ -739,7 +771,7 @@ function WelcomeCotton() {
                     on the right side of this webpage.
                   </p>
                   <p style={{ textAlign: "justify" }}>
-                  Please choose a plan and coverage level below.
+                    Please choose a plan and coverage level below.
                   </p>
                   <div style={{ display: "flex", flexWrap: "wrap" }}>
                     <div style={{ flex: 3, minWidth: "400px" }}>
@@ -771,69 +803,6 @@ function WelcomeCotton() {
                       >
                         List of Insurance Files:
                       </h3>
-                      {/* {cottoninsuranceLatest
-                        .filter((fileName) => fileName !== "metadata.json")
-                        .filter((fileName) => fileName !== "profile.jpg")
-                        .length > 0 ? (
-                        <div>
-                          {cottoninsuranceLatest
-                            .filter((fileName) => fileName !== "metadata.json")
-                            .filter((fileName) => fileName !== "profile.jpg")
-                            .map((fileName, index) => (
-                              <div
-                                key={index}
-                                style={{
-                                  backgroundColor: "rgba(255, 255, 255, 0.8)",
-                                  padding: "10px",
-                                  margin: "10px 0",
-                                  borderRadius: "5px", // Consistency in border radius
-                                  boxShadow: "0 1px 3px rgba(0,0,0,0.1)", // Each item has a subtle shadow
-                                }}
-                              >
-                                {" "}
-                                
-                                <p
-                                  style={{
-                                    margin: "0 0 10px 0",
-                                  }}
-                                >
-                                  File Name: {fileName.originalFileName}
-                                </p>
-                                <p style={{ margin: "0 0 10px 0" }}>
-                                  Upload Date:{" "}
-                                  {new Date(
-                                    fileName.uploadDate
-                                  ).toLocaleDateString()}
-                                </p>
-                                <Button
-                                  variant="contained"
-                                  color="primary"
-                                  size="small"
-                                  onClick={() =>
-                                    handleDownload(
-                                      `downloadFile/${fileName.originalFileName}`
-                                    )
-                                  }
-                                  // href={`/api/downloadInsuranceFile/${fileName.originalFileName}`}
-                                  // download
-                                >
-                                  Download
-                                </Button>
-                              </div>
-                            ))}
-                        </div>
-                      ) : (
-                        <p
-                          style={{
-                            backgroundColor: "rgba(255, 255, 255, 0.8)",
-                            textAlign: "center",
-                            padding: "10px",
-                            borderRadius: "5px",
-                          }}
-                        >
-                          No latest files.
-                        </p> // Semi-transparent background for text readability
-                      )} */}
 
                       <List>
                         {insurance
@@ -843,23 +812,6 @@ function WelcomeCotton() {
                           )
                           .filter((fileName) => fileName !== "Thumbs.db")
                           .map((fileName, index) => (
-                            // <ListItem key={index}>
-                            //   <ListItemText primary={fileName} />
-                            //   <Button
-                            //     variant="contained"
-                            //     color="primary"
-                            //     size="small"
-                            //     onClick={() =>
-                            //       handleDownload(
-                            //         `downloadInsuranceCottonFile/${fileName}`
-                            //       )
-                            //     }
-                            //     // href={`/api/downloadInsuranceFile/${fileName}`}
-                            //     // download
-                            //   >
-                            //     Download
-                            //   </Button>
-                            // </ListItem>
                             <div
                               key={index}
                               style={{
@@ -894,55 +846,6 @@ function WelcomeCotton() {
                           ))}
                       </List>
                     </div>
-
-                    {/* <div
-                      style={{
-                        flex: 1,
-                        border: "1px solid #ccc",
-                        padding: "10px",
-                        maxHeight: "400px", // Set a maximum height for the div
-                        overflow: "auto", // Add scrollbars if the content exceeds the height
-                        minWidth: "300px", // Use a minimum width
-                        backgroundImage: "url('imageUrl')", // Replace 'imageUrl' with your image URL
-                        backgroundSize: "cover", // Ensure the background image covers the entire div
-                        backgroundPosition: "center", // Center the background image
-                        backgroundRepeat: "no-repeat",
-                      }}
-                    >
-                      <h3>List of Insurance Files:</h3>
-
-                      {cottoninsuranceLatest
-                        .filter((fileName) => fileName !== "metadata.json")
-                        .filter((fileName) => fileName !== "profile.jpg")
-                        .length > 0 ? (
-                        <ul>
-                          cottoninsuranceLatest .filter((fileName) => fileName
-                          !== "metadata.json") .filter((fileName) => fileName
-                          !== "profile.jpg") .map((fileName, index) => (
-                          <li key={index}>
-                            <p style={{ textAlign: "justify" }}>File Name: {fileName.originalFileName}</p>
-                            <p style={{ textAlign: "justify" }}>
-                              Upload Date:{" "}
-                              {new Date(
-                                fileName.uploadDate
-                              ).toLocaleDateString()}
-                            </p>
-
-                            <a
-                              href={`/api/downloadFile/${fileName.originalFileName}`}
-                              download
-                            >
-                              Download
-                            </a>
-                          </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p style={{ textAlign: "justify" }}>No latest files.</p>
-                      )}
-                    </div>
-                  </div>
-                </div> */}
                   </div>
                 </div>
               </Container>
@@ -966,8 +869,6 @@ function WelcomeCotton() {
                         premiums and discounts will be estimated after harvest.
                       </p>
 
-                    
-
                       <p style={{ textAlign: "justify" }}>
                         All contracts must be in increments of 200 bales
                         (~100,000 lbs). You may contract multiple times on
@@ -976,93 +877,153 @@ function WelcomeCotton() {
                         Any bales from your 1000-acre harvest not contracted by
                         October 31st will be spot priced 2 weeks after harvest.
                       </p>
+
+                      <CottonMarketingOptionsForm />
                     </div>
                     <p style={{ textAlign: "justify" }}></p>
-                    <div
-                      style={{
-                        flex: 1,
-                        border: "1px solid #ccc",
-                        padding: "20px",
-                        maxHeight: "400px", // Set a maximum height for the div
-                        overflow: "auto", // Add scrollbars if the content exceeds the height
-                        minWidth: "250px", // Use a minimum width
-                        backgroundImage: `url(${cottonImage})`, // Replace 'imageUrl' with your image URL
-                        backgroundSize: "cover", // Ensure the background image covers the entire div
-                        backgroundPosition: "center", // Center the background image
-                        backgroundRepeat: "no-repeat",
-                        borderRadius: "5px", // Added rounded corners
-                        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                      }}
-                    >
-                      <h3
+                    <div>
+                      <div
                         style={{
-                          textAlign: "center",
-                          margin: "0 0 20px 0",
-                          backgroundColor: "rgba(255, 255, 255, 0.3)",
+                          minWidth: "300px",
+                          maxWidth: "300px",
+                          flexShrink: 0,
+                          backgroundColor: "#f4f4f4",
+                          borderRadius: "10px",
+                          paddingLeft: "30px",
+                          paddingRight: "30px",
+                          paddingBottom: "10px", // minimize bottom padding
+                          marginBottom: "10px", // reduce this if spacing below the table is too much
+                          marginTop: "5px",
+                          boxSizing: "border-box",
                         }}
                       >
-                        List of Marketing Files:
-                      </h3>
-                      {marketing
-                        .filter((fileName) => fileName !== "metadata.json")
-                        .filter((fileName) => fileName !== "profile.jpg")
-                        .length > 0 ? (
-                        <ul>
-                          {marketing
-                            .filter((fileName) => fileName !== "metadata.json")
-                            .filter((fileName) => fileName !== "profile.jpg")
-                            .map((fileName, index) => (
-                              <div
-                                style={{
-                                  backgroundColor: "rgba(255, 255, 255, 0.8)",
-                                  padding: "10px",
-                                  margin: "10px 0",
-                                  borderRadius: "5px", // Consistency in border radius
-                                  boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-                                }}
-                                key={index}
-                              >
-                                {" "}
-                                <p style={{ margin: "0 0 10px 0" }}>
-                                  File Name: <br />
-                                  {fileName}
-                                </p>
-                                {/* <p style={{ margin: "0 0 10px 0" }}>
+                        <h3
+                          style={{
+                            textAlign: "center",
+                            margin: "0 0 20px 0",
+                            backgroundColor: "rgba(255, 255, 255, 0.3)",
+                          }}
+                        >
+                          Contract Prices
+                        </h3>
+                        <TableContainer
+                          component={Paper}
+                          style={{
+                            marginTop: "20px",
+                            maxHeight: "300px", // or any height you prefer
+                            overflowY: "auto",
+                            marginBottom: 0, // remove extra bottom spacing if needed
+                          }}
+                        >
+                          <Table>
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>Date</TableCell>
+                                <TableCell>Contract Price (cents/lb)</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {contractPriceTableData.map((row, index) => (
+                                <TableRow key={index}>
+                                  <TableCell>
+                                    {new Date(row.date).toLocaleDateString()}
+                                  </TableCell>
+                                  <TableCell>{row.contractPrice}</TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </div>
+
+                      <div
+                        style={{
+                          flex: 1,
+                          border: "1px solid #ccc",
+                          padding: "20px",
+                          maxHeight: "400px", // Set a maximum height for the div
+                          overflow: "auto", // Add scrollbars if the content exceeds the height
+                          minWidth: "250px", // Use a minimum width
+                          backgroundImage: `url(${cottonImage})`, // Replace 'imageUrl' with your image URL
+                          backgroundSize: "cover", // Ensure the background image covers the entire div
+                          backgroundPosition: "center", // Center the background image
+                          backgroundRepeat: "no-repeat",
+                          borderRadius: "5px", // Added rounded corners
+                          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                        }}
+                      >
+                        <h3
+                          style={{
+                            textAlign: "center",
+                            margin: "0 0 20px 0",
+                            backgroundColor: "rgba(255, 255, 255, 0.3)",
+                          }}
+                        >
+                          List of Marketing Files:
+                        </h3>
+                        {marketing
+                          .filter((fileName) => fileName !== "metadata.json")
+                          .filter((fileName) => fileName !== "profile.jpg")
+                          .length > 0 ? (
+                          <ul>
+                            {marketing
+                              .filter(
+                                (fileName) => fileName !== "metadata.json"
+                              )
+                              .filter((fileName) => fileName !== "profile.jpg")
+                              .map((fileName, index) => (
+                                <div
+                                  style={{
+                                    backgroundColor: "rgba(255, 255, 255, 0.8)",
+                                    padding: "10px",
+                                    margin: "10px 0",
+                                    borderRadius: "5px", // Consistency in border radius
+                                    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                                  }}
+                                  key={index}
+                                >
+                                  {" "}
+                                  <p style={{ margin: "0 0 10px 0" }}>
+                                    File Name: <br />
+                                    {fileName}
+                                  </p>
+                                  {/* <p style={{ margin: "0 0 10px 0" }}>
                                   Upload Date:{" "}
                                   {new Date(
                                     fileName.uploadDate
                                   ).toLocaleDateString()}
                                 </p> */}
-                                <Button
-                                  variant="contained"
-                                  color="primary"
-                                  size="small"
-                                  onClick={() =>
-                                    handleDownload(`downloadFile/${fileName}`)
-                                  }
-                                  // href={`/api/downloadMarketingFile/${fileName.originalFileName}`}
-                                  // download
-                                >
-                                  Download
-                                </Button>
-                              </div>
-                            ))}
-                        </ul>
-                      ) : (
-                        <p
-                          style={{
-                            backgroundColor: "rgba(255, 255, 255, 0.8)",
-                            textAlign: "center",
-                            padding: "10px",
-                            borderRadius: "5px",
-                          }}
-                        >
-                          No latest files.
-                        </p> // Semi-transparent background for text readability
-                      )}
+                                  <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    onClick={() =>
+                                      handleDownload(`downloadFile/${fileName}`)
+                                    }
+                                    // href={`/api/downloadMarketingFile/${fileName.originalFileName}`}
+                                    // download
+                                  >
+                                    Download
+                                  </Button>
+                                </div>
+                              ))}
+                          </ul>
+                        ) : (
+                          <p
+                            style={{
+                              backgroundColor: "rgba(255, 255, 255, 0.8)",
+                              textAlign: "center",
+                              padding: "10px",
+                              borderRadius: "5px",
+                            }}
+                          >
+                            No latest files.
+                          </p> // Semi-transparent background for text readability
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <CottonMarketingOptionsForm />
+                  
                 </div>
               </Container>
             )}

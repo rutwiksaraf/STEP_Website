@@ -40,6 +40,7 @@ import CottonAdminPage from "./CottonAdminPage";
 import CornAdminPage from "./CornAdminPage";
 import { jwtDecode } from "jwt-decode";
 import { saveAs } from "file-saver";
+import ContractPrices from "./ContractPrices"; // Import the ContractPrices component
 
 function FilterAdminPage() {
   const [adminCrops, setAdminCrops] = useState([]);
@@ -80,6 +81,8 @@ function FilterAdminPage() {
   const [profileImageUrl1, setProfileImageUrl1] = useState(null);
   const token = localStorage.getItem("token");
   const [cottonteamMembers, setCottonTeamMembers] = useState([]);
+  const [showMarketingPrices, setShowMarketingPrices] = useState(false);
+
   const decoded = jwtDecode(token);
   const adminId = decoded.id;
 
@@ -574,6 +577,8 @@ function FilterAdminPage() {
         // Handle errors here (e.g., display an error message)
       });
   };
+
+  
 
   const handleteamFileUpload1 = (teamName) => {
     // const selectedFile = document.getElementById("defaultFileInput1").files[0];
@@ -2151,6 +2156,23 @@ function FilterAdminPage() {
     setShowFileManagement(false);
   };
 
+  const handleCloseContractPrices = () => {
+    setShowMarketingPrices(false);
+  }
+
+  const handleMarketingPricesClick = () => {
+    setShowMarketingPrices(true);
+  }
+
+  if(showMarketingPrices) {
+    return (
+      <div style={{ marginLeft: "20px" }}>
+      <Button onClick={handleCloseContractPrices}>Back to Main Page</Button>
+      <ContractPrices />
+      </div>
+    )
+  }
+
   if (showFileManagement) {
     if (showCorn) {
       return (
@@ -2503,6 +2525,15 @@ function FilterAdminPage() {
             onClick={handleProfileClick}
           >
             My Profile
+          </Button>
+
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ marginRight: 10 }}
+            onClick={handleMarketingPricesClick}
+          >
+            Marketing Prices
           </Button>
 
           <Button

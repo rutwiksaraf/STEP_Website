@@ -105,9 +105,13 @@ function CottonAdminPage() {
     isApplicationTypeConfirmedNCotton,
     setIsApplicationTypeConfirmedNCotton,
   ] = useState(false);
+  
+
   const handleCloseAdminPage = () => {
     setShowAdminPage(false);
   };
+
+  
 
   const handleLogout = () => {
     // Clear localStorage or sessionStorage as needed

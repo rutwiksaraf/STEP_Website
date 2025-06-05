@@ -27,6 +27,7 @@ const cottonweather = require("./cotton_weather");
 const cottonbulletin = require("./cotton_bulletin");
 const admindata = require("./admin_data");
 const fetchadmin = require("./fetch_admin");
+const contractPrices = require("./cotton_contract_prices");
 require("dotenv").config();
 const authenticateToken = require("./authenticateToken");
 const sql = require("mssql");
@@ -82,6 +83,8 @@ app.use("/api", authenticateToken, cottonweather);
 app.use("/api", authenticateToken, cottonbulletin);
 app.use("/api", authenticateToken, admindata);
 app.use("/api", authenticateToken, fetchadmin);
+app.use("/api", authenticateToken, contractPrices);
+
 
 if (process.env.NODE_ENV !== "development") {
   const clientpath = require("path");
