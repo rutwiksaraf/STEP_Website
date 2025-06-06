@@ -35,39 +35,66 @@ function ContractPrices() {
   const [displayDate, setDisplayDate] = useState("");
   const [date, setDate] = useState("");
   const [submissionMessage, setSubmissionMessage] = useState("");
+  const [contractPriceTableData, setContractPriceTableData] = useState([]);
 
-  const saveCottonContractPrices = async () => {
-  try {
-    const formDataToSubmit = {
-      date: date, // use the processed date, not new Date().toISOString()
-      contractPrice: contractPrices,
-    };
-
-    const response = await axios.post(
-      "/api/cottonAddContractPrices",
-      formDataToSubmit,
-      {
+  const fetchContractPrices = () => {
+    axios
+      .get("/api/cottonGetContractPrices", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          const sortedData = response.data.sort(
+            (a, b) => new Date(b.date) - new Date(a.date) // DESC order
+          );
+          setContractPriceTableData(sortedData);
+        } else {
+          console.error("Failed to fetch data from the backend");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+
+  const saveCottonContractPrices = async () => {
+    try {
+      const formDataToSubmit = {
+        date: date, // use the processed date, not new Date().toISOString()
+        contractPrice: contractPrices,
+      };
+
+      const response = await axios.post(
+        "/api/cottonAddContractPrices",
+        formDataToSubmit,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status >= 200 && response.status < 300) {
+        console.log("Data sent to the backend successfully");
+        setContractPrices("");
+        setDisplayDate("");
+        setSubmissionMessage("✅ Price submitted successfully!");
+        fetchContractPrices();
+      } else {
+        console.error("Failed to send data to the backend");
+        setSubmissionMessage("❌ Failed to submit price.");
       }
-    );
-
-    if (response.status >= 200 && response.status < 300) {
-      console.log("Data sent to the backend successfully");
-      setContractPrices("");
-      setDisplayDate("");
-      setSubmissionMessage("✅ Price submitted successfully!");
-    } else {
-      console.error("Failed to send data to the backend");
-      setSubmissionMessage("❌ Failed to submit price.");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setSubmissionMessage("❌ Error submitting price.");
     }
-  } catch (error) {
-    console.error("Error submitting form:", error);
-    setSubmissionMessage("❌ Error submitting price.");
-  }
-};
+  };
 
+  useEffect(() => {
+    fetchContractPrices();
+  }, []);
 
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
@@ -81,9 +108,8 @@ function ContractPrices() {
   };
 
   return (
-    <div style={{ maxWidth: "550px" }}>
-        
-      <h2>Contract Prices</h2>
+    <div>
+      <h2>Add Contract Prices</h2>
       {submissionMessage && (
         <Typography
           variant="body1"
@@ -96,38 +122,87 @@ function ContractPrices() {
         </Typography>
       )}
 
-      <Stack spacing={2}>
-        <TextField
-          label="Date"
-          variant="outlined"
-          fullWidth
-          type="date"
-          value={displayDate}
-          onChange={handleDateChange}
-          InputLabelProps={{
-            shrink: true,
+      <div style={{ display: "flex", alignItems: "flex-start", gap: "20px" }}>
+        {/* Left: Form */}
+        <div style={{ minWidth: "300px", flex: 1 }}>
+          <Stack spacing={2}>
+            <TextField
+              label="Date"
+              variant="outlined"
+              fullWidth
+              type="date"
+              value={displayDate}
+              onChange={handleDateChange}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              required
+            />
+
+            <TextField
+              label="Price (cents/lb)"
+              variant="outlined"
+              fullWidth
+              value={contractPrices}
+              onChange={(e) => setContractPrices(e.target.value)}
+              required
+            />
+
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              onClick={saveCottonContractPrices}
+            >
+              Submit Contract Price
+            </Button>
+          </Stack>
+        </div>
+
+        {/* Right: Table */}
+
+        <TableContainer
+          component={Paper}
+          style={{
+            flex: 1,
+            maxHeight: "400px",
+            overflowY: "auto",
+            maxWidth: "700px",
+            marginRight: "50px",
           }}
-          required
-        />
-
-        <TextField
-          label="Price (cents/lb)"
-          variant="outlined"
-          fullWidth
-          value={contractPrices}
-          onChange={(e) => setContractPrices(e.target.value)}
-          required
-        />
-
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          onClick={saveCottonContractPrices}
         >
-          Submit Contract Price
-        </Button>
-      </Stack>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ backgroundColor: "#002657" }}>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                  Date
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{ color: "white", fontWeight: "bold" }}
+                >
+                  Contract Price (cents/lb)
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {contractPriceTableData.map((row, index) => (
+                <TableRow
+                  key={index}
+                  sx={{
+                    backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#ffffff",
+                  }}
+                >
+                  <TableCell>
+                    {new Date(row.date).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell align="center">{row.contractPrice}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
     </div>
   );
 }

@@ -81,12 +81,15 @@ function WelcomeCotton() {
     axios
       .get("/api/cottonGetContractPrices", {
         headers: {
-          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+          Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
         if (response.status === 200) {
-          setContractPriceTableData(response.data);
+          const sortedData = response.data.sort(
+            (a, b) => new Date(b.date) - new Date(a.date) // DESC order
+          );
+          setContractPriceTableData(sortedData);
         } else {
           console.error("Failed to fetch data from the backend");
         }
@@ -912,23 +915,42 @@ function WelcomeCotton() {
                             marginTop: "20px",
                             maxHeight: "300px", // or any height you prefer
                             overflowY: "auto",
-                            marginBottom: 0, // remove extra bottom spacing if needed
+                            marginBottom: 0,
+                            borderCollapse: "collapse",
+                            borderRadius: "10px",
                           }}
                         >
                           <Table>
                             <TableHead>
-                              <TableRow>
-                                <TableCell>Date</TableCell>
-                                <TableCell>Contract Price (cents/lb)</TableCell>
+                              <TableRow sx={{ backgroundColor: "#002657" }}>
+                                <TableCell
+                                  sx={{ color: "white", fontWeight: "bold" }}
+                                >
+                                  Date
+                                </TableCell>
+                                <TableCell
+                                  align="center"
+                                  sx={{ color: "white", fontWeight: "bold" }}
+                                >
+                                  Contract Price (cents/lb)
+                                </TableCell>
                               </TableRow>
                             </TableHead>
                             <TableBody>
                               {contractPriceTableData.map((row, index) => (
-                                <TableRow key={index}>
+                                <TableRow
+                                  key={index}
+                                  sx={{
+                                    backgroundColor:
+                                      index % 2 === 0 ? "#f9f9f9" : "#ffffff",
+                                  }}
+                                >
                                   <TableCell>
                                     {new Date(row.date).toLocaleDateString()}
                                   </TableCell>
-                                  <TableCell>{row.contractPrice}</TableCell>
+                                  <TableCell align="center">
+                                    {row.contractPrice}
+                                  </TableCell>
                                 </TableRow>
                               ))}
                             </TableBody>
@@ -1023,7 +1045,6 @@ function WelcomeCotton() {
                       </div>
                     </div>
                   </div>
-                  
                 </div>
               </Container>
             )}

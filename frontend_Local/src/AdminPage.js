@@ -45,8 +45,12 @@ import { saveAs } from "file-saver";
 import profileImg from "./profile.jpg";
 import CottonWeatherGraph from "./CottonWeatherChart";
 import RainfallChart from "./weatherChart";
+import ContractPrices from "./ContractPrices";
 
 function AdminPage() {
+  const [showMarketingPrices, setShowMarketingPrices] = useState(false);
+
+
   const [value, setValue] = useState(0);
   const [value1, setValue1] = useState(0);
   const [cornUsers, setCornUsers] = useState([]);
@@ -115,6 +119,10 @@ function AdminPage() {
 
     // Redirect to the login page
     window.location.href = "/login"; // Adjust the path as needed
+  };
+
+  const handleMarketingPricesClick = () => {
+    setShowMarketingPrices(true);
   };
 
   // Handler for file selection
@@ -2204,6 +2212,19 @@ function AdminPage() {
     );
   }
 
+  const handleCloseContractPrices = () => {
+    setShowMarketingPrices(false);
+  }
+
+  if (showMarketingPrices) {
+    return (
+      <div style={{ marginLeft: "20px" }}>
+        <Button onClick={handleCloseContractPrices}>Back to Main Page</Button>
+        <ContractPrices />
+      </div>
+    );
+  }
+
   const handleManageFiles = () => {
     setShowFileManagement(true);
   };
@@ -2568,6 +2589,14 @@ function AdminPage() {
             style={{ marginRight: 10 }}
           >
             Manage Admins
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ marginRight: 10 }}
+            onClick={handleMarketingPricesClick}
+          >
+            Marketing Prices
           </Button>
           <Button
             variant="contained"
