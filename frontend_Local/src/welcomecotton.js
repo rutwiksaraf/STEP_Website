@@ -838,8 +838,11 @@ function WelcomeCotton() {
                                 color="primary"
                                 size="small"
                                 onClick={() =>
-                                  handleDownload(`downloadFile/${fileName}`)
+                                  handleDownload(
+                                    `downloadInsuranceCottonFile/${fileName}`
+                                  )
                                 }
+
                                 // href={`/api/downloadInsuranceFile/${fileName.originalFileName}`}
                                 // download
                               >
@@ -1020,8 +1023,11 @@ function WelcomeCotton() {
                                     color="primary"
                                     size="small"
                                     onClick={() =>
-                                      handleDownload(`downloadFile/${fileName}`)
+                                      handleDownload(
+                                        `downloadMarketingCottonFile/${fileName}`
+                                      )
                                     }
+
                                     // href={`/api/downloadMarketingFile/${fileName.originalFileName}`}
                                     // download
                                   >
