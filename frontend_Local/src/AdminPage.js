@@ -50,7 +50,6 @@ import ContractPrices from "./ContractPrices";
 function AdminPage() {
   const [showMarketingPrices, setShowMarketingPrices] = useState(false);
 
-
   const [value, setValue] = useState(0);
   const [value1, setValue1] = useState(0);
   const [cornUsers, setCornUsers] = useState([]);
@@ -163,7 +162,7 @@ function AdminPage() {
       })
       .then((response) => {
         const contentDisposition = response.headers["content-disposition"];
-        let fileName = filePath.split("/").pop(); // Default to a filename from the URL
+        let fileName = filePath.split("/").pop();
         if (contentDisposition) {
           const matches = contentDisposition.match(/filename="([^"]+)"/);
           if (matches.length === 2) {
@@ -2214,7 +2213,7 @@ function AdminPage() {
 
   const handleCloseContractPrices = () => {
     setShowMarketingPrices(false);
-  }
+  };
 
   if (showMarketingPrices) {
     return (
@@ -2488,12 +2487,20 @@ function AdminPage() {
                     .map((fileName, index) => (
                       <ListItem key={index}>
                         <ListItemText primary={fileName} />
-                        <Link
-                          href={`/api/downloadInsuranceCottonFile/${fileName}`}
-                          download
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          onClick={() =>
+                            handleDownload(
+                              `downloadInsuranceCottonFile/${fileName}`
+                            )
+                          }
+                          // href={`/api/downloadInsuranceFile/${fileName.originalFileName}`}
+                          // download
                         >
                           Download
-                        </Link>
+                        </Button>
                         <Button
                           onClick={() => handlecottoninsuranceDelete(fileName)}
                         >
@@ -2516,12 +2523,21 @@ function AdminPage() {
                     .map((fileName, index) => (
                       <ListItem key={index}>
                         <ListItemText primary={fileName} />
-                        <Link
-                          href={`/api/downloadMarketingCottonFile/${fileName}`}
-                          download
+
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          onClick={() =>
+                            handleDownload(
+                              `downloadMarketingCottonFile/${fileName}`
+                            )
+                          }
+                          // href={`/api/downloadInsuranceFile/${fileName.originalFileName}`}
+                          // download
                         >
                           Download
-                        </Link>
+                        </Button>
                         <Button
                           onClick={() => handlecottonmarketingDelete(fileName)}
                         >
