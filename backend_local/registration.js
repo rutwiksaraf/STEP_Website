@@ -111,16 +111,16 @@ router.post("/register", async (req, res) => {
     if (cropType === "corn") {
       internalRecipients = [
         "rutwiksaraf@ufl.edu",
-        "sbhambota@ufl.edu",
-        "jonescarson@ufl.edu",
-        "vsharma1@ufl.edu",
+        // "sbhambota@ufl.edu",
+        // "jonescarson@ufl.edu",
+        // "vsharma1@ufl.edu",
       ].join(",");
     } else if (cropType === "cotton") {
       internalRecipients = [
         "rutwiksaraf@ufl.edu",
-        "sbhambota@ufl.edu",
-        "vsharma1@ufl.edu",
-        "hardeep.singh1@ufl.edu",
+        // "sbhambota@ufl.edu",
+        // "vsharma1@ufl.edu",
+        // "hardeep.singh1@ufl.edu",
       ].join(",");
     }
 

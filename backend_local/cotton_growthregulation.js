@@ -100,37 +100,39 @@ router.get("/cottonFetchAllGrowthRegulation", async (req, res) => {
 });
 
 router.post("/updateCottonGrowthApplied/:appId", async (req, res) => {
-  const appId = req.params.appId; // Extract the application ID from the request parameters
-  const newAppliedValue = true; // Define the new value for the "applied" field
+  const appId = req.params.appId;
+  const newAppliedValue = true;
 
   if (!appId) {
     return res.status(400).json({ message: "Application ID is required" });
   }
 
   try {
-    const pool = await setupDatabase(); // Obtain a connection pool
+    const pool = await setupDatabase();
     let teamName = "";
-    let recipientEmail = "";
     let dateOfApplication = "";
+    let teamId = null;
+    let captainEmail = "";
 
-    // Start a transaction
     const transaction = new sql.Transaction(pool);
     await transaction.begin();
 
+    // Step 1: Get team name and application date
     const fetchTeamNameRequest = new sql.Request(transaction);
     fetchTeamNameRequest.input("appId", sql.Int, appId);
     const fetchTeamNameResult = await fetchTeamNameRequest.query(
-      "SELECT teamName,date FROM [2025_cotton_growth_regulation] WHERE id = @appId"
+      "SELECT teamName, date FROM [2025_cotton_growth_regulation] WHERE id = @appId"
     );
 
     if (fetchTeamNameResult.recordset.length === 0) {
       await transaction.rollback();
       return res.status(404).json({ message: "Application not found" });
-    } else {
-      teamName = fetchTeamNameResult.recordset[0].teamName;
-      dateOfApplication = fetchTeamNameResult.recordset[0].date;
     }
 
+    teamName = fetchTeamNameResult.recordset[0].teamName;
+    dateOfApplication = fetchTeamNameResult.recordset[0].date;
+
+    // Step 2: Update applied field
     const updateRequest = new sql.Request(transaction);
     updateRequest.input("newAppliedValue", sql.Bit, newAppliedValue);
     updateRequest.input("appId", sql.Int, appId);
@@ -138,27 +140,49 @@ router.post("/updateCottonGrowthApplied/:appId", async (req, res) => {
       "UPDATE [2025_cotton_growth_regulation] SET applied = @newAppliedValue WHERE id = @appId"
     );
 
-    const fetchEmailRequest = new sql.Request(transaction);
-    fetchEmailRequest.input("teamName", sql.VarChar, teamName);
-    const fetchEmailResult = await fetchEmailRequest.query(
-      "SELECT email FROM [2025_cotton_registration_data] WHERE teamName = @teamName"
+    // Step 3: Get teamId and captain email
+    const fetchTeamInfoRequest = new sql.Request(transaction);
+    fetchTeamInfoRequest.input("teamName", sql.VarChar, teamName);
+    const fetchTeamInfoResult = await fetchTeamInfoRequest.query(
+      "SELECT id, email FROM [2025_cotton_registration_data] WHERE teamName = @teamName"
     );
 
-    if (fetchEmailResult.recordset.length === 0) {
+    if (fetchTeamInfoResult.recordset.length === 0) {
       await transaction.rollback();
-      return res.status(404).json({ message: "Recipient's email not found" });
-    } else {
-      recipientEmail = fetchEmailResult.recordset[0].email;
+      return res.status(404).json({ message: "Team registration data not found" });
     }
 
-    // Commit the transaction if all operations are successful
+    teamId = fetchTeamInfoResult.recordset[0].id;
+    captainEmail = fetchTeamInfoResult.recordset[0].email?.trim();
+
+    // Step 4: Get team members' emails using teamId
+    const fetchTeamMembersRequest = new sql.Request(transaction);
+    fetchTeamMembersRequest.input("teamId", sql.Int, teamId);
+    const fetchMembersResult = await fetchTeamMembersRequest.query(
+      "SELECT email FROM [2025_cotton_team_members] WHERE teamId = @teamId"
+    );
+
     await transaction.commit();
 
-    // Send an email after successful database operations
-    const emailText = `Hello ${teamName},\n\nYour growth regulator application dated ${dateOfApplication} has been marked as applied`;
+    const memberEmails = fetchMembersResult.recordset
+      .map(row => row.email?.trim())
+      .filter(email => email);
+
+    const allRecipients = [...new Set([...memberEmails, captainEmail])].filter(Boolean);
+
+    if (allRecipients.length === 0) {
+      console.warn("No valid email recipients found.");
+      return res.status(200).json({
+        message: "Applied field updated, but no emails sent",
+      });
+    }
+
+    // Step 5: Send email
+    const emailText = `Hello ${teamName},\n\nYour growth regulator application dated ${dateOfApplication} has been marked as applied.`;
+
     const mailOptions = {
-      from: "stepnotification2024@gmail.com", // Use your configured email
-      to: recipientEmail,
+      from: "stepnotification2024@gmail.com",
+      to: allRecipients,
       subject: "Growth Regulator Application Status Update",
       text: emailText,
     };
@@ -170,7 +194,7 @@ router.post("/updateCottonGrowthApplied/:appId", async (req, res) => {
       } else {
         console.log("Email sent: " + info.response);
         return res.status(200).json({
-          message: "Applied field updated successfully and email sent",
+          message: "Applied field updated successfully and email sent to team",
         });
       }
     });
@@ -179,5 +203,6 @@ router.post("/updateCottonGrowthApplied/:appId", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 module.exports = router;
