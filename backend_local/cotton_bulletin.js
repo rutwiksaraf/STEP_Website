@@ -269,6 +269,7 @@ router.get("/latestcottonInsuranceFiles", (req, res) => {
 });
 
 router.get("/listCottonTeamFiles/:teamName", (req, res) => {
+
   const teamName = req.params.teamName;
   const directoryPath = path.join(__dirname, "uploads", "cotton", teamName);
 

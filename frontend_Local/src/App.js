@@ -33,7 +33,7 @@ import { ApplicationProviders } from "./SensorContext";
 import AnalyticsHandler from "./AnalyticsHandler";
 
 
-// axios.defaults.baseURL = 'http://localhost:3002';
+axios.defaults.baseURL = 'http://localhost:3002';
 
 axios.interceptors.response.use(
   (response) => {

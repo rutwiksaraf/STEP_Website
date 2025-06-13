@@ -1145,10 +1145,13 @@ function CottonAdminPage() {
     fetchFiles(user.teamName);
   };
 
-  const handleUserClick1 = (user) => {
-    setSelectedUser(user);
-    fetchCottonFiles(user.teamName);
-  };
+    const handleUserClick1 = (user) => {
+  const trimmedTeamName = user.teamName.trim();
+  setSelectedUser({ ...user, teamName: trimmedTeamName });
+  fetchCottonFiles(trimmedTeamName);
+  console.log("Trimmed Team name:", trimmedTeamName);
+};
+
 
   const handleDeleteNitrogenApplication = (appId) => {
     axios
