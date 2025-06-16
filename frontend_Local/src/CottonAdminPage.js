@@ -2423,9 +2423,8 @@ function CottonAdminPage() {
                           Submitted Forms
                         </Typography>
                         {submittedCottonHybridForms
-                          .filter(
-                            (form) => form.teamName === selectedUser.teamName
-                          )
+  .filter(form => form.teamName.trim() === selectedUser.teamName.trim())
+
                           .map((form, index) => (
                             <Card key={index} sx={{ marginBottom: 2 }}>
                               <CardContent>
@@ -2460,7 +2459,7 @@ function CottonAdminPage() {
                         </Typography>
                         {seedingcottonsubmittedForms
                           .filter(
-                            (form) => form.teamName === selectedUser.teamName
+                            (form) => form.teamName.trim() === selectedUser.teamName.trim()
                           )
                           .map((form, index) => (
                             <Card key={index} sx={{ marginBottom: 2 }}>
@@ -3055,7 +3054,7 @@ function CottonAdminPage() {
                         </Typography>
                         <ul>
                           {InsuranceCottonFormData.filter(
-                            (data) => data.teamName === selectedUser.teamName
+                            (data) => data.teamName.trim() === selectedUser.teamName.trim()
                           ) // Filter data for the selected user
                             .map((data, index) => (
                               <li key={index}>
