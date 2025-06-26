@@ -64,7 +64,6 @@ const aggregateWeatherData = async () => {
   const dailyData = {};
   weatherData.forEach((record) => {
     const date = record.endTime.split("T")[0];
-    console.log("FAWN record:", record);
     if (!dailyData[date]) {
       dailyData[date] = {
         rain: 0,
@@ -212,6 +211,7 @@ router.get("/weatherfromdb", async (req, res) => {
 const fetchForecastData = async () => {
   try {
     const response = await axios.get(WEATHER_API_FORECAST_URL);
+    console.log("Returned forecast days:", response.data.forecast.forecastday.length);
     const forecastDays = response.data.forecast.forecastday;
 
     const formattedForecast = forecastDays.map((day) => ({

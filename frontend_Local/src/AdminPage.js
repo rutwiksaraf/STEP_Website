@@ -335,6 +335,8 @@ function AdminPage() {
         fetchApplicationTypeConfirmationNCotton();
         fetchApplicationTypeConfirmationCotton();
         fetchApplicationTypeConfirmation1Cotton();
+        fetchCottonFiles(selectedUser.teamName);
+
       }
     }
   }, [selectedUser, value]);

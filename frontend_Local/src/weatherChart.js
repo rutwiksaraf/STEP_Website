@@ -94,6 +94,8 @@ const WeatherGraph = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setForecastData(res.data);
+
+        console.log("Forecast entries:", res.data.map((f) => f.date));
       } catch (err) {
         console.error("Error fetching forecast:", err);
       }
@@ -303,7 +305,7 @@ const WeatherGraph = () => {
     setTableData(
       labels.map((date, index) => ({ date, value: dataPoints[index] }))
     );
-  }, [selectedParam, weatherData, weatherDataFromDB]);
+  }, [selectedParam, weatherData, weatherDataFromDB, forecastData]);
 
   const chartScrollRef = useRef(null);
 
