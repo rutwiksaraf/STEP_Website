@@ -15,7 +15,8 @@ import {
   ListItemText,
   ListItem,
   Card, // Import Card from Material-UI
-  CardContent, // Import CardContent from Material-UI
+  CardContent,
+  CircularProgress,
 } from "@mui/material";
 import { saveAs } from "file-saver";
 
@@ -25,29 +26,39 @@ function CornBulletin() {
   const [marketingfiles, setMarketingFiles] = useState([]);
   const [teamfiles, setTeamFiles] = useState([]);
   const [fileInput, setFileInput] = useState(null);
+  const [loadingDownload, setLoadingDownload] = useState({});
+
   const teamName = localStorage.getItem("username");
   const token = localStorage.getItem("token");
 
   const handleDownload = (filePath) => {
+    const fileName = decodeURIComponent(filePath.split("/").pop());
+    setLoadingDownload((prev) => ({ ...prev, [fileName]: true }));
+
     axios
       .get(`/api/${filePath}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        responseType: "blob", // Important for handling binary files
+        responseType: "blob",
       })
       .then((response) => {
         const contentDisposition = response.headers["content-disposition"];
-        let fileName = filePath.split("/").pop(); // Default to a filename from the URL
+        let resolvedFileName = fileName;
         if (contentDisposition) {
           const matches = contentDisposition.match(/filename="([^"]+)"/);
-          if (matches.length === 2) {
-            fileName = matches[1];
+          if (matches?.length === 2) {
+            resolvedFileName = matches[1];
           }
         }
-        saveAs(new Blob([response.data]), fileName);
+        saveAs(new Blob([response.data]), resolvedFileName);
       })
-      .catch((error) => console.error("Error downloading file:", error));
+      .catch((error) => {
+        console.error("Error downloading file:", error);
+      })
+      .finally(() => {
+        setLoadingDownload((prev) => ({ ...prev, [fileName]: false }));
+      });
   };
 
   useEffect(() => {
@@ -175,13 +186,16 @@ function CornBulletin() {
                     variant="contained"
                     color="primary"
                     size="small"
+                    disabled={!!loadingDownload[fileName]}
                     onClick={() =>
                       handleDownload(`downloadDefaultFile/${fileName}`)
                     }
-                    // href={`/api/downloadDefaultFile/${fileName}`}
-                    // download
                   >
-                    Download
+                    {loadingDownload[fileName] ? (
+                      <CircularProgress size={20} color="inherit" />
+                    ) : (
+                      "Download"
+                    )}
                   </Button>
                 </ListItem>
               ))}
@@ -197,17 +211,21 @@ function CornBulletin() {
               .map((fileName, index) => (
                 <ListItem key={index}>
                   <ListItemText primary={fileName} />
+
                   <Button
                     variant="contained"
                     color="primary"
                     size="small"
+                    disabled={!!loadingDownload[fileName]}
                     onClick={() =>
                       handleDownload(`downloadInsuranceFile/${fileName}`)
                     }
-                    // href={`/api/downloadInsuranceFile/${fileName}`}
-                    // download
                   >
-                    Download
+                    {loadingDownload[fileName] ? (
+                      <CircularProgress size={20} color="inherit" />
+                    ) : (
+                      "Download"
+                    )}
                   </Button>
                 </ListItem>
               ))}
@@ -223,17 +241,21 @@ function CornBulletin() {
               .map((fileName, index) => (
                 <ListItem key={index}>
                   <ListItemText primary={fileName} />
+
                   <Button
                     variant="contained"
                     color="primary"
                     size="small"
-                    // href={`/api/downloadMarketingFile/${fileName}`}
-                    // download
+                    disabled={!!loadingDownload[fileName]}
                     onClick={() =>
                       handleDownload(`downloadMarketingFile/${fileName}`)
                     }
                   >
-                    Download
+                    {loadingDownload[fileName] ? (
+                      <CircularProgress size={20} color="inherit" />
+                    ) : (
+                      "Download"
+                    )}
                   </Button>
                 </ListItem>
               ))}
@@ -249,17 +271,21 @@ function CornBulletin() {
               .map((fileName, index) => (
                 <ListItem key={index}>
                   <ListItemText primary={fileName} />
+
                   <Button
                     variant="contained"
                     color="primary"
                     size="small"
-                    // href={`/api/downloadTeamFile/${teamName}/${fileName}`}
-                    // download
+                    disabled={!!loadingDownload[fileName]}
                     onClick={() =>
-                      handleDownload(`downloadTeamFile/${teamName}/${fileName}`)
+                      handleDownload(`downloadTeamFile/${fileName}`)
                     }
                   >
-                    Download
+                    {loadingDownload[fileName] ? (
+                      <CircularProgress size={20} color="inherit" />
+                    ) : (
+                      "Download"
+                    )}
                   </Button>
                 </ListItem>
               ))}
