@@ -122,7 +122,8 @@ router.get("/listCottonMarketingFiles", (req, res) => {
 // });
 
 router.get("/downloadCottonTeamFile/:teamName/:fileName", (req, res) => {
-  const { teamName, fileName } = req.params;
+  const teamName = decodeURIComponent(req.params.teamName);
+  const fileName = decodeURIComponent(req.params.fileName);
   const fileDir = path.join(__dirname, "uploads", "cotton", teamName, fileName);
 
   // Check if file exists
@@ -269,7 +270,6 @@ router.get("/latestcottonInsuranceFiles", (req, res) => {
 });
 
 router.get("/listCottonTeamFiles/:teamName", (req, res) => {
-
   const teamName = req.params.teamName;
   const directoryPath = path.join(__dirname, "uploads", "cotton", teamName);
 

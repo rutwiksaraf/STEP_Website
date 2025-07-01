@@ -44,7 +44,6 @@ import { saveAs } from "file-saver";
 import profileImg from "./profile.jpg";
 import CottonWeatherGraph from "./CottonWeatherChart";
 
-
 function CottonAdminPage() {
   const [value, setValue] = useState(1);
   const [value1, setValue1] = useState(0);
@@ -105,13 +104,10 @@ function CottonAdminPage() {
     isApplicationTypeConfirmedNCotton,
     setIsApplicationTypeConfirmedNCotton,
   ] = useState(false);
-  
 
   const handleCloseAdminPage = () => {
     setShowAdminPage(false);
   };
-
-  
 
   const handleLogout = () => {
     // Clear localStorage or sessionStorage as needed
@@ -1145,13 +1141,12 @@ function CottonAdminPage() {
     fetchFiles(user.teamName);
   };
 
-    const handleUserClick1 = (user) => {
-  const trimmedTeamName = user.teamName.trim();
-  setSelectedUser({ ...user, teamName: trimmedTeamName });
-  fetchCottonFiles(trimmedTeamName);
-  console.log("Trimmed Team name:", trimmedTeamName);
-};
-
+  const handleUserClick1 = (user) => {
+    const trimmedTeamName = user.teamName.trim();
+    setSelectedUser({ ...user, teamName: trimmedTeamName });
+    fetchCottonFiles(trimmedTeamName);
+    console.log("Trimmed Team name:", trimmedTeamName);
+  };
 
   const handleDeleteNitrogenApplication = (appId) => {
     axios
@@ -2137,7 +2132,7 @@ function CottonAdminPage() {
     "Growth Regulator",
     "Marketing",
     "File Mgmnt",
-    "Weather"
+    "Weather",
   ];
 
   const [successMessage, setSuccessMessage] = useState("");
@@ -2423,7 +2418,11 @@ function CottonAdminPage() {
                           Submitted Forms
                         </Typography>
                         {submittedCottonHybridForms
-  .filter(form => form.teamName.trim() === selectedUser.teamName.trim())
+                          .filter(
+                            (form) =>
+                              form.teamName.trim() ===
+                              selectedUser.teamName.trim()
+                          )
 
                           .map((form, index) => (
                             <Card key={index} sx={{ marginBottom: 2 }}>
@@ -2459,7 +2458,9 @@ function CottonAdminPage() {
                         </Typography>
                         {seedingcottonsubmittedForms
                           .filter(
-                            (form) => form.teamName.trim() === selectedUser.teamName.trim()
+                            (form) =>
+                              form.teamName.trim() ===
+                              selectedUser.teamName.trim()
                           )
                           .map((form, index) => (
                             <Card key={index} sx={{ marginBottom: 2 }}>
@@ -3054,7 +3055,9 @@ function CottonAdminPage() {
                         </Typography>
                         <ul>
                           {InsuranceCottonFormData.filter(
-                            (data) => data.teamName.trim() === selectedUser.teamName.trim()
+                            (data) =>
+                              data.teamName.trim() ===
+                              selectedUser.teamName.trim()
                           ) // Filter data for the selected user
                             .map((data, index) => (
                               <li key={index}>
@@ -3321,7 +3324,9 @@ function CottonAdminPage() {
                                   size="small"
                                   onClick={() =>
                                     handleDownload(
-                                      `downloadCottonTeamFile/${selectedUser.teamName}/${fileName}`
+                                      `downloadCottonTeamFile/${encodeURIComponent(
+                                        selectedUser.teamName
+                                      )}/${encodeURIComponent(fileName)}`
                                     )
                                   }
                                 >

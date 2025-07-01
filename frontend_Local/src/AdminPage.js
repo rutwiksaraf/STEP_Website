@@ -27,6 +27,7 @@ import {
   Link,
   Button,
   selectClasses,
+  CircularProgress
 } from "@mui/material";
 import { TabPanel, a11yProps } from "./TabPanel"; // You need to define TabPanel and a11yProps
 import axios from "axios";
@@ -86,6 +87,8 @@ function AdminPage() {
   const [profileImageUrl, setProfileImageUrl] = useState(null);
   const [profileImageUrl1, setProfileImageUrl1] = useState(null);
   const [cottonteamMembers, setCottonTeamMembers] = useState([]);
+  const [loadingDownload, setLoadingDownload] = useState({});
+
   const token = localStorage.getItem("token");
 
   let navigate = useNavigate();
@@ -153,25 +156,33 @@ function AdminPage() {
   };
 
   const handleDownload = (filePath) => {
+    const fileName = decodeURIComponent(filePath.split("/").pop());
+    setLoadingDownload((prev) => ({ ...prev, [fileName]: true }));
+
     axios
       .get(`/api/${filePath}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        responseType: "blob", // Important for handling binary files
+        responseType: "blob",
       })
       .then((response) => {
         const contentDisposition = response.headers["content-disposition"];
-        let fileName = filePath.split("/").pop();
+        let resolvedFileName = fileName;
         if (contentDisposition) {
           const matches = contentDisposition.match(/filename="([^"]+)"/);
-          if (matches.length === 2) {
-            fileName = matches[1];
+          if (matches?.length === 2) {
+            resolvedFileName = matches[1];
           }
         }
-        saveAs(new Blob([response.data]), fileName);
+        saveAs(new Blob([response.data]), resolvedFileName);
       })
-      .catch((error) => console.error("Error downloading file:", error));
+      .catch((error) => {
+        console.error("Download error:", error);
+      })
+      .finally(() => {
+        setLoadingDownload((prev) => ({ ...prev, [fileName]: false }));
+      });
   };
 
   const handleDeleteGrowthApplication = (appId) => {
@@ -336,7 +347,6 @@ function AdminPage() {
         fetchApplicationTypeConfirmationCotton();
         fetchApplicationTypeConfirmation1Cotton();
         fetchCottonFiles(selectedUser.teamName);
-
       }
     }
   }, [selectedUser, value]);
@@ -2306,18 +2316,23 @@ function AdminPage() {
                     .map((fileName, index) => (
                       <ListItem key={index}>
                         <ListItemText primary={fileName} />
+
                         <Button
                           variant="contained"
                           color="primary"
                           size="small"
+                          disabled={!!loadingDownload[fileName]}
                           onClick={() =>
                             handleDownload(`downloadDefaultFile/${fileName}`)
                           }
-                          // href={`/api/downloadDefaultFile/${fileName}`}
-                          // download
                         >
-                          Download
+                          {loadingDownload[fileName] ? (
+                            <CircularProgress size={20} color="inherit" />
+                          ) : (
+                            "Download"
+                          )}
                         </Button>
+
                         <Button onClick={() => handledefaultDelete(fileName)}>
                           Delete
                         </Button>
@@ -2340,18 +2355,23 @@ function AdminPage() {
                     .map((fileName, index) => (
                       <ListItem key={index}>
                         <ListItemText primary={fileName} />
+
                         <Button
                           variant="contained"
                           color="primary"
                           size="small"
+                          disabled={!!loadingDownload[fileName]}
                           onClick={() =>
                             handleDownload(`downloadInsuranceFile/${fileName}`)
                           }
-                          // href={`/api/downloadInsuranceFile/${fileName}`}
-                          // download
                         >
-                          Download
+                          {loadingDownload[fileName] ? (
+                            <CircularProgress size={20} color="inherit" />
+                          ) : (
+                            "Download"
+                          )}
                         </Button>
+
                         <Button onClick={() => handleinsuranceDelete(fileName)}>
                           Delete
                         </Button>
@@ -2373,17 +2393,21 @@ function AdminPage() {
                     .map((fileName, index) => (
                       <ListItem key={index}>
                         <ListItemText primary={fileName} />
+
                         <Button
                           variant="contained"
                           color="primary"
                           size="small"
-                          // href={`/api/downloadMarketingFile/${fileName}`}
-                          // download
+                          disabled={!!loadingDownload[fileName]}
                           onClick={() =>
                             handleDownload(`downloadMarketingFile/${fileName}`)
                           }
                         >
-                          Download
+                          {loadingDownload[fileName] ? (
+                            <CircularProgress size={20} color="inherit" />
+                          ) : (
+                            "Download"
+                          )}
                         </Button>
                         <Button onClick={() => handlemarketingDelete(fileName)}>
                           Delete
@@ -2489,20 +2513,25 @@ function AdminPage() {
                     .map((fileName, index) => (
                       <ListItem key={index}>
                         <ListItemText primary={fileName} />
+
                         <Button
                           variant="contained"
                           color="primary"
                           size="small"
+                          disabled={!!loadingDownload[fileName]}
                           onClick={() =>
                             handleDownload(
                               `downloadInsuranceCottonFile/${fileName}`
                             )
                           }
-                          // href={`/api/downloadInsuranceFile/${fileName.originalFileName}`}
-                          // download
                         >
-                          Download
+                          {loadingDownload[fileName] ? (
+                            <CircularProgress size={20} color="inherit" />
+                          ) : (
+                            "Download"
+                          )}
                         </Button>
+
                         <Button
                           onClick={() => handlecottoninsuranceDelete(fileName)}
                         >
@@ -2530,16 +2559,20 @@ function AdminPage() {
                           variant="contained"
                           color="primary"
                           size="small"
+                          disabled={!!loadingDownload[fileName]}
                           onClick={() =>
                             handleDownload(
                               `downloadMarketingCottonFile/${fileName}`
                             )
                           }
-                          // href={`/api/downloadInsuranceFile/${fileName.originalFileName}`}
-                          // download
                         >
-                          Download
+                          {loadingDownload[fileName] ? (
+                            <CircularProgress size={20} color="inherit" />
+                          ) : (
+                            "Download"
+                          )}
                         </Button>
+
                         <Button
                           onClick={() => handlecottonmarketingDelete(fileName)}
                         >
@@ -3659,20 +3692,28 @@ function AdminPage() {
                                 .map((fileName, index) => (
                                   <ListItem key={index}>
                                     <ListItemText primary={fileName} />
+
                                     <Button
                                       variant="contained"
                                       color="primary"
                                       size="small"
+                                      disabled={!!loadingDownload[fileName]}
                                       onClick={() =>
                                         handleDownload(
                                           `downloadDefaultFile/${fileName}`
                                         )
                                       }
-                                      // href={`/api/downloadDefaultFile/${fileName}`}
-                                      // download
                                     >
-                                      Download
+                                      {loadingDownload[fileName] ? (
+                                        <CircularProgress
+                                          size={20}
+                                          color="inherit"
+                                        />
+                                      ) : (
+                                        "Download"
+                                      )}
                                     </Button>
+
                                     <Button
                                       onClick={() =>
                                         handledefaultDelete(fileName)
@@ -3706,16 +3747,23 @@ function AdminPage() {
                                       variant="contained"
                                       color="primary"
                                       size="small"
-                                      // href={`/api/downloadTeamFile/${teamName}/${fileName}`}
-                                      // download
+                                      disabled={!!loadingDownload[fileName]}
                                       onClick={() =>
                                         handleDownload(
                                           `downloadTeamFile/${selectedUser.teamName}/${fileName}`
                                         )
                                       }
                                     >
-                                      Download
+                                      {loadingDownload[fileName] ? (
+                                        <CircularProgress
+                                          size={20}
+                                          color="inherit"
+                                        />
+                                      ) : (
+                                        "Download"
+                                      )}
                                     </Button>
+
                                     <Button
                                       onClick={() =>
                                         handleTeamFileDelete(
@@ -3741,20 +3789,28 @@ function AdminPage() {
                                 .map((fileName, index) => (
                                   <ListItem key={index}>
                                     <ListItemText primary={fileName} />
+
                                     <Button
                                       variant="contained"
                                       color="primary"
                                       size="small"
+                                      disabled={!!loadingDownload[fileName]}
                                       onClick={() =>
                                         handleDownload(
                                           `downloadInsuranceFile/${fileName}`
                                         )
                                       }
-                                      // href={`/api/downloadInsuranceFile/${fileName}`}
-                                      // download
                                     >
-                                      Download
+                                      {loadingDownload[fileName] ? (
+                                        <CircularProgress
+                                          size={20}
+                                          color="inherit"
+                                        />
+                                      ) : (
+                                        "Download"
+                                      )}
                                     </Button>
+
                                     <Button
                                       onClick={() =>
                                         handleinsuranceDelete(fileName)
@@ -3782,20 +3838,28 @@ function AdminPage() {
                                 .map((fileName, index) => (
                                   <ListItem key={index}>
                                     <ListItemText primary={fileName} />
+
                                     <Button
                                       variant="contained"
                                       color="primary"
                                       size="small"
-                                      // href={`/api/downloadMarketingFile/${fileName}`}
-                                      // download
+                                      disabled={!!loadingDownload[fileName]}
                                       onClick={() =>
                                         handleDownload(
                                           `downloadMarketingFile/${fileName}`
                                         )
                                       }
                                     >
-                                      Download
+                                      {loadingDownload[fileName] ? (
+                                        <CircularProgress
+                                          size={20}
+                                          color="inherit"
+                                        />
+                                      ) : (
+                                        "Download"
+                                      )}
                                     </Button>
+
                                     <Button
                                       onClick={() =>
                                         handlemarketingDelete(fileName)
@@ -4950,18 +5014,28 @@ function AdminPage() {
                                     >
                                       Download
                                     </Link> */}
+
                                     <Button
                                       variant="contained"
                                       color="primary"
                                       size="small"
+                                      disabled={!!loadingDownload[fileName]}
                                       onClick={() =>
                                         handleDownload(
                                           `downloadDefaultCottonFile/${fileName}`
                                         )
                                       }
                                     >
-                                      Download
+                                      {loadingDownload[fileName] ? (
+                                        <CircularProgress
+                                          size={20}
+                                          color="inherit"
+                                        />
+                                      ) : (
+                                        "Download"
+                                      )}
                                     </Button>
+
                                     <Button
                                       onClick={() =>
                                         handlecottondefaultDelete(fileName)
@@ -4995,18 +5069,30 @@ function AdminPage() {
                                     >
                                       Download
                                     </Link> */}
+
                                     <Button
                                       variant="contained"
                                       color="primary"
                                       size="small"
+                                      disabled={!!loadingDownload[fileName]}
                                       onClick={() =>
                                         handleDownload(
-                                          `downloadCottonTeamFile/${selectedUser.teamName}/${fileName}`
+                                          `downloadCottonTeamFile/${
+                                            selectedUser.teamName
+                                          }/${encodeURIComponent(fileName)}`
                                         )
                                       }
                                     >
-                                      Download
+                                      {loadingDownload[fileName] ? (
+                                        <CircularProgress
+                                          size={20}
+                                          color="inherit"
+                                        />
+                                      ) : (
+                                        "Download"
+                                      )}
                                     </Button>
+
                                     <Button
                                       onClick={() =>
                                         handleCottonTeamFileDelete(
@@ -5037,18 +5123,28 @@ function AdminPage() {
                                     >
                                       Download
                                     </Link> */}
+
                                     <Button
                                       variant="contained"
                                       color="primary"
                                       size="small"
+                                      disabled={!!loadingDownload[fileName]}
                                       onClick={() =>
                                         handleDownload(
                                           `downloadInsuranceCottonFile/${fileName}`
                                         )
                                       }
                                     >
-                                      Download
+                                      {loadingDownload[fileName] ? (
+                                        <CircularProgress
+                                          size={20}
+                                          color="inherit"
+                                        />
+                                      ) : (
+                                        "Download"
+                                      )}
                                     </Button>
+
                                     <Button
                                       onClick={() =>
                                         handlecottoninsuranceDelete(fileName)
@@ -5081,18 +5177,28 @@ function AdminPage() {
                                     >
                                       Download
                                     </Link> */}
+
                                     <Button
                                       variant="contained"
                                       color="primary"
                                       size="small"
+                                      disabled={!!loadingDownload[fileName]}
                                       onClick={() =>
                                         handleDownload(
                                           `downloadMarketingCottonFile/${fileName}`
                                         )
                                       }
                                     >
-                                      Download
+                                      {loadingDownload[fileName] ? (
+                                        <CircularProgress
+                                          size={20}
+                                          color="inherit"
+                                        />
+                                      ) : (
+                                        "Download"
+                                      )}
                                     </Button>
+
                                     <Button
                                       onClick={() =>
                                         handlecottonmarketingDelete(fileName)

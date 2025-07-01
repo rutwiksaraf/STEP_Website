@@ -35,7 +35,7 @@ function CottonBulletin() {
   const token = localStorage.getItem("token");
 
   const handleDownload = (filePath) => {
-    const fileName = filePath.split("/").pop();
+    const fileName = decodeURIComponent(filePath.split("/").pop());
     setLoadingDownload((prev) => ({ ...prev, [fileName]: true }));
 
     axios
@@ -305,7 +305,11 @@ function CottonBulletin() {
                     size="small"
                     disabled={!!loadingDownload[fileName]}
                     onClick={() =>
-                      handleDownload(`downloadCottonTeamFile/${fileName}`)
+                      handleDownload(
+                        `downloadCottonTeamFile/${encodeURIComponent(
+                          teamName
+                        )}/${encodeURIComponent(fileName)}`
+                      )
                     }
                   >
                     {loadingDownload[fileName] ? (
