@@ -26,6 +26,7 @@ import {
   Link,
   Button,
   selectClasses,
+  CircularProgress,
 } from "@mui/material";
 import { TabPanel, a11yProps } from "./TabPanel"; // You need to define TabPanel and a11yProps
 import axios from "axios";
@@ -68,6 +69,7 @@ function CottonAdminPage() {
   const [marketingOptions, setMarketingOptions] = useState([]);
   const [marketingCottonOptions, setMarketingCottonOptions] = useState([]);
   const [growthRegulationCotton, setGrowthRegulationCotton] = useState([]);
+  const [downloadingFiles, setDownloadingFiles] = useState({});
 
   const [defaultfiles, setDefaultFiles] = useState([]);
   const [insurancefiles, setInsuranceFiles] = useState([]);
@@ -165,26 +167,32 @@ function CottonAdminPage() {
       });
   };
 
-  const handleDownload = (filePath) => {
-    axios
-      .get(`/api/${filePath}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        responseType: "blob", // Important for handling binary files
-      })
-      .then((response) => {
-        const contentDisposition = response.headers["content-disposition"];
-        let fileName = filePath.split("/").pop(); // Default to a filename from the URL
-        if (contentDisposition) {
-          const matches = contentDisposition.match(/filename="([^"]+)"/);
-          if (matches.length === 2) {
-            fileName = matches[1];
-          }
+  const handleDownload = async (filePath) => {
+    const fileKey = filePath; // use full path as unique key
+
+    setDownloadingFiles((prev) => ({ ...prev, [fileKey]: true }));
+
+    try {
+      const response = await axios.get(`/api/${filePath}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: "blob",
+      });
+
+      const contentDisposition = response.headers["content-disposition"];
+      let fileName = filePath.split("/").pop();
+      if (contentDisposition) {
+        const matches = contentDisposition.match(/filename="([^"]+)"/);
+        if (matches?.length === 2) {
+          fileName = matches[1];
         }
-        saveAs(new Blob([response.data]), fileName);
-      })
-      .catch((error) => console.error("Error downloading file:", error));
+      }
+
+      saveAs(new Blob([response.data]), fileName);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+    } finally {
+      setDownloadingFiles((prev) => ({ ...prev, [fileKey]: false }));
+    }
   };
 
   const handleTeamFileDelete = (fileName, teamName) => {
@@ -3274,16 +3282,30 @@ function CottonAdminPage() {
 
                                 <Button
                                   variant="contained"
-                                  color="primary"
                                   size="small"
                                   onClick={() =>
                                     handleDownload(
                                       `downloadDefaultCottonFile/${fileName}`
                                     )
                                   }
+                                  disabled={
+                                    downloadingFiles[
+                                      `downloadDefaultCottonFile/${fileName}`
+                                    ]
+                                  }
                                 >
-                                  Download
+                                  {downloadingFiles[
+                                    `downloadDefaultCottonFile/${fileName}`
+                                  ] ? (
+                                    <CircularProgress
+                                      size={20}
+                                      color="inherit"
+                                    />
+                                  ) : (
+                                    "Download"
+                                  )}
                                 </Button>
+
                                 <Button
                                   onClick={() =>
                                     handlecottondefaultDelete(fileName)
@@ -3318,9 +3340,9 @@ function CottonAdminPage() {
                                 >
                                   Download
                                 </Link> */}
+
                                 <Button
                                   variant="contained"
-                                  color="primary"
                                   size="small"
                                   onClick={() =>
                                     handleDownload(
@@ -3329,9 +3351,28 @@ function CottonAdminPage() {
                                       )}/${encodeURIComponent(fileName)}`
                                     )
                                   }
+                                  disabled={
+                                    downloadingFiles[
+                                      `downloadCottonTeamFile/${encodeURIComponent(
+                                        selectedUser.teamName
+                                      )}/${encodeURIComponent(fileName)}`
+                                    ]
+                                  }
                                 >
-                                  Download
+                                  {downloadingFiles[
+                                    `downloadCottonTeamFile/${encodeURIComponent(
+                                        selectedUser.teamName
+                                      )}/${encodeURIComponent(fileName)}`
+                                  ] ? (
+                                    <CircularProgress
+                                      size={20}
+                                      color="inherit"
+                                    />
+                                  ) : (
+                                    "Download"
+                                  )}
                                 </Button>
+
                                 <Button
                                   onClick={() =>
                                     handleCottonTeamFileDelete(
@@ -3360,18 +3401,33 @@ function CottonAdminPage() {
                                 >
                                   Download
                                 </Link> */}
+
                                 <Button
                                   variant="contained"
-                                  color="primary"
                                   size="small"
                                   onClick={() =>
                                     handleDownload(
                                       `downloadInsuranceCottonFile/${fileName}`
                                     )
                                   }
+                                  disabled={
+                                    downloadingFiles[
+                                      `downloadInsuranceCottonFile/${fileName}`
+                                    ]
+                                  }
                                 >
-                                  Download
+                                  {downloadingFiles[
+                                    `downloadInsuranceCottonFile/${fileName}`
+                                  ] ? (
+                                    <CircularProgress
+                                      size={20}
+                                      color="inherit"
+                                    />
+                                  ) : (
+                                    "Download"
+                                  )}
                                 </Button>
+
                                 <Button
                                   onClick={() =>
                                     handlecottoninsuranceDelete(fileName)
@@ -3402,18 +3458,33 @@ function CottonAdminPage() {
                                 >
                                   Download
                                 </Link> */}
+
                                 <Button
                                   variant="contained"
-                                  color="primary"
                                   size="small"
                                   onClick={() =>
                                     handleDownload(
                                       `downloadMarketingCottonFile/${fileName}`
                                     )
                                   }
+                                  disabled={
+                                    downloadingFiles[
+                                      `downloadMarketingFile/${fileName}`
+                                    ]
+                                  }
                                 >
-                                  Download
+                                  {downloadingFiles[
+                                    `downloadMarketingFile/${fileName}`
+                                  ] ? (
+                                    <CircularProgress
+                                      size={20}
+                                      color="inherit"
+                                    />
+                                  ) : (
+                                    "Download"
+                                  )}
                                 </Button>
+
                                 <Button
                                   onClick={() =>
                                     handlecottonmarketingDelete(fileName)
