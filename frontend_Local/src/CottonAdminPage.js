@@ -3114,7 +3114,7 @@ function CottonAdminPage() {
                                     <button
                                       style={{
                                         backgroundColor:
-                                          option.applied === "no"
+                                          option.applied === false
                                             ? "red"
                                             : "green",
                                         color: "white", // Assuming you want white text for contrast
@@ -3122,7 +3122,7 @@ function CottonAdminPage() {
                                         // Add any other styling you need here
                                       }}
                                     >
-                                      {option.applied === "no" ? (
+                                      {option.applied === false ? (
                                         <HighlightOffIcon
                                           onClick={() =>
                                             handleGrowthChangeApplied(option.id)
