@@ -122,7 +122,7 @@ router.get("/listCottonMarketingFiles", (req, res) => {
 // });
 
 router.get("/downloadCottonTeamFile/:teamName/:fileName", (req, res) => {
-  const teamName = decodeURIComponent(req.params.teamName);
+  const teamName = decodeURIComponent(req.params.teamName).trim();
   const fileName = decodeURIComponent(req.params.fileName);
   const fileDir = path.join(__dirname, "uploads", "cotton", teamName, fileName);
 

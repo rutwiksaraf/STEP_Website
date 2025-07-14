@@ -68,7 +68,7 @@ function CottonBulletin() {
     const fetchFiles = async () => {
       try {
         const response = await axios.get(
-          `/api/listCottonTeamFiles/${teamName}`,
+          `/api/listCottonTeamFiles/${teamName.trim()}`,
           {
             headers: {
               Authorization: `Bearer ${token}`, // Include the token in the Authorization header
@@ -307,7 +307,7 @@ function CottonBulletin() {
                     onClick={() =>
                       handleDownload(
                         `downloadCottonTeamFile/${encodeURIComponent(
-                          teamName
+                          teamName.trim()
                         )}/${encodeURIComponent(fileName)}`
                       )
                     }
