@@ -736,8 +736,7 @@ function AdminPage() {
   };
 
   const handlemarketingDelete = (fileName) => {
-    axios
-      .delete(`/api/deletemarketingFile/${fileName}`, {
+    axios.delete(`/api/deletemarketingFile/${encodeURIComponent(fileName)}`, {
         headers: {
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
