@@ -318,7 +318,7 @@ function CottonAdminPage() {
     setIsApplicationTypeConfirmedN(false);
     axios
       .get("/api/getApplicationTypeConfirmation", {
-        params: { teamName: selectedUser.teamName },
+        params: { teamName: selectedUser.teamName.trim() },
         headers: {
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
@@ -346,7 +346,7 @@ function CottonAdminPage() {
     setIsApplicationTypeConfirmedN(false);
     axios
       .get("/api/getCottonApplicationTypeConfirmation", {
-        params: { teamName: selectedUser.teamName },
+        params: { teamName: selectedUser.teamName.trim() },
         headers: {
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
@@ -374,7 +374,7 @@ function CottonAdminPage() {
     setIsApplicationTypeConfirmed(false);
     axios
       .get("/api/getIrrigationApplicationTypeConfirmation", {
-        params: { teamName: selectedUser.teamName },
+        params: { teamName: selectedUser.teamName.trim() },
         headers: {
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
@@ -402,7 +402,7 @@ function CottonAdminPage() {
     setIsApplicationTypeConfirmed1(false);
     axios
       .get("/api/getMoistureApplicationTypeConfirmation", {
-        params: { teamName: selectedUser.teamName },
+        params: { teamName: selectedUser.teamName.trim() },
         headers: {
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
@@ -430,7 +430,7 @@ function CottonAdminPage() {
     setIsApplicationTypeConfirmed(false);
     axios
       .get("/api/getIrrigationApplicationTypeConfirmationCotton", {
-        params: { teamName: selectedUser.teamName },
+        params: { teamName: selectedUser.teamName.trim() },
         headers: {
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
@@ -458,7 +458,7 @@ function CottonAdminPage() {
     setIsApplicationTypeConfirmed1(false);
     axios
       .get("/api/getMoistureApplicationTypeConfirmationCotton", {
-        params: { teamName: selectedUser.teamName },
+        params: { teamName: selectedUser.teamName.trim() },
         headers: {
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
@@ -483,7 +483,7 @@ function CottonAdminPage() {
 
   const fetchProfileImage = () => {
     const crop = value === 0 ? "corn" : value === 1 ? "cotton" : "";
-    const profileImageUrlEndpoint = `/api/getProfileImageUrl/${crop}/${selectedUser.teamName}`;
+    const profileImageUrlEndpoint = `/api/getProfileImageUrl/${crop}/${selectedUser.teamName.trim()}`;
 
     fetch(profileImageUrlEndpoint, {
       headers: {
@@ -539,7 +539,7 @@ function CottonAdminPage() {
     if (selectedUser) {
       // Determine the crop based on the value
       // const crop = value === 0 ? "corn" : value === 1 ? "cotton" : "";
-      // const imageUrl = `/uploads/${crop}/${selectedUser.teamName}/profile.jpg`;
+      // const imageUrl = `/uploads/${crop}/${selectedUser.teamName.trim()}/profile.jpg`;
       // fetch(imageUrl)
       //   .then((response) => {
       //     if (response.ok) {
@@ -2341,7 +2341,7 @@ function CottonAdminPage() {
                       <h2 className="success-message">{errorMessage}</h2>
                     )}
                     <p style={{ textAlign: "justify" }}>
-                      Username: {selectedUser.teamName}
+                      Username: {selectedUser.teamName.trim()}
                     </p>{" "}
                     {/* Change to teamName */}
                     <p style={{ textAlign: "justify" }}>
@@ -2527,7 +2527,7 @@ function CottonAdminPage() {
                               {starterData
                                 .filter(
                                   (app) =>
-                                    app.teamName === selectedUser.teamName
+                                    app.teamName === selectedUser.teamName.trim()
                                 )
                                 .map((app, index) => (
                                   <TableRow key={app.id}>
@@ -2562,7 +2562,7 @@ function CottonAdminPage() {
                             <TableBody>
                               {NitrogenCottontableData.filter(
                                 (app) =>
-                                  app.teamName === selectedUser.teamName &&
+                                  app.teamName === selectedUser.teamName.trim() &&
                                   app.applicationType === "in-season"
                               ) // Filter data for the selected user and "in-season" application type
                                 .sort(
@@ -2660,7 +2660,7 @@ function CottonAdminPage() {
                             <TableBody>
                               {NitrogenCottontableData.filter(
                                 (app) =>
-                                  app.teamName === selectedUser.teamName &&
+                                  app.teamName === selectedUser.teamName.trim() &&
                                   app.applicationType === "controlled-release"
                               ) // Filter data for the selected user and "controlled-release" application type
                                 .sort(
@@ -2767,7 +2767,7 @@ function CottonAdminPage() {
 
                     {IrrigationCottonapplications.filter(
                       (app) =>
-                        app.teamName === selectedUser.teamName &&
+                        app.teamName === selectedUser.teamName.trim() &&
                         app.options === "calendar"
                     ).length > 0 && (
                       <>
@@ -2794,7 +2794,7 @@ function CottonAdminPage() {
                             <TableBody>
                               {IrrigationCottonapplications.filter(
                                 (app) =>
-                                  app.teamName === selectedUser.teamName &&
+                                  app.teamName === selectedUser.teamName.trim() &&
                                   app.options === "calendar"
                               )
                                 .sort(
@@ -2865,7 +2865,7 @@ function CottonAdminPage() {
                     {/* Evapotranspiration Table */}
                     {IrrigationCottonapplications.some(
                       (app) =>
-                        app.teamName === selectedUser.teamName &&
+                        app.teamName === selectedUser.teamName.trim() &&
                         app.options === "evapotranspiration"
                     ) && (
                       <>
@@ -2891,7 +2891,7 @@ function CottonAdminPage() {
                           <TableBody>
                             {IrrigationCottonapplications.filter(
                               (app) =>
-                                app.teamName === selectedUser.teamName &&
+                                app.teamName === selectedUser.teamName.trim() &&
                                 app.options === "evapotranspiration"
                             )
                               .sort(
@@ -2961,7 +2961,7 @@ function CottonAdminPage() {
                     {/* Soil-Moisture Table */}
                     {IrrigationCottonapplications.some(
                       (app) =>
-                        app.teamName === selectedUser.teamName &&
+                        app.teamName === selectedUser.teamName.trim() &&
                         app.options === "soil-moisture"
                     ) && (
                       <>
@@ -2984,7 +2984,7 @@ function CottonAdminPage() {
                           <TableBody>
                             {IrrigationCottonapplications.filter(
                               (app) =>
-                                app.teamName === selectedUser.teamName &&
+                                app.teamName === selectedUser.teamName.trim() &&
                                 app.options === "soil-moisture"
                             )
                               .sort(
@@ -3100,7 +3100,7 @@ function CottonAdminPage() {
                             {growthRegulationCotton
                               .filter(
                                 (option) =>
-                                  option.teamName === selectedUser.teamName
+                                  option.teamName === selectedUser.teamName.trim()
                               ) // Filter data for the selected user
                               .map((option, index) => (
                                 <TableRow key={index}>
@@ -3186,7 +3186,7 @@ function CottonAdminPage() {
                             {marketingCottonOptions
                               .filter(
                                 (option) =>
-                                  option.teamName === selectedUser.teamName
+                                  option.teamName === selectedUser.teamName.trim()
                               ) // Filter data for the selected user
                               .map((option, index) => (
                                 <TableRow key={index}>
@@ -3260,7 +3260,7 @@ function CottonAdminPage() {
                         />
                         <button
                           onClick={() =>
-                            handleteamFileUpload1(selectedUser.teamName)
+                            handleteamFileUpload1(selectedUser.teamName.trim())
                           }
                         >
                           Upload File
@@ -3347,21 +3347,21 @@ function CottonAdminPage() {
                                   onClick={() =>
                                     handleDownload(
                                       `downloadCottonTeamFile/${encodeURIComponent(
-                                        selectedUser.teamName
+                                        selectedUser.teamName.trim()
                                       )}/${encodeURIComponent(fileName)}`
                                     )
                                   }
                                   disabled={
                                     downloadingFiles[
                                       `downloadCottonTeamFile/${encodeURIComponent(
-                                        selectedUser.teamName
+                                        selectedUser.teamName.trim()
                                       )}/${encodeURIComponent(fileName)}`
                                     ]
                                   }
                                 >
                                   {downloadingFiles[
                                     `downloadCottonTeamFile/${encodeURIComponent(
-                                        selectedUser.teamName
+                                        selectedUser.teamName.trim()
                                       )}/${encodeURIComponent(fileName)}`
                                   ] ? (
                                     <CircularProgress
@@ -3377,7 +3377,7 @@ function CottonAdminPage() {
                                   onClick={() =>
                                     handleCottonTeamFileDelete(
                                       fileName,
-                                      selectedUser.teamName
+                                      selectedUser.teamName.trim()
                                     )
                                   }
                                 >

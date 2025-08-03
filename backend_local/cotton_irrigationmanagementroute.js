@@ -94,7 +94,11 @@ router.get("/cottonfetchAllSoilMoistureSensorData", async (req, res) => {
     );
 
     // Send the fetched data as a JSON response
-    res.status(200).json(result.recordset);
+    const cleaned = result.recordset.map(row => ({
+  ...row,
+  teamName: row.teamName?.trim()
+}));
+res.status(200).json(cleaned);
   } catch (error) {
     console.error("Error fetching sensor data from the database:", error);
     res.status(500).json({ message: "Error fetching sensor data" });

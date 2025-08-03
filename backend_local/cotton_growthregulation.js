@@ -92,7 +92,11 @@ router.get("/cottonFetchAllGrowthRegulation", async (req, res) => {
     const result = await pool.request().query(`
       SELECT * FROM [2025_cotton_growth_regulation]
     `);
-    res.status(200).json(result.recordset);
+    const cleaned = result.recordset.map(row => ({
+  ...row,
+  teamName: row.teamName?.trim()
+}));
+res.status(200).json(cleaned);
   } catch (error) {
     console.error("Error fetching all growth regulation data:", error);
     res.status(500).json({ message: "Error fetching data" });
