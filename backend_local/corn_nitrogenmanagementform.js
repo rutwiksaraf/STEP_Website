@@ -56,12 +56,19 @@ router.post("/nitrogenmanagementsubmit", async (req, res) => {
 });
 
 router.get("/fetchNitrogenManagementData", async (req, res) => {
-  const { applicationType, teamName } = req.query; // Extract the applicationType and teamName from the query parameters
+  let { applicationType, teamName } = req.query;
+
+  // Decode and trim both query parameters
+  try {
+    applicationType = decodeURIComponent(applicationType)?.trim();
+    teamName = decodeURIComponent(teamName)?.trim();
+  } catch (err) {
+    return res.status(400).json({ message: "Invalid query encoding" });
+  }
 
   if (!applicationType || !teamName) {
     return res.status(400).json({
-      message:
-        "Application type and team name are required as query parameters",
+      message: "Application type and team name are required as query parameters",
     });
   }
 
@@ -69,22 +76,21 @@ router.get("/fetchNitrogenManagementData", async (req, res) => {
     const pool = await setupDatabase(); // Obtain a connection pool
     const request = pool.request(); // Create a new request object
 
-    // Add parameters to your SQL query
     request.input("applicationType", sql.VarChar, applicationType);
     request.input("teamName", sql.VarChar, teamName);
 
-    // Query the database based on the applicationType and teamName
     const result = await request.query(`
-      SELECT * FROM [2025_nitrogen_management_form] WHERE applicationType = @applicationType AND teamName = @teamName
+      SELECT * FROM [2025_nitrogen_management_form] 
+      WHERE applicationType = @applicationType AND teamName = @teamName
     `);
 
-    // Send the fetched data as a JSON response
     res.status(200).json(result.recordset);
   } catch (error) {
     console.error("Error fetching data from the database:", error);
     res.status(500).json({ message: "Error fetching data" });
   }
 });
+
 
 router.get("/fetchAllNitrogenManagementData", async (req, res) => {
   try {
@@ -330,7 +336,8 @@ router.post("/saveProductOptionConfirmation", async (req, res) => {
 });
 
 router.get("/getApplicationTypeConfirmation", async (req, res) => {
-  const teamName = req.query.teamName; // Assume teamName is passed as a query parameter
+  const teamName = decodeURIComponent(req.query.teamName?.trim());
+ // Assume teamName is passed as a query parameter
 
   if (!teamName) {
     return res.status(400).send("Team name is required as a query parameter");

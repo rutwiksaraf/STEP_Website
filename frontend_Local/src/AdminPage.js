@@ -346,7 +346,7 @@ function AdminPage() {
         fetchApplicationTypeConfirmationNCotton();
         fetchApplicationTypeConfirmationCotton();
         fetchApplicationTypeConfirmation1Cotton();
-        fetchCottonFiles(selectedUser.teamName);
+        fetchCottonFiles(selectedUser.teamName.trim());
       }
     }
   }, [selectedUser, value]);
@@ -356,7 +356,7 @@ function AdminPage() {
     setIsApplicationTypeConfirmedN(false);
     axios
       .get("/api/getApplicationTypeConfirmation", {
-        params: { teamName: selectedUser.teamName },
+        params: { teamName: selectedUser.teamName.trim() },
         headers: {
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
@@ -384,7 +384,7 @@ function AdminPage() {
     setIsApplicationTypeConfirmedN(false);
     axios
       .get("/api/getCottonApplicationTypeConfirmation", {
-        params: { teamName: selectedUser.teamName },
+        params: { teamName: selectedUser.teamName.trim() },
         headers: {
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
@@ -412,7 +412,7 @@ function AdminPage() {
     setIsApplicationTypeConfirmed(false);
     axios
       .get("/api/getIrrigationApplicationTypeConfirmation", {
-        params: { teamName: selectedUser.teamName },
+        params: { teamName: selectedUser.teamName.trim() },
         headers: {
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
@@ -440,7 +440,7 @@ function AdminPage() {
     setIsApplicationTypeConfirmed1(false);
     axios
       .get("/api/getMoistureApplicationTypeConfirmation", {
-        params: { teamName: selectedUser.teamName },
+        params: { teamName: selectedUser.teamName.trim() },
         headers: {
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
@@ -468,7 +468,7 @@ function AdminPage() {
     setIsApplicationTypeConfirmed(false);
     axios
       .get("/api/getIrrigationApplicationTypeConfirmationCotton", {
-        params: { teamName: selectedUser.teamName },
+        params: { teamName: selectedUser.teamName.trim() },
         headers: {
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
@@ -496,7 +496,7 @@ function AdminPage() {
     setIsApplicationTypeConfirmed1(false);
     axios
       .get("/api/getMoistureApplicationTypeConfirmationCotton", {
-        params: { teamName: selectedUser.teamName },
+        params: { teamName: selectedUser.teamName.trim() },
         headers: {
           Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
@@ -521,7 +521,7 @@ function AdminPage() {
 
   const fetchProfileImage = () => {
     const crop = value === 0 ? "corn" : value === 1 ? "cotton" : "";
-    const profileImageUrlEndpoint = `/api/getProfileImageUrl/${crop}/${selectedUser.teamName}`;
+    const profileImageUrlEndpoint = `/api/getProfileImageUrl/${crop}/${selectedUser.teamName.trim()}`;
 
     fetch(profileImageUrlEndpoint, {
       headers: {
@@ -577,7 +577,7 @@ function AdminPage() {
     if (selectedUser) {
       // Determine the crop based on the value
       // const crop = value === 0 ? "corn" : value === 1 ? "cotton" : "";
-      // const imageUrl = `/uploads/${crop}/${selectedUser.teamName}/profile.jpg`;
+      // const imageUrl = `/uploads/${crop}/${selectedUser.teamName.trim()}/profile.jpg`;
       // fetch(imageUrl)
       //   .then((response) => {
       //     if (response.ok) {
@@ -2823,7 +2823,7 @@ function AdminPage() {
                           <h2 className="success-message">{errorMessage}</h2>
                         )}
                         <p style={{ textAlign: "justify" }}>
-                          Username: {selectedUser.teamName}
+                          Username: {selectedUser.teamName.trim()}
                         </p>{" "}
                         {/* Change to teamName */}
                         <p style={{ textAlign: "justify" }}>
@@ -2910,7 +2910,7 @@ function AdminPage() {
                             {submittedHybridForms
                               .filter(
                                 (form) =>
-                                  form.teamName === selectedUser.teamName
+                                  form.teamName === selectedUser.teamName.trim()
                               )
                               .map((form, index) => (
                                 <Card key={index} sx={{ marginBottom: 2 }}>
@@ -2947,7 +2947,7 @@ function AdminPage() {
                             {seedingsubmittedForms
                               .filter(
                                 (form) =>
-                                  form.teamName === selectedUser.teamName
+                                  form.teamName === selectedUser.teamName.trim()
                               )
                               .map((form, index) => (
                                 <Card key={index} sx={{ marginBottom: 2 }}>
@@ -3013,7 +3013,7 @@ function AdminPage() {
                                 <TableBody>
                                   {NitrogentableData.filter(
                                     (app) =>
-                                      app.teamName === selectedUser.teamName &&
+                                      app.teamName === selectedUser.teamName.trim() &&
                                       app.applicationType === "in-season"
                                   ) // Filter data for the selected user and "in-season" application type
                                     .sort(
@@ -3113,7 +3113,7 @@ function AdminPage() {
                                 <TableBody>
                                   {NitrogentableData.filter(
                                     (app) =>
-                                      app.teamName === selectedUser.teamName &&
+                                      app.teamName === selectedUser.teamName.trim() &&
                                       app.applicationType ===
                                         "controlled-release"
                                   ) // Filter data for the selected user and "controlled-release" application type
@@ -3212,7 +3212,7 @@ function AdminPage() {
 
                         {Irrigationapplications.filter(
                           (app) =>
-                            app.teamName === selectedUser.teamName &&
+                            app.teamName === selectedUser.teamName.trim() &&
                             app.options === "calendar"
                         ).length > 0 && (
                           <>
@@ -3238,7 +3238,7 @@ function AdminPage() {
                               <TableBody>
                                 {Irrigationapplications.filter(
                                   (app) =>
-                                    app.teamName === selectedUser.teamName
+                                    app.teamName === selectedUser.teamName.trim()
                                 )
                                   .filter((app) => app.options === "calendar") // Filter data for "calendar" option
                                   .sort(
@@ -3311,7 +3311,7 @@ function AdminPage() {
 
                         {Irrigationapplications.filter(
                           (app) =>
-                            app.teamName === selectedUser.teamName &&
+                            app.teamName === selectedUser.teamName.trim() &&
                             app.options === "evapotranspiration"
                         ).length > 0 && (
                           <>
@@ -3337,7 +3337,7 @@ function AdminPage() {
                               <TableBody>
                                 {Irrigationapplications.filter(
                                   (app) =>
-                                    app.teamName === selectedUser.teamName
+                                    app.teamName === selectedUser.teamName.trim()
                                 )
                                   .filter(
                                     (app) =>
@@ -3424,7 +3424,7 @@ function AdminPage() {
                         </div>
                         {Irrigationapplications.filter(
                           (app) =>
-                            app.teamName === selectedUser.teamName &&
+                            app.teamName === selectedUser.teamName.trim() &&
                             app.options === "soil-moisture"
                         ).length > 0 && (
                           <>
@@ -3452,7 +3452,7 @@ function AdminPage() {
                               <TableBody>
                                 {Irrigationapplications.filter(
                                   (app) =>
-                                    app.teamName === selectedUser.teamName
+                                    app.teamName === selectedUser.teamName.trim()
                                 )
                                   .filter(
                                     (app) => app.options === "soil-moisture"
@@ -3541,7 +3541,7 @@ function AdminPage() {
                             <ul>
                               {InsuranceFormData.filter(
                                 (data) =>
-                                  data.teamName === selectedUser.teamName
+                                  data.teamName === selectedUser.teamName.trim()
                               ) // Filter data for the selected user
                                 .map((data, index) => (
                                   <li key={index}>
@@ -3574,7 +3574,7 @@ function AdminPage() {
                                 {marketingOptions
                                   .filter(
                                     (option) =>
-                                      option.teamName === selectedUser.teamName
+                                      option.teamName === selectedUser.teamName.trim()
                                   ) // Filter data for the selected user
                                   .map((option, index) => (
                                     <TableRow key={index}>
@@ -3669,7 +3669,7 @@ function AdminPage() {
                             />
                             <button
                               onClick={() =>
-                                handleteamFileUpload(selectedUser.teamName)
+                                handleteamFileUpload(selectedUser.teamName.trim())
                               }
                             >
                               Upload File
@@ -3749,7 +3749,7 @@ function AdminPage() {
                                       disabled={!!loadingDownload[fileName]}
                                       onClick={() =>
                                         handleDownload(
-                                          `downloadTeamFile/${selectedUser.teamName}/${fileName}`
+                                          `downloadTeamFile/${selectedUser.teamName.trim()}/${fileName}`
                                         )
                                       }
                                     >
@@ -3767,7 +3767,7 @@ function AdminPage() {
                                       onClick={() =>
                                         handleTeamFileDelete(
                                           fileName,
-                                          selectedUser.teamName
+                                          selectedUser.teamName.trim()
                                         )
                                       }
                                     >
@@ -4034,7 +4034,7 @@ function AdminPage() {
                           <h2 className="success-message">{errorMessage}</h2>
                         )}
                         <p style={{ textAlign: "justify" }}>
-                          Username: {selectedUser.teamName}
+                          Username: {selectedUser.teamName.trim()}
                         </p>{" "}
                         {/* Change to teamName */}
                         <p style={{ textAlign: "justify" }}>
@@ -4121,7 +4121,7 @@ function AdminPage() {
                             {submittedCottonHybridForms
                               .filter(
                                 (form) =>
-                                  form.teamName === selectedUser.teamName
+                                  form.teamName === selectedUser.teamName.trim()
                               )
                               .map((form, index) => (
                                 <Card key={index} sx={{ marginBottom: 2 }}>
@@ -4159,7 +4159,7 @@ function AdminPage() {
                               {seedingcottonsubmittedForms
                                 .filter(
                                   (form) =>
-                                    form.teamName === selectedUser.teamName
+                                    form.teamName === selectedUser.teamName.trim()
                                 )
                                 .map((form, index) => (
                                   <Card key={index} sx={{ marginBottom: 2 }}>
@@ -4222,7 +4222,7 @@ function AdminPage() {
                                   {starterData
                                     .filter(
                                       (app) =>
-                                        app.teamName === selectedUser.teamName
+                                        app.teamName === selectedUser.teamName.trim()
                                     )
                                     .map((app, index) => (
                                       <TableRow key={app.id}>
@@ -4259,7 +4259,7 @@ function AdminPage() {
                                 <TableBody>
                                   {NitrogenCottontableData.filter(
                                     (app) =>
-                                      app.teamName === selectedUser.teamName &&
+                                      app.teamName === selectedUser.teamName.trim() &&
                                       app.applicationType === "in-season"
                                   ) // Filter data for the selected user and "in-season" application type
                                     .sort(
@@ -4358,7 +4358,7 @@ function AdminPage() {
                                 <TableBody>
                                   {NitrogenCottontableData.filter(
                                     (app) =>
-                                      app.teamName === selectedUser.teamName &&
+                                      app.teamName === selectedUser.teamName.trim() &&
                                       app.applicationType ===
                                         "controlled-release"
                                   ) // Filter data for the selected user and "controlled-release" application type
@@ -4469,7 +4469,7 @@ function AdminPage() {
 
                         {IrrigationCottonapplications.filter(
                           (app) =>
-                            app.teamName === selectedUser.teamName &&
+                            app.teamName === selectedUser.teamName.trim() &&
                             app.options === "calendar"
                         ).length > 0 && (
                           <>
@@ -4496,7 +4496,7 @@ function AdminPage() {
                                 <TableBody>
                                   {IrrigationCottonapplications.filter(
                                     (app) =>
-                                      app.teamName === selectedUser.teamName &&
+                                      app.teamName === selectedUser.teamName.trim() &&
                                       app.options === "calendar"
                                   )
                                     .sort(
@@ -4570,7 +4570,7 @@ function AdminPage() {
                         {/* Evapotranspiration Table */}
                         {IrrigationCottonapplications.some(
                           (app) =>
-                            app.teamName === selectedUser.teamName &&
+                            app.teamName === selectedUser.teamName.trim() &&
                             app.options === "evapotranspiration"
                         ) && (
                           <>
@@ -4596,7 +4596,7 @@ function AdminPage() {
                               <TableBody>
                                 {IrrigationCottonapplications.filter(
                                   (app) =>
-                                    app.teamName === selectedUser.teamName &&
+                                    app.teamName === selectedUser.teamName.trim() &&
                                     app.options === "evapotranspiration"
                                 )
                                   .sort(
@@ -4667,7 +4667,7 @@ function AdminPage() {
                         {/* Soil-Moisture Table */}
                         {IrrigationCottonapplications.some(
                           (app) =>
-                            app.teamName === selectedUser.teamName &&
+                            app.teamName === selectedUser.teamName.trim() &&
                             app.options === "soil-moisture"
                         ) && (
                           <>
@@ -4693,7 +4693,7 @@ function AdminPage() {
                               <TableBody>
                                 {IrrigationCottonapplications.filter(
                                   (app) =>
-                                    app.teamName === selectedUser.teamName &&
+                                    app.teamName === selectedUser.teamName.trim() &&
                                     app.options === "soil-moisture"
                                 )
                                   .sort(
@@ -4775,7 +4775,7 @@ function AdminPage() {
                             <ul>
                               {InsuranceCottonFormData.filter(
                                 (data) =>
-                                  data.teamName === selectedUser.teamName
+                                  data.teamName === selectedUser.teamName.trim()
                               ) // Filter data for the selected user
                                 .map((data, index) => (
                                   <li key={index}>
@@ -4813,7 +4813,7 @@ function AdminPage() {
                                 {growthRegulationCotton
                                   .filter(
                                     (option) =>
-                                      option.teamName === selectedUser.teamName
+                                      option.teamName === selectedUser.teamName.trim()
                                   ) // Filter data for the selected user
                                   .map((option, index) => (
                                     <TableRow key={index}>
@@ -4907,7 +4907,7 @@ function AdminPage() {
                                 {marketingCottonOptions
                                   .filter(
                                     (option) =>
-                                      option.teamName === selectedUser.teamName
+                                      option.teamName === selectedUser.teamName.trim()
                                   ) // Filter data for the selected user
                                   .map((option, index) => (
                                     <TableRow key={index}>
@@ -4986,7 +4986,7 @@ function AdminPage() {
                             />
                             <button
                               onClick={() =>
-                                handleteamFileUpload1(selectedUser.teamName)
+                                handleteamFileUpload1(selectedUser.teamName.trim())
                               }
                             >
                               Upload File
@@ -5063,7 +5063,7 @@ function AdminPage() {
                                   <ListItem key={index}>
                                     <ListItemText primary={fileName} />
                                     {/* <Link
-                                      href={`/api/downloadCottonTeamFile/${selectedUser.teamName}/${fileName}`}
+                                      href={`/api/downloadCottonTeamFile/${selectedUser.teamName.trim()}/${fileName}`}
                                       download
                                     >
                                       Download
@@ -5077,7 +5077,7 @@ function AdminPage() {
                                       onClick={() =>
                                         handleDownload(
                                           `downloadCottonTeamFile/${
-                                            selectedUser.teamName
+                                            selectedUser.teamName.trim()
                                           }/${encodeURIComponent(fileName)}`
                                         )
                                       }
@@ -5096,7 +5096,7 @@ function AdminPage() {
                                       onClick={() =>
                                         handleCottonTeamFileDelete(
                                           fileName,
-                                          selectedUser.teamName
+                                          selectedUser.teamName.trim()
                                         )
                                       }
                                     >
