@@ -1,22 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
   Container,
   Typography,
-  FormControl,
-  MenuItem,
-  Select,
-  InputLabel,
+  Card,
+  CardContent,
+  Alert,
+  Box,
 } from "@mui/material";
 import axios from "axios";
-import Alert from "@mui/material/Alert";
 
 function ForgotPasswordForm() {
   const [username, setUsername] = useState("");
   const [cropType, setCropType] = useState("corn");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const cropOptions = [
+    { label: "Corn", value: "corn" },
+    { label: "Cotton", value: "cotton" },
+  ];
+
+  useEffect(() => {
+    let timer;
+    if (successMessage || errorMessage) {
+      timer = setTimeout(() => {
+        setSuccessMessage("");
+        setErrorMessage("");
+      }, 5000);
+    }
+    return () => clearTimeout(timer);
+  }, [successMessage, errorMessage]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,109 +43,135 @@ function ForgotPasswordForm() {
         cropType,
       })
       .then((response) => {
-        // Handle success, show a message if needed
         if (response.status === 200) {
           setSuccessMessage(
-            response.data.message || "Password reset email sent successfully."
+            response.data.message ||
+              "Password reset email sent successfully."
           );
         }
       })
       .catch((error) => {
-        // Handle errors
         if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
           setErrorMessage(
             error.response.data.message ||
               "An error occurred while sending the password reset email."
           );
         } else if (error.request) {
-          // The request was made but no response was received
-          setErrorMessage(
-            "The server did not respond. Please try again later."
-          );
+          setErrorMessage("The server did not respond. Please try again later.");
         } else {
-          // Something happened in setting up the request that triggered an Error
           setErrorMessage("Error: " + error.message);
         }
       });
   };
 
   return (
-    <div
-      style={{
-        backgroundImage:
-          "url('https://step.ifas.ufl.edu/media/stepifasufledu/images/banner-photos/Coverpage-Photo-3.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        height: "100vh", // This sets the minimum height to 100% of the viewport height
+    <Box
+      sx={{
+        backgroundColor: "#f4f4f4",
+        minHeight: "100vh",
         display: "flex",
-        flexDirection: "column",
-        justifyContent: "center", // This centers the form vertically
+        alignItems: "center",
+        justifyContent: "center",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      <Container component="main" maxWidth="sm">
-        <div className="registration-container">
-          <div className="registration-form">
+      <div className="ocean">
+        <div className="wave"></div>
+        <div className="wave"></div>
+      </div>
+
+      <Container maxWidth="sm">
+        <Card elevation={5} sx={{ borderRadius: "16px", padding: 4, position: "relative", zIndex: 1 }}>
+          <CardContent>
             <Typography
               variant="h4"
-              style={{ textAlign: "center", marginBottom: "20px" }}
+              align="center"
+              gutterBottom
+              sx={{ color: "#2c3e50", fontWeight: "bold" }}
             >
               Forgot Password
             </Typography>
             {successMessage && (
-              <Alert severity="success" style={{ marginBottom: "20px" }}>
+              <Alert severity="success" sx={{ marginBottom: 2 }}>
                 {successMessage}
               </Alert>
             )}
             {errorMessage && (
-              <Alert severity="error" style={{ marginBottom: "20px" }}>
+              <Alert severity="error" sx={{ marginBottom: 2 }}>
                 {errorMessage}
               </Alert>
             )}
             <form onSubmit={handleSubmit}>
-              <FormControl fullWidth margin="normal">
-                <TextField
-                  label="Username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                />
-              </FormControl>
-              <FormControl fullWidth margin="normal">
-                <InputLabel>Crop Type</InputLabel>
-                <Select
-                  value={cropType}
-                  label="Crop Type"
-                  onChange={(e) => setCropType(e.target.value)}
-                  required
-                >
-                  <MenuItem value="corn">Corn</MenuItem>
-                  {/* <MenuItem value="cotton">Cotton</MenuItem> */}
-                  {/* Add more crop types if needed */}
-                </Select>
-              </FormControl>
+              <Box sx={{ marginBottom: 3 }}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Select Crop Type:
+                </Typography>
+                <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
+                  {cropOptions.map((option) => (
+                    <Button
+                      key={option.value}
+                      variant={cropType === option.value ? "contained" : "outlined"}
+                      onClick={() => setCropType(option.value)}
+                      sx={{
+                        fontSize: "1.2rem",
+                        padding: "12px 24px",
+                        backgroundColor: cropType === option.value ? "#2c3e50" : "transparent",
+                        color: cropType === option.value ? "white" : "#2c3e50",
+                        borderColor: "#2c3e50",
+                        "&:hover": {
+                          backgroundColor: "#2c3e50",
+                          color: "white",
+                        },
+                      }}
+                    >
+                      {option.label}
+                    </Button>
+                  ))}
+                </Box>
+              </Box>
+              <TextField
+                label="Username"
+                fullWidth
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                margin="normal"
+                required
+                variant="outlined"
+                sx={{ marginBottom: 3 }}
+              />
               <Button
                 type="submit"
                 variant="contained"
-                color="primary"
                 fullWidth
+                sx={{
+                  backgroundColor: "#2c3e50",
+                  color: "white",
+                  fontSize: "1.2rem",
+                  padding: "12px 0",
+                  "&:hover": { backgroundColor: "#1f2a36" },
+                }}
               >
                 Submit
               </Button>
-              <p style={{ textAlign: "justify" }}></p>
-              <p textAlign="center">
-                login page :{" "}
-                <a href="/login" className="signUpLink">
-                  User login
-                </a>
-              </p>
             </form>
-          </div>
-        </div>
+            <Box sx={{ marginTop: 2, textAlign: "center" }}>
+              <Typography variant="body2" sx={{ display: "inline" }}>
+                Back to{" "}
+              </Typography>
+              <Button
+                variant="text"
+                size="small"
+                onClick={() => (window.location.href = "/login")}
+                sx={{ color: "#2c3e50" }}
+              >
+                User Login
+              </Button>
+            </Box>
+          </CardContent>
+        </Card>
       </Container>
-    </div>
+    </Box>
   );
 }
 
