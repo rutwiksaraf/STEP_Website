@@ -111,6 +111,40 @@ function App() {
   const [registrationMessage, setRegistrationMessage] = useState("");
   const [redirecting, setRedirecting] = useState(false);
 
+  const trimFormData = (data) => {
+  const fieldsToTrim = [
+    "teamName",
+    "password",
+    "captainFirstName",
+    "captainLastName",
+    "address",
+    "addressLine2",
+    "city",
+    "state",
+    "zipCode",
+    "country",
+    "email",
+    "phone",
+  ];
+
+  const trimmedData = { ...data };
+
+  fieldsToTrim.forEach((field) => {
+    if (typeof trimmedData[field] === "string") {
+      trimmedData[field] = trimmedData[field].trim();
+    }
+  });
+
+  // Clean up team member names and emails
+  trimmedData.teamMembers = trimmedData.teamMembers.map((member) => ({
+    name: member.name.trim(),
+    email: member.email.trim(),
+  }));
+
+  return trimmedData;
+};
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -120,8 +154,10 @@ function App() {
     }
 
     // Send the form data to your Express API
+    const cleanedData = trimFormData(formData);
+
     axios
-      .post("/api/register", formData)
+      .post("/api/register", cleanedData)
       .then((response) => {
         console.log("Response from server:", response.data);
         setRegistrationMessage(response.data.message);
