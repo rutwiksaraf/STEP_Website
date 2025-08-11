@@ -2,20 +2,14 @@ const sql = require("mssql");
 
 // Create a MSSQL connection pool
 const testConfig = {
-  server: "sql-ent.ifas.ufl.edu",
+  server: "sql-ent.db.ifas.ufl.edu",
   database: "ABE_STEP",
-  authentication: {
-    type: "ntlm",  // Change to 'ntlm' for Windows Authentication
-    options: {
-      domain: "UFAD", // Specify your domain here
-      userName: "rutwiksaraf",  // Optional: Specify username if needed
-      password: "rutwikrutujasurekha3#7$",  // Optional: Specify password if needed
-    }
-  },
+  user: "if-svc-ABE_STEPwebuser",
+  password: "W?6Xiv$A&ZaQ[]h",
   options: {
     encrypt: true,
-    trustServerCertificate: true,
-  },
+    trustServerCertificate: false // true only if you get cert errors
+  }
 };
 
 async function setupDatabase() {
@@ -32,6 +26,9 @@ async function setupDatabase() {
     throw err; // Rethrow the error after logging
   }
 }
+
+
+
 
 module.exports = { setupDatabase };
 
