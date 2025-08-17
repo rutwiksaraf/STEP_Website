@@ -36,7 +36,6 @@ import { useApplication } from "./IrrigationContext";
 import { useApplication1 } from "./SensorContext";
 import { toZonedTime } from "date-fns-tz";
 
-
 function IrrigationManagementForm() {
   //const [soilMoistureSensor, setSoilMoistureSensor] = useState("");
   const [sectionData, setSectionData] = useState("v10-harvest");
@@ -48,7 +47,7 @@ function IrrigationManagementForm() {
   const teamName = localStorage.getItem("username");
   const sensorOptions = ["BMP logic", "AquaSpy"];
   //const [selectedOption, setSelectedOption] = useState("null");
-  
+
   const [displayDate, setDisplayDate] = useState(""); // for date input field
 
   const getTodayESTAsUTC = () => {
@@ -61,7 +60,7 @@ function IrrigationManagementForm() {
     const zoned = toZonedTime(localMidnight, timeZone);
     return new Date(zoned).toISOString(); // converted to UTC ISO string
   };
-  
+
   const [dateToday, setDateToday] = useState(getTodayESTAsUTC());
 
   const token = localStorage.getItem("token");
@@ -395,52 +394,61 @@ function IrrigationManagementForm() {
     return holidays;
   };
 
-const handleDateChange = (e) => {
-  const selectedDate = e.target.value;
-  const dateObj = new Date(selectedDate);
-  const dayOfWeek = dateObj.getDay();
-  const year = dateObj.getFullYear();
+  const handleDateChange = (e) => {
+    const selectedDate = e.target.value;
+    const dateObj = new Date(selectedDate);
+    const dayOfWeek = dateObj.getDay();
+    const year = dateObj.getFullYear();
 
-  const allHolidays = [...usHolidays, ...getDynamicHolidays(year)];
+    const allHolidays = [...usHolidays, ...getDynamicHolidays(year)];
 
-  if (dayOfWeek === 5 || dayOfWeek === 6) {
-    setError(true);
-    setErrorMessage("No Irrigation inputs can be applied on weekends.");
-  } else if (allHolidays.includes(selectedDate)) {
-    setError(true);
-    setErrorMessage(
-      "Selected date is a U.S. public holiday. No Irrigation inputs can be applied on public holidays."
+    if (dayOfWeek === 5 || dayOfWeek === 6) {
+      setError(true);
+      setErrorMessage("No Irrigation inputs can be applied on weekends.");
+    } else if (allHolidays.includes(selectedDate)) {
+      setError(true);
+      setErrorMessage(
+        "Selected date is a U.S. public holiday. No Irrigation inputs can be applied on public holidays."
+      );
+    } else {
+      setError(false);
+      setErrorMessage("");
+
+      setDisplayDate(selectedDate); // ✅ bind to input field
+      setDate(getUtcFromLocalESTDate(selectedDate)); // ✅ store as UTC for backend
+    }
+  };
+
+  const getUtcFromLocalESTDate = (dateStr) => {
+    const timeZone = "America/New_York";
+    const localMidnight = new Date(`${dateStr}T00:00:00`);
+    const utcDate = new Date(
+      localMidnight.toLocaleString("en-US", { timeZone })
     );
-  } else {
-    setError(false);
-    setErrorMessage("");
-
-    setDisplayDate(selectedDate); // ✅ bind to input field
-    setDate(getUtcFromLocalESTDate(selectedDate)); // ✅ store as UTC for backend
-  }
-};
-
-const getUtcFromLocalESTDate = (dateStr) => {
-  const timeZone = "America/New_York";
-  const localMidnight = new Date(`${dateStr}T00:00:00`);
-  const utcDate = new Date(localMidnight.toLocaleString("en-US", { timeZone }));
-  return utcDate.toISOString();
-};
-
-
+    return utcDate.toISOString();
+  };
 
   return (
     <Container maxWidth="100%">
       <form onSubmit={submitForm}>
         <Grid item xs={12}>
           <h4>You have three options for irrigation management:</h4>
-          <div style={{display: "flex", justifyContent: "space-between", width: "100%"}}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
             <Card
-              onClick={() => handleCardClick("soil-moisture")}
+              onClick={() => {
+                if (isApplicationTypeConfirmed) return;
+                handleCardClick("soil-moisture");
+              }}
               sx={{
                 width: "30%",
                 minWidth: "200px",
-                cursor: "pointer",
+
                 margin: "5px",
                 padding: "10px 16px",
                 backgroundColor:
@@ -461,11 +469,18 @@ const getUtcFromLocalESTDate = (dateStr) => {
                 alignItems: "center",
                 textAlign: "center",
                 height: "60px",
-                "&:hover": {
-                  backgroundColor:
-                    selectedOption === "soil-moisture" ? "#d73a12" : "#E0E0E0",
-                  transform: "scale(1.05)",
-                },
+                cursor: isApplicationTypeConfirmed ? "not-allowed" : "pointer",
+                pointerEvents: isApplicationTypeConfirmed ? "none" : "auto", // prevent clicks entirely
+                opacity: isApplicationTypeConfirmed ? 0.7 : 1,
+                "&:hover": isApplicationTypeConfirmed
+                  ? {} // no hover when locked
+                  : {
+                      backgroundColor:
+                        selectedOption === "soil-moisture"
+                          ? "#d73a12"
+                          : "#E0E0E0",
+                      transform: "scale(1.05)",
+                    },
               }}
             >
               <CardContent>
@@ -476,10 +491,10 @@ const getUtcFromLocalESTDate = (dateStr) => {
             </Card>
             <Card
               onClick={() => handleCardClick("evapotranspiration")}
+              disabled={isApplicationTypeConfirmed}
               sx={{
                 width: "30%",
                 minWidth: "200px",
-                cursor: "pointer",
                 margin: "5px",
                 padding: "10px 16px",
                 backgroundColor:
@@ -503,13 +518,18 @@ const getUtcFromLocalESTDate = (dateStr) => {
                 alignItems: "center",
                 textAlign: "center",
                 height: "60px",
-                "&:hover": {
-                  backgroundColor:
-                    selectedOption === "evapotranspiration"
-                      ? "#d73a12"
-                      : "#E0E0E0",
-                  transform: "scale(1.05)",
-                },
+                cursor: isApplicationTypeConfirmed ? "not-allowed" : "pointer",
+                pointerEvents: isApplicationTypeConfirmed ? "none" : "auto", // prevent clicks entirely
+                opacity: isApplicationTypeConfirmed ? 0.7 : 1,
+                "&:hover": isApplicationTypeConfirmed
+                  ? {} // no hover when locked
+                  : {
+                      backgroundColor:
+                        selectedOption === "soil-moisture"
+                          ? "#d73a12"
+                          : "#E0E0E0",
+                      transform: "scale(1.05)",
+                    },
               }}
             >
               <CardContent>
@@ -521,10 +541,11 @@ const getUtcFromLocalESTDate = (dateStr) => {
 
             <Card
               onClick={() => handleCardClick("calendar")}
+              disabled={isApplicationTypeConfirmed}
               sx={{
                 width: "30%",
                 minWidth: "200px",
-                cursor: "pointer",
+
                 margin: "5px",
                 padding: "10px 16px",
                 backgroundColor:
@@ -545,11 +566,18 @@ const getUtcFromLocalESTDate = (dateStr) => {
                 alignItems: "center",
                 textAlign: "center",
                 height: "60px",
-                "&:hover": {
-                  backgroundColor:
-                    selectedOption === "calendar" ? "#d73a12" : "#E0E0E0",
-                  transform: "scale(1.05)",
-                },
+                cursor: isApplicationTypeConfirmed ? "not-allowed" : "pointer",
+                pointerEvents: isApplicationTypeConfirmed ? "none" : "auto", // prevent clicks entirely
+                opacity: isApplicationTypeConfirmed ? 0.7 : 1,
+                "&:hover": isApplicationTypeConfirmed
+                  ? {} // no hover when locked
+                  : {
+                      backgroundColor:
+                        selectedOption === "soil-moisture"
+                          ? "#d73a12"
+                          : "#E0E0E0",
+                      transform: "scale(1.05)",
+                    },
               }}
             >
               <CardContent>
