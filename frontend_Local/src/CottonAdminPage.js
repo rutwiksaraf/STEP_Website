@@ -1150,11 +1150,11 @@ function CottonAdminPage() {
   };
 
   const handleUserClick1 = (user) => {
-    const trimmedTeamName = user.teamName.trim();
-    setSelectedUser({ ...user, teamName: trimmedTeamName });
-    fetchCottonFiles(trimmedTeamName);
-    console.log("Trimmed Team name:", trimmedTeamName);
-  };
+  const trimmedTeamName = user.teamName.trim();
+  setSelectedUser(user);                 // <- keep same reference
+  fetchCottonFiles(trimmedTeamName);
+};
+
 
   const handleDeleteNitrogenApplication = (appId) => {
     axios
@@ -2248,15 +2248,35 @@ function CottonAdminPage() {
           </ListItem>
           {cottonUsers.map((user, index) => (
             <ListItemButton
-              button
               key={index}
-              style={{
-                backgroundColor: selectedUser === user ? "#fa4616" : "white",
-              }}
               onClick={() => handleUserClick1(user)}
+              sx={{
+                my: 1,
+                mx: 1.5,
+                border:
+                  selectedUser === user
+                    ? "2px solid rgb(255, 255, 255)"
+                    : "2px solid rgb(37, 106, 185)",
+                backgroundColor: selectedUser === user ? "#fa4616" : "#F5F5F5",
+                borderRadius: "8px",
+                color: selectedUser === user ? "white" : "#333",
+                boxShadow:
+                  selectedUser === user
+                    ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                    : "none",
+                transition: "all 0.3s ease-in-out",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+                "&:hover": {
+                  backgroundColor:
+                    selectedUser === user ? "#d73a12" : "#E0E0E0",
+                  transform: "scale(1.05)",
+                },
+              }}
             >
-              <ListItemText primary={user.teamName} />{" "}
-              {/* Change to teamName */}
+              <ListItemText primary={user.teamName} />
             </ListItemButton>
           ))}
         </List>
@@ -2527,7 +2547,8 @@ function CottonAdminPage() {
                               {starterData
                                 .filter(
                                   (app) =>
-                                    app.teamName === selectedUser.teamName.trim()
+                                    app.teamName ===
+                                    selectedUser.teamName.trim()
                                 )
                                 .map((app, index) => (
                                   <TableRow key={app.id}>
@@ -2562,7 +2583,8 @@ function CottonAdminPage() {
                             <TableBody>
                               {NitrogenCottontableData.filter(
                                 (app) =>
-                                  app.teamName === selectedUser.teamName.trim() &&
+                                  app.teamName ===
+                                    selectedUser.teamName.trim() &&
                                   app.applicationType === "in-season"
                               ) // Filter data for the selected user and "in-season" application type
                                 .sort(
@@ -2660,7 +2682,8 @@ function CottonAdminPage() {
                             <TableBody>
                               {NitrogenCottontableData.filter(
                                 (app) =>
-                                  app.teamName === selectedUser.teamName.trim() &&
+                                  app.teamName ===
+                                    selectedUser.teamName.trim() &&
                                   app.applicationType === "controlled-release"
                               ) // Filter data for the selected user and "controlled-release" application type
                                 .sort(
@@ -2794,7 +2817,8 @@ function CottonAdminPage() {
                             <TableBody>
                               {IrrigationCottonapplications.filter(
                                 (app) =>
-                                  app.teamName === selectedUser.teamName.trim() &&
+                                  app.teamName ===
+                                    selectedUser.teamName.trim() &&
                                   app.options === "calendar"
                               )
                                 .sort(
@@ -3100,7 +3124,8 @@ function CottonAdminPage() {
                             {growthRegulationCotton
                               .filter(
                                 (option) =>
-                                  option.teamName === selectedUser.teamName.trim()
+                                  option.teamName ===
+                                  selectedUser.teamName.trim()
                               ) // Filter data for the selected user
                               .map((option, index) => (
                                 <TableRow key={index}>
@@ -3186,7 +3211,8 @@ function CottonAdminPage() {
                             {marketingCottonOptions
                               .filter(
                                 (option) =>
-                                  option.teamName === selectedUser.teamName.trim()
+                                  option.teamName ===
+                                  selectedUser.teamName.trim()
                               ) // Filter data for the selected user
                               .map((option, index) => (
                                 <TableRow key={index}>
@@ -3361,8 +3387,8 @@ function CottonAdminPage() {
                                 >
                                   {downloadingFiles[
                                     `downloadCottonTeamFile/${encodeURIComponent(
-                                        selectedUser.teamName.trim()
-                                      )}/${encodeURIComponent(fileName)}`
+                                      selectedUser.teamName.trim()
+                                    )}/${encodeURIComponent(fileName)}`
                                   ] ? (
                                     <CircularProgress
                                       size={20}
