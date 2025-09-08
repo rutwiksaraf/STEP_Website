@@ -71,9 +71,7 @@ const WeatherGraph = () => {
   useEffect(() => {
     const fetchCottonWeatherData = async () => {
       try {
-        const response = await axios.get(`/api/cottonweather`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.get(`/api/cottonweather`);
         setWeatherData(response.data);
       } catch (error) {
         console.error("Error fetching weather data", error);
@@ -82,9 +80,7 @@ const WeatherGraph = () => {
 
     const fetchCottonWeatherDataFromDB = async () => {
       try {
-        const response = await axios.get(`/api/cottonweatherfromdb`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.get(`/api/cottonweatherfromdb`);
         setWeatherDataFromDB(response.data);
       } catch (error) {
         console.error("Error fetching weather data from DB", error);
@@ -92,9 +88,7 @@ const WeatherGraph = () => {
     };
     const fetchCottonForecast = async () => {
       try {
-        const res = await axios.get("/api/cottonweatherforecast", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get("/api/cottonweatherforecast");
         setForecastData(res.data);
       } catch (err) {
         console.error("Error fetching forecast:", err);

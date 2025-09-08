@@ -62,6 +62,7 @@ app.use("/api", registrationRoute);
 app.use("/api", loginRoute);
 // app.use(authenticateToken);
 app.use("/api", weather);
+app.use("/api", cottonweather);
 
 app.use("/api", authenticateToken, cornHybridFormRoute);
 app.use("/api", authenticateToken, cottonHybridFormRoute);
@@ -79,7 +80,7 @@ app.use("/api", authenticateToken, cottongrowthregulationroute);
 app.use("/api", authenticateToken, adminuserdata);
 app.use("/api", authenticateToken, fileUploadRoutes);
 app.use("/api", authenticateToken, bulletin);
-app.use("/api", authenticateToken, cottonweather);
+
 app.use("/api", authenticateToken, cottonbulletin);
 app.use("/api", authenticateToken, admindata);
 app.use("/api", authenticateToken, fetchadmin);

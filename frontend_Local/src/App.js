@@ -44,7 +44,7 @@ axios.interceptors.response.use(
       console.log("Token expired or unauthorized request");
       localStorage.removeItem("token");
       localStorage.removeItem("token");
-      window.location.href = "/login";
+      // window.location.href = "/login";
     }
     if (error.response && error.response.status === 403) {
       console.log("Forbidden: Invalid or expired token.");
@@ -52,7 +52,7 @@ axios.interceptors.response.use(
       localStorage.removeItem("token");
       localStorage.removeItem("token");
       // Redirect to login page or show an error message
-      window.location.href = "/login";
+      // window.location.href = "/login";
       // Optionally, use a more sophisticated method of routing if using a library like React Router
     }
     return Promise.reject(error);

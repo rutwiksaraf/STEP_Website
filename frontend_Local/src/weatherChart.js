@@ -66,6 +66,8 @@ const WeatherGraph = () => {
   const [forecastStartLabel, setForecastStartLabel] = useState(null);
   const [allChartLabels, setAllChartLabels] = useState([]);
 
+  
+
   useEffect(() => {
     const fetchWeatherData = async () => {
       try {
