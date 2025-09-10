@@ -2918,9 +2918,9 @@ function AdminPage() {
                                     <Typography variant="h6">
                                       Hybrid: {form.hybrid}
                                     </Typography>
-                                    {/* <Typography variant="body1">
+                                    <Typography variant="body1">
                                       Cost: ${form.cost} per bag
-                                    </Typography> */}
+                                    </Typography>
                                     <Typography variant="body2">
                                       Notes: {form.notes}
                                     </Typography>
