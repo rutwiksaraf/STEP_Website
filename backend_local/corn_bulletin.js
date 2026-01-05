@@ -242,18 +242,13 @@ router.get("/listTeamFiles/:teamName", (req, res) => {
 
   const baseDir = path.join(__dirname, "uploads", "corn");
 
-  console.log("Resolved uploads path:", baseDir);
-
   if (!fs.existsSync(baseDir)) {
-    return res
-      .status(404)
-      .json({ message: `Base uploads folder not found: ${baseDir}` });
+    return res.status(404).json({ message: "Base uploads folder not found" });
   }
 
-  const folders = fs
-    .readdirSync(baseDir, { withFileTypes: true })
-    .filter((dirent) => dirent.isDirectory())
-    .map((dirent) => dirent.name);
+  const folders = fs.readdirSync(baseDir, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
 
   // Try to match the folder ignoring case and trailing spaces
   const normalize = (str) =>
@@ -262,23 +257,21 @@ router.get("/listTeamFiles/:teamName", (req, res) => {
       .replace(/\s+/g, " ")
       .trim()
       .toLowerCase();
-
-  const matchedFolder = folders.find(
-    (folder) => normalize(folder) === requestedTeam
-  );
+  
+  const matchedFolder = folders.find(folder => normalize(folder) === requestedTeam);
+  
 
   if (!matchedFolder) {
     return res.status(404).json({ message: "Team folder not found" });
   }
 
   const teamDir = path.join(baseDir, matchedFolder);
-  const files = fs
-    .readdirSync(teamDir)
-    .filter((file) => fs.statSync(path.join(teamDir, file)).isFile());
+  const files = fs.readdirSync(teamDir).filter(file =>
+    fs.statSync(path.join(teamDir, file)).isFile()
+  );
 
   res.json({ files });
 });
-
 // router.get("/listTeamFiles/:teamName", (req, res) => {
 //   const teamName = req.params.teamName;
 //   const directoryPath = path.join(__dirname, "uploads", "corn", teamName);
@@ -302,16 +295,37 @@ router.get("/listTeamFiles/:teamName", (req, res) => {
 // });
 
 router.get("/downloadTeamFile/:teamName/:fileName", (req, res) => {
-  const { teamName, fileName } = req.params;
-  const fileDir = path.join(__dirname, "uploads", "corn", teamName, fileName);
+  const requestedTeam = decodeURIComponent(req.params.teamName)
+    .replace(/[’‘‛`´]/g, "'")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
 
-  // Check if file exists
-  if (fs.existsSync(fileDir)) {
-    res.download(fileDir, fileName);
+  const baseDir = path.join(__dirname, "uploads", "corn");
+  if (!fs.existsSync(baseDir)) {
+    return res.status(404).json({ message: `Base uploads folder not found: ${baseDir}` });
+  }
+
+  const folders = fs.readdirSync(baseDir, { withFileTypes: true })
+    .filter(d => d.isDirectory())
+    .map(d => d.name);
+
+  const normalize = (s) =>
+    s.replace(/[’‘‛`´]/g, "'").replace(/\s+/g, " ").trim().toLowerCase();
+
+  const matchedFolder = folders.find(folder => normalize(folder) === requestedTeam);
+  if (!matchedFolder) return res.status(404).json({ message: "Team folder not found" });
+
+  const safeFileName = path.basename(decodeURIComponent(req.params.fileName));
+  const filePath = path.join(baseDir, matchedFolder, safeFileName);
+
+  if (fs.existsSync(filePath)) {
+    res.download(filePath, safeFileName);
   } else {
-    res.status(404).send("File not found.");
+    res.status(404).json({ message: "File not found" });
   }
 });
+
 
 router.get("/downloadDefaultFile/:fileName", (req, res) => {
   const folderPath = "./uploads/default"; // Change this to the path of your "uploads" folder
