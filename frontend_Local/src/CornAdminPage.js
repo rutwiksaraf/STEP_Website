@@ -102,6 +102,7 @@ function CornAdminPage() {
   const [selectedFilei, setSelectedFilei] = useState(null);
   const [selectedFilem, setSelectedFilem] = useState(null);
   const [selectedFiled, setSelectedFiled] = useState(null);
+  const [selectedSubFolder, setSelectedSubFolder] = useState("Soil Analysis"); // New state for subfolder
 
   const handleDownload = (filePath) => {
     axios
@@ -305,6 +306,7 @@ function CornAdminPage() {
     formData.append("file", selectedFile);
     formData.append("teamName", teamName); // Assuming teamName is passed as a prop or from state
     formData.append("cropType", "corn"); // Assuming cropType is passed as a prop or from state
+    formData.append("subFolder", selectedSubFolder); // Add subfolder to form data
 
     axios
       .post("/api/upload", formData, {
@@ -322,6 +324,7 @@ function CornAdminPage() {
 
         // Remove the selected file from the input
         document.getElementById("defaultFileInput1").value = "";
+        setSelectedFile(null);
 
         // Remove the success message after 3 seconds (3000 milliseconds)
         setTimeout(() => {
@@ -2622,6 +2625,25 @@ function CornAdminPage() {
                         <p style={{ textAlign: "justify" }}>
                           Choose a file to upload for this team
                         </p>
+                        <div style={{ marginBottom: "10px" }}>
+                          <label htmlFor="subFolderSelect" style={{ marginRight: "10px" }}>
+                            Select Category:
+                          </label>
+                          <select
+                            id="subFolderSelect"
+                            value={selectedSubFolder}
+                            onChange={(e) => setSelectedSubFolder(e.target.value)}
+                            style={{
+                              padding: "5px 10px",
+                              borderRadius: "4px",
+                              border: "1px solid #ccc",
+                            }}
+                          >
+                            <option value="Soil Analysis">Soil Analysis</option>
+                            <option value="Plant Tissue Analysis">Plant Tissue Analysis</option>
+                            <option value="Step Weekly">Step Weekly</option>
+                          </select>
+                        </div>
                         <input
                           type="file"
                           id="defaultFileInput1"

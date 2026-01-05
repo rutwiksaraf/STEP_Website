@@ -308,12 +308,22 @@ router.post("/upload", uploads.single("file"), (req, res) => {
   const file = req.file;
   const teamName = req.body.teamName;
   const cropType = req.body.cropType;
+  const subFolder = req.body.subFolder; // New: Get subfolder from request
 
   if (!file) {
     return res.status(400).send("No file uploaded.");
   }
 
-  const uploadDir = path.join(__dirname, "uploads", cropType, teamName);
+  // Determine the upload directory
+  let uploadDir;
+  if (subFolder) {
+    // If subfolder is specified, use it
+    uploadDir = path.join(__dirname, "uploads", cropType, teamName, subFolder);
+  } else {
+    // Default behavior (no subfolder)
+    uploadDir = path.join(__dirname, "uploads", cropType, teamName);
+  }
+  
   ensureDirectoryExists(uploadDir);
 
   const finalPath = path.join(uploadDir, file.originalname);
@@ -521,6 +531,25 @@ function updateMetadata(metadataFilePath, fileName, callback) {
 router.delete("/deleteTeamFile/:teamName/:fileName", (req, res) => {
   const { teamName, fileName } = req.params;
   const filePath = path.join(__dirname, "uploads", "corn", teamName, fileName);
+
+  if (fs.existsSync(filePath)) {
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error("Error deleting file:", err);
+        res.status(500).send("Error deleting the file");
+      } else {
+        res.status(200).send("File deleted successfully");
+      }
+    });
+  } else {
+    res.status(404).send("File not found.");
+  }
+});
+
+// New endpoint for deleting team subfolder files
+router.delete("/deleteTeamSubfolderFile/:teamName/:subFolder/:fileName", (req, res) => {
+  const { teamName, subFolder, fileName } = req.params;
+  const filePath = path.join(__dirname, "uploads", "corn", teamName, subFolder, fileName);
 
   if (fs.existsSync(filePath)) {
     fs.unlink(filePath, (err) => {
