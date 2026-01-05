@@ -186,171 +186,189 @@ function CottonBulletin() {
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        height: "100vh", // This sets the minimum height to 100% of the viewport height
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center", // This centers the form vertically
+        minHeight: "100vh",
+        padding: "40px 20px",
       }}
     >
-      <Container maxWidth="sm">
-        <Paper elevation={3} style={{ padding: "20px" }}>
-          <Typography variant="h5" gutterBottom>
-            List of Files in Uploads Folder:
+      <Container maxWidth="xl">
+        <Paper elevation={3} style={{ padding: "30px" }}>
+          <Typography variant="h4" gutterBottom align="center" style={{ marginBottom: "30px" }}>
+            List of Files in Uploads Folder
           </Typography>
 
-          <Typography variant="h6" gutterBottom>
-            General Files:
-          </Typography>
-          <List>
-            {defaultfiles
-              .filter((fileName) => fileName !== "metadata.json")
-              .filter((fileName) => fileName !== "profile.jpg")
-              .filter((fileName) => fileName !== "Thumbs.db")
-              .map((fileName, index) => (
-                <ListItem key={index}>
-                  <ListItemText primary={fileName} />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    disabled={!!loadingDownload[fileName]}
-                    onClick={() =>
-                      handleDownload(`downloadDefaultCottonFile/${fileName}`)
-                    }
-                  >
-                    {loadingDownload[fileName] ? (
-                      <CircularProgress size={20} color="inherit" />
-                    ) : (
-                      "Download"
-                    )}
-                  </Button>
-                </ListItem>
-              ))}
-          </List>
-          <Typography variant="h6" gutterBottom>
-            Insurance Files:
-          </Typography>
-          <List>
-            {insurancefiles
-              .filter((fileName) => fileName !== "metadata.json")
-              .filter((fileName) => !fileName.startsWith("profile."))
-              .filter((fileName) => fileName !== "Thumbs.db")
-              .map((fileName, index) => (
-                <ListItem key={index}>
-                  <ListItemText primary={fileName} />
+          <Grid container spacing={3}>
+            {/* General Files Column */}
+            <Grid item xs={12} sm={6} md={3}>
+              <Typography variant="h6" gutterBottom style={{ borderBottom: "2px solid #1976d2", paddingBottom: "10px" }}>
+                General Files
+              </Typography>
+              <List>
+                {defaultfiles
+                  .filter((fileName) => fileName !== "metadata.json")
+                  .filter((fileName) => fileName !== "profile.jpg")
+                  .filter((fileName) => fileName !== "Thumbs.db")
+                  .map((fileName, index) => (
+                    <ListItem key={index} style={{ padding: "8px 0", display: "flex", alignItems: "flex-start" }}>
+                      <ListItemText 
+                        primary={fileName} 
+                        primaryTypographyProps={{ 
+                          style: { 
+                            fontSize: "0.9rem"
+                          } 
+                        }}
+                        style={{ flex: 1, marginRight: "10px", minWidth: 0 }}
+                      />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        disabled={!!loadingDownload[fileName]}
+                        onClick={() =>
+                          handleDownload(`downloadDefaultCottonFile/${fileName}`)
+                        }
+                        style={{ minWidth: "90px", maxWidth: "90px", flexShrink: 0 }}
+                      >
+                        {loadingDownload[fileName] ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : (
+                          "Download"
+                        )}
+                      </Button>
+                    </ListItem>
+                  ))}
+              </List>
+            </Grid>
 
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    disabled={!!loadingDownload[fileName]}
-                    onClick={() =>
-                      handleDownload(`downloadInsuranceCottonFile/${fileName}`)
-                    }
-                  >
-                    {loadingDownload[fileName] ? (
-                      <CircularProgress size={20} color="inherit" />
-                    ) : (
-                      "Download"
-                    )}
-                  </Button>
-                </ListItem>
-              ))}
-          </List>
-          <Typography variant="h6" gutterBottom>
-            Marketing Files:
-          </Typography>
-          <List>
-            {marketingfiles
-              .filter((fileName) => fileName !== "metadata.json")
-              .filter((fileName) => fileName !== "profile.jpg")
-              .filter((fileName) => fileName !== "Thumbs.db")
-              .map((fileName, index) => (
-                <ListItem key={index}>
-                  <ListItemText primary={fileName} />
+            {/* Insurance Files Column */}
+            <Grid item xs={12} sm={6} md={3}>
+              <Typography variant="h6" gutterBottom style={{ borderBottom: "2px solid #1976d2", paddingBottom: "10px" }}>
+                Insurance Files
+              </Typography>
+              <List>
+                {insurancefiles
+                  .filter((fileName) => fileName !== "metadata.json")
+                  .filter((fileName) => !fileName.startsWith("profile."))
+                  .filter((fileName) => fileName !== "Thumbs.db")
+                  .map((fileName, index) => (
+                    <ListItem key={index} style={{ padding: "8px 0", display: "flex", alignItems: "flex-start" }}>
+                      <ListItemText 
+                        primary={fileName} 
+                        primaryTypographyProps={{ 
+                          style: { 
+                            fontSize: "0.9rem"
+                          } 
+                        }}
+                        style={{ flex: 1, marginRight: "10px", minWidth: 0 }}
+                      />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        disabled={!!loadingDownload[fileName]}
+                        onClick={() =>
+                          handleDownload(`downloadInsuranceCottonFile/${fileName}`)
+                        }
+                        style={{ minWidth: "90px", maxWidth: "90px", flexShrink: 0 }}
+                      >
+                        {loadingDownload[fileName] ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : (
+                          "Download"
+                        )}
+                      </Button>
+                    </ListItem>
+                  ))}
+              </List>
+            </Grid>
 
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    disabled={!!loadingDownload[fileName]}
-                    onClick={() =>
-                      handleDownload(`downloadMarketingCottonFile/${fileName}`)
-                    }
-                  >
-                    {loadingDownload[fileName] ? (
-                      <CircularProgress size={20} color="inherit" />
-                    ) : (
-                      "Download"
-                    )}
-                  </Button>
-                </ListItem>
-              ))}
-          </List>
-          <Typography variant="h6" gutterBottom>
-            Team Files:
-          </Typography>
-          <List>
-            {cottonteamfiles
-              .filter((fileName) => !fileName.startsWith("profile."))
-              .filter((fileName) => fileName !== "metadata.json")
-              .filter((fileName) => fileName !== "Thumbs.db")
-              .map((fileName, index) => (
-                <ListItem key={index}>
-                  <ListItemText primary={fileName} />
+            {/* Marketing Files Column */}
+            <Grid item xs={12} sm={6} md={3}>
+              <Typography variant="h6" gutterBottom style={{ borderBottom: "2px solid #1976d2", paddingBottom: "10px" }}>
+                Marketing Files
+              </Typography>
+              <List>
+                {marketingfiles
+                  .filter((fileName) => fileName !== "metadata.json")
+                  .filter((fileName) => fileName !== "profile.jpg")
+                  .filter((fileName) => fileName !== "Thumbs.db")
+                  .map((fileName, index) => (
+                    <ListItem key={index} style={{ padding: "8px 0", display: "flex", alignItems: "flex-start" }}>
+                      <ListItemText 
+                        primary={fileName} 
+                        primaryTypographyProps={{ 
+                          style: { 
+                            fontSize: "0.9rem"
+                          } 
+                        }}
+                        style={{ flex: 1, marginRight: "10px", minWidth: 0 }}
+                      />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        disabled={!!loadingDownload[fileName]}
+                        onClick={() =>
+                          handleDownload(`downloadMarketingCottonFile/${fileName}`)
+                        }
+                        style={{ minWidth: "90px", maxWidth: "90px", flexShrink: 0 }}
+                      >
+                        {loadingDownload[fileName] ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : (
+                          "Download"
+                        )}
+                      </Button>
+                    </ListItem>
+                  ))}
+              </List>
+            </Grid>
 
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    disabled={!!loadingDownload[fileName]}
-                    onClick={() =>
-                      handleDownload(
-                        `downloadCottonTeamFile/${encodeURIComponent(
-                          teamName.trim()
-                        )}/${encodeURIComponent(fileName)}`
-                      )
-                    }
-                  >
-                    {loadingDownload[fileName] ? (
-                      <CircularProgress size={20} color="inherit" />
-                    ) : (
-                      "Download"
-                    )}
-                  </Button>
-                </ListItem>
-              ))}
-          </List>
-
-          {/* <List>
-            {files
-              .filter((fileName) => fileName !== "metadata.json")
-              .filter((fileName) => fileName !== "profile.jpg")
-              .map((fileName, index) => (
-                <ListItem key={index}>
-                  <ListItemText primary={fileName} />
-                  <Link href={`/api/downloadCottonFile/${fileName}`} download>
-                    Download
-                  </Link>
-                </ListItem>
-              ))}
-          </List>
-          <List>
-            {cottonteamfiles
-              .filter((fileName) => fileName !== "metadata.json")
-              .filter((fileName) => fileName !== "profile.jpg")
-              .map((fileName, index) => (
-                <ListItem key={index}>
-                  <ListItemText primary={fileName} />
-                  <Link
-                    href={`/api/downloadCottonTeamFile/${teamName}/${fileName}`}
-                    download
-                  >
-                    Download
-                  </Link>
-                </ListItem>
-              ))}
-          </List> */}
+            {/* Team Files Column */}
+            <Grid item xs={12} sm={6} md={3}>
+              <Typography variant="h6" gutterBottom style={{ borderBottom: "2px solid #1976d2", paddingBottom: "10px" }}>
+                Team Files
+              </Typography>
+              <List>
+                {cottonteamfiles
+                  .filter((fileName) => !fileName.startsWith("profile."))
+                  .filter((fileName) => fileName !== "metadata.json")
+                  .filter((fileName) => fileName !== "Thumbs.db")
+                  .map((fileName, index) => (
+                    <ListItem key={index} style={{ padding: "8px 0", display: "flex", alignItems: "flex-start" }}>
+                      <ListItemText 
+                        primary={fileName} 
+                        primaryTypographyProps={{ 
+                          style: { 
+                            fontSize: "0.9rem"
+                          } 
+                        }}
+                        style={{ flex: 1, marginRight: "10px", minWidth: 0 }}
+                      />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        disabled={!!loadingDownload[fileName]}
+                        onClick={() =>
+                          handleDownload(
+                            `downloadCottonTeamFile/${encodeURIComponent(
+                              teamName.trim()
+                            )}/${encodeURIComponent(fileName)}`
+                          )
+                        }
+                        style={{ minWidth: "90px", maxWidth: "90px", flexShrink: 0 }}
+                      >
+                        {loadingDownload[fileName] ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : (
+                          "Download"
+                        )}
+                      </Button>
+                    </ListItem>
+                  ))}
+              </List>
+            </Grid>
+          </Grid>
         </Paper>
       </Container>
     </div>
