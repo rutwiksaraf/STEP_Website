@@ -29,6 +29,10 @@ function CottonBulletin() {
   const [files, setFiles] = useState([]);
   const [fileInput, setFileInput] = useState(null);
   const [cottonteamfiles, setCottonTeamFiles] = useState([]);
+  // New states for cotton team subfolders
+  const [soilAnalysisFiles, setSoilAnalysisFiles] = useState([]);
+  const [plantTissueFiles, setPlantTissueFiles] = useState([]);
+  const [stepWeeklyFiles, setStepWeeklyFiles] = useState([]);
   const [loadingDownload, setLoadingDownload] = useState({});
 
   const teamName = localStorage.getItem("username");
@@ -83,6 +87,55 @@ function CottonBulletin() {
       }
     };
     fetchFiles();
+  }, []);
+
+  // New useEffect hooks for cotton subfolder files
+  useEffect(() => {
+    const fetchSoilAnalysisFiles = async () => {
+      try {
+        const response = await axios.get(`/api/listCottonTeamSubfolderFiles/${teamName.trim()}/Soil Analysis`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setSoilAnalysisFiles(response.data.files);
+      } catch (error) {
+        console.error("Error fetching soil analysis files:", error);
+      }
+    };
+    fetchSoilAnalysisFiles();
+  }, []);
+
+  useEffect(() => {
+    const fetchPlantTissueFiles = async () => {
+      try {
+        const response = await axios.get(`/api/listCottonTeamSubfolderFiles/${teamName.trim()}/Plant Tissue Analysis`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setPlantTissueFiles(response.data.files);
+      } catch (error) {
+        console.error("Error fetching plant tissue files:", error);
+      }
+    };
+    fetchPlantTissueFiles();
+  }, []);
+
+  useEffect(() => {
+    const fetchStepWeeklyFiles = async () => {
+      try {
+        const response = await axios.get(`/api/listCottonTeamSubfolderFiles/${teamName.trim()}/Step Weekly`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setStepWeeklyFiles(response.data.files);
+      } catch (error) {
+        console.error("Error fetching step weekly files:", error);
+      }
+    };
+    fetchStepWeeklyFiles();
   }, []);
 
   useEffect(() => {
@@ -196,9 +249,13 @@ function CottonBulletin() {
             All Files
           </Typography>
 
+          {/* General Files Section */}
+          <Typography variant="h5" gutterBottom style={{ marginTop: "20px", marginBottom: "15px", color: "#1976d2" }}>
+            General Files
+          </Typography>
           <Grid container spacing={3}>
             {/* General Files Column */}
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={4}>
               <Typography variant="h6" gutterBottom style={{ borderBottom: "2px solid #1976d2", paddingBottom: "10px" }}>
                 General Files
               </Typography>
@@ -240,7 +297,7 @@ function CottonBulletin() {
             </Grid>
 
             {/* Insurance Files Column */}
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={4}>
               <Typography variant="h6" gutterBottom style={{ borderBottom: "2px solid #1976d2", paddingBottom: "10px" }}>
                 Insurance Files
               </Typography>
@@ -282,7 +339,7 @@ function CottonBulletin() {
             </Grid>
 
             {/* Marketing Files Column */}
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={4}>
               <Typography variant="h6" gutterBottom style={{ borderBottom: "2px solid #1976d2", paddingBottom: "10px" }}>
                 Marketing Files
               </Typography>
@@ -322,14 +379,20 @@ function CottonBulletin() {
                   ))}
               </List>
             </Grid>
+          </Grid>
 
-            {/* Team Files Column */}
-            <Grid item xs={12} sm={6} md={3}>
-              <Typography variant="h6" gutterBottom style={{ borderBottom: "2px solid #1976d2", paddingBottom: "10px" }}>
-                Team Files
+          {/* Team-Specific Files Section */}
+          <Typography variant="h5" gutterBottom style={{ marginTop: "40px", marginBottom: "15px", color: "#4caf50" }}>
+            Team-Specific Files
+          </Typography>
+          <Grid container spacing={3}>
+            {/* Soil Analysis Column */}
+            <Grid item xs={12} sm={6} md={4}>
+              <Typography variant="h6" gutterBottom style={{ borderBottom: "2px solid #4caf50", paddingBottom: "10px" }}>
+                Soil Analysis
               </Typography>
               <List>
-                {cottonteamfiles
+                {soilAnalysisFiles
                   .filter((fileName) => !fileName.startsWith("profile."))
                   .filter((fileName) => fileName !== "metadata.json")
                   .filter((fileName) => fileName !== "Thumbs.db")
@@ -350,11 +413,91 @@ function CottonBulletin() {
                         size="small"
                         disabled={!!loadingDownload[fileName]}
                         onClick={() =>
-                          handleDownload(
-                            `downloadCottonTeamFile/${encodeURIComponent(
-                              teamName.trim()
-                            )}/${encodeURIComponent(fileName)}`
-                          )
+                          handleDownload(`downloadCottonTeamSubfolderFile/${teamName.trim()}/Soil Analysis/${fileName}`)
+                        }
+                        style={{ minWidth: "90px", maxWidth: "90px", flexShrink: 0 }}
+                      >
+                        {loadingDownload[fileName] ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : (
+                          "Download"
+                        )}
+                      </Button>
+                    </ListItem>
+                  ))}
+              </List>
+            </Grid>
+
+            {/* Plant Tissue Analysis Column */}
+            <Grid item xs={12} sm={6} md={4}>
+              <Typography variant="h6" gutterBottom style={{ borderBottom: "2px solid #ff9800", paddingBottom: "10px" }}>
+                Plant Tissue Analysis
+              </Typography>
+              <List>
+                {plantTissueFiles
+                  .filter((fileName) => !fileName.startsWith("profile."))
+                  .filter((fileName) => fileName !== "metadata.json")
+                  .filter((fileName) => fileName !== "Thumbs.db")
+                  .map((fileName, index) => (
+                    <ListItem key={index} style={{ padding: "8px 0", display: "flex", alignItems: "flex-start" }}>
+                      <ListItemText 
+                        primary={fileName} 
+                        primaryTypographyProps={{ 
+                          style: { 
+                            fontSize: "0.9rem"
+                          } 
+                        }}
+                        style={{ flex: 1, marginRight: "10px", minWidth: 0 }}
+                      />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        disabled={!!loadingDownload[fileName]}
+                        onClick={() =>
+                          handleDownload(`downloadCottonTeamSubfolderFile/${teamName.trim()}/Plant Tissue Analysis/${fileName}`)
+                        }
+                        style={{ minWidth: "90px", maxWidth: "90px", flexShrink: 0 }}
+                      >
+                        {loadingDownload[fileName] ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : (
+                          "Download"
+                        )}
+                      </Button>
+                    </ListItem>
+                  ))}
+              </List>
+            </Grid>
+
+            {/* Step Weekly Column */}
+            <Grid item xs={12} sm={6} md={4}>
+              <Typography variant="h6" gutterBottom style={{ borderBottom: "2px solid #9c27b0", paddingBottom: "10px" }}>
+                Step Weekly
+              </Typography>
+              <List>
+                {stepWeeklyFiles
+                  .filter((fileName) => !fileName.startsWith("profile."))
+                  .filter((fileName) => fileName !== "metadata.json")
+                  .filter((fileName) => fileName !== "Thumbs.db")
+                  .map((fileName, index) => (
+                    <ListItem key={index} style={{ padding: "8px 0", display: "flex", alignItems: "flex-start" }}>
+                      <ListItemText 
+                        primary={fileName} 
+                        primaryTypographyProps={{ 
+                          style: { 
+                            fontSize: "0.9rem"
+                          } 
+                        }}
+                        style={{ flex: 1, marginRight: "10px", minWidth: 0 }}
+                      />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        disabled={!!loadingDownload[fileName]}
+                        onClick={() =>
+                          handleDownload(`downloadCottonTeamSubfolderFile/${teamName.trim()}/Step Weekly/${fileName}`)
                         }
                         style={{ minWidth: "90px", maxWidth: "90px", flexShrink: 0 }}
                       >

@@ -287,4 +287,84 @@ router.get("/listCottonTeamFiles/:teamName", (req, res) => {
   });
 });
 
-module.exports = router;
+// New endpoints for cotton team subfolder files
+router.get("/listCottonTeamSubfolderFiles/:teamName/:subFolder", (req, res) => {
+  const requestedTeam = decodeURIComponent(req.params.teamName)
+    .replace(/[''‛`´]/g, "'")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+  
+  const subFolder = decodeURIComponent(req.params.subFolder);
+  const baseDir = path.join(__dirname, "uploads", "cotton");
+
+  if (!fs.existsSync(baseDir)) {
+    return res.status(404).json({ message: "Base uploads folder not found" });
+  }
+
+  const folders = fs.readdirSync(baseDir, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+
+  const normalize = (str) =>
+    str
+      .replace(/[''‛`´]/g, "'")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+  
+  const matchedFolder = folders.find(folder => normalize(folder) === requestedTeam);
+
+  if (!matchedFolder) {
+    return res.status(404).json({ message: "Team folder not found" });
+  }
+
+  const subFolderPath = path.join(baseDir, matchedFolder, subFolder);
+  
+  // Ensure subfolder exists
+  if (!fs.existsSync(subFolderPath)) {
+    fs.mkdirSync(subFolderPath, { recursive: true });
+    return res.json({ files: [] });
+  }
+
+  const files = fs.readdirSync(subFolderPath).filter(file =>
+    fs.statSync(path.join(subFolderPath, file)).isFile()
+  );
+
+  res.json({ files });
+});
+
+router.get("/downloadCottonTeamSubfolderFile/:teamName/:subFolder/:fileName", (req, res) => {
+  const requestedTeam = decodeURIComponent(req.params.teamName)
+    .replace(/[''‛`´]/g, "'")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+
+  const subFolder = decodeURIComponent(req.params.subFolder);
+  const baseDir = path.join(__dirname, "uploads", "cotton");
+  
+  if (!fs.existsSync(baseDir)) {
+    return res.status(404).json({ message: `Base uploads folder not found: ${baseDir}` });
+  }
+
+  const folders = fs.readdirSync(baseDir, { withFileTypes: true })
+    .filter(d => d.isDirectory())
+    .map(d => d.name);
+
+  const normalize = (s) =>
+    s.replace(/[''‛`´]/g, "'").replace(/\s+/g, " ").trim().toLowerCase();
+
+  const matchedFolder = folders.find(folder => normalize(folder) === requestedTeam);
+  if (!matchedFolder) return res.status(404).json({ message: "Team folder not found" });
+
+  const safeFileName = path.basename(decodeURIComponent(req.params.fileName));
+  const filePath = path.join(baseDir, matchedFolder, subFolder, safeFileName);
+
+  if (fs.existsSync(filePath)) {
+    res.download(filePath, safeFileName);
+  } else {
+    res.status(404).json({ message: "File not found" });
+  }
+});
+

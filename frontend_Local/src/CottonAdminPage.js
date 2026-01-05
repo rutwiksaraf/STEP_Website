@@ -92,6 +92,7 @@ function CottonAdminPage() {
   const [selectedFilei, setSelectedFilei] = useState(null);
   const [selectedFilem, setSelectedFilem] = useState(null);
   const [selectedFiled, setSelectedFiled] = useState(null);
+  const [selectedCottonSubFolder, setSelectedCottonSubFolder] = useState("Soil Analysis"); // New state for cotton subfolder
   const [teamMembers, setTeamMembers] = useState([]);
   const [soilMoistureSensor, setSoilMoistureSensor] = useState("");
   const [isApplicationTypeConfirmed1, setIsApplicationTypeConfirmed1] =
@@ -619,6 +620,7 @@ function CottonAdminPage() {
     formData1.append("file", selectedFile1);
     formData1.append("teamName", teamName); // Assuming teamName is passed as a prop or from state
     formData1.append("cropType", "cotton"); // Assuming cropType is passed as a prop or from state
+    formData1.append("subFolder", selectedCottonSubFolder); // Add subfolder to form data
 
     axios
       .post("/api/upload", formData1, {
@@ -635,6 +637,7 @@ function CottonAdminPage() {
 
         // Remove the selected file from the input
         document.getElementById("defaultFileInput2").value = "";
+        setSelectedFile1(null);
 
         // Remove the success message after 3 seconds (3000 milliseconds)
         setTimeout(() => {
@@ -3279,6 +3282,25 @@ function CottonAdminPage() {
                         <p style={{ textAlign: "justify" }}>
                           Choose a file to upload for this team
                         </p>
+                        <div style={{ marginBottom: "10px" }}>
+                          <label htmlFor="cottonSubFolderSelect" style={{ marginRight: "10px" }}>
+                            Select Category:
+                          </label>
+                          <select
+                            id="cottonSubFolderSelect"
+                            value={selectedCottonSubFolder}
+                            onChange={(e) => setSelectedCottonSubFolder(e.target.value)}
+                            style={{
+                              padding: "5px 10px",
+                              borderRadius: "4px",
+                              border: "1px solid #ccc",
+                            }}
+                          >
+                            <option value="Soil Analysis">Soil Analysis</option>
+                            <option value="Plant Tissue Analysis">Plant Tissue Analysis</option>
+                            <option value="Step Weekly">Step Weekly</option>
+                          </select>
+                        </div>
                         <input
                           type="file"
                           id="defaultFileInput2"

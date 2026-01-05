@@ -589,6 +589,25 @@ router.delete("/deleteCottonTeamFile/:teamName/:fileName", (req, res) => {
   }
 });
 
+// New endpoint for deleting cotton team subfolder files
+router.delete("/deleteCottonTeamSubfolderFile/:teamName/:subFolder/:fileName", (req, res) => {
+  const { teamName, subFolder, fileName } = req.params;
+  const filePath = path.join(__dirname, "uploads", "cotton", teamName, subFolder, fileName);
+
+  if (fs.existsSync(filePath)) {
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error("Error deleting file:", err);
+        res.status(500).send("Error deleting the file");
+      } else {
+        res.status(200).send("File deleted successfully");
+      }
+    });
+  } else {
+    res.status(404).send("File not found.");
+  }
+});
+
 router.delete("/deletedefaultFile/:fileName", (req, res) => {
   const fileName = req.params.fileName;
   const filePath = path.join(defaultUploadsDir, fileName); // Adjust the path as needed
