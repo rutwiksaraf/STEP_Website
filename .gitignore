@@ -3,4 +3,4 @@ backend_local/node_modules
 STEP_BACKEND_PROD/
 STEP_FRONTEND_PROD/
 
-frontend_local/build/
+frontend_Local/build/

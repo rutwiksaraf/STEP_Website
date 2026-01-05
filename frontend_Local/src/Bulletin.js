@@ -166,7 +166,7 @@ function CornBulletin() {
       <Container maxWidth="xl">
         <Paper elevation={3} style={{ padding: "30px" }}>
           <Typography variant="h4" gutterBottom align="center" style={{ marginBottom: "30px" }}>
-            List of Files in Uploads Folder
+            All Files
           </Typography>
 
           <Grid container spacing={3}>
