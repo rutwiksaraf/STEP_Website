@@ -368,3 +368,4 @@ router.get("/downloadCottonTeamSubfolderFile/:teamName/:subFolder/:fileName", (r
   }
 });
 
+module.exports = router;
