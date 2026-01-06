@@ -40,10 +40,10 @@ import { useNavigate } from "react-router-dom";
 import AdminList from "./AdminList";
 import { saveAs } from "file-saver";
 import profileImage from "./profile.jpg";
-const teamName = localStorage.getItem("username");
-const token = localStorage.getItem("token");
 
-function CornAdminPage() {
+function CornAdminPage({ showSuperAdminFeatures = false }) {
+  const teamName = localStorage.getItem("username");
+  const token = localStorage.getItem("token");
   const [value, setValue] = useState(0);
   const [value1, setValue1] = useState(0);
   const [cornUsers, setCornUsers] = useState([]);
@@ -78,7 +78,6 @@ function CornAdminPage() {
   // const username = localStorage.getItem("username");
   const [showFileManagement, setShowFileManagement] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState(profileImage);
-  const token = localStorage.getItem("token");
   const [deleteMessage, setDeleteMessage] = useState("");
   const [showDeleteMessage, setShowDeleteMessage] = useState(false);
   const [deleteStatusMessagem, setDeleteStatusMessagem] = useState("");
@@ -1774,52 +1773,9 @@ function CornAdminPage() {
         <div style={{ display: "flex", flexDirection: "column" }}>
           {!selectedUser && (
             <div>
-              <div id="uploadStatus"></div>
-              <Box ml={2}>
-                <h5>Insurance Selection</h5>
-                <p style={{ textAlign: "justify" }}>
-                  Choose a file that contains details for teams to check
-                  insurance options
-                </p>
-                <input
-                  type="file"
-                  id="insuranceFileInput"
-                  onChange={handleInsuranceFileChange}
-                />
-                <button onClick={handleInsuranceFileUpload}>
-                  Upload Insurance
-                </button>
-              </Box>
-              <Box ml={2}>
-                <h5>Marketing Options</h5>
-                <p style={{ textAlign: "justify" }}>
-                  Choose a file that contains details for teams to check
-                  marketing options
-                </p>
-                <input
-                  type="file"
-                  id="marketingOptionsFileInput"
-                  onChange={handleMarketingFileChange}
-                />
-                <button onClick={handleMarketingOptionsFileUpload}>
-                  Upload Marketing Options
-                </button>
-              </Box>
-              <Box ml={2}>
-                <h5>General Files</h5>
-                <p style={{ textAlign: "justify" }}>
-                  Choose a file to upload for all teams
-                </p>
-                <input
-                  type="file"
-                  id="defaultFileInput"
-                  onChange={handleDefaultFileChange}
-                />
-                <button onClick={handlecorndefaultFileUpload}>
-                  Upload Default File
-                </button>
-              </Box>
-              <p style={{ textAlign: "justify" }}></p>
+              <Typography variant="h6" style={{ padding: "20px" }}>
+                Please select a user from the list to view their details
+              </Typography>
             </div>
           )}
           <Box ml={2}>
@@ -2657,57 +2613,85 @@ function CornAdminPage() {
                           Upload File
                         </button>
                       </Box>
-                      {/* <Box ml={2}>
-                        <h5>Insurance Selection</h5>
-                        <p style={{ textAlign: "justify" }}>
-                          Choose a file that contains details for teams to check
-                          insurance options
-                        </p>
-                        <input
-                          type="file"
-                          id="insuranceFileInput"
-                          onChange={handleInsuranceFileChange}
-                        />
-                        <button onClick={handleInsuranceFileUpload}>
-                          Upload Insurance
-                        </button>
-                      </Box>
-                      <Box ml={2}>
-                        <h5>Marketing Options</h5>
-                        <p style={{ textAlign: "justify" }}>
-                          Choose a file that contains details for teams to check
-                          marketing options
-                        </p>
-                        <input
-                          type="file"
-                          id="marketingOptionsFileInput"
-                          onChange={handleMarketingFileChange}
-                        />
-                        <button onClick={handleMarketingOptionsFileUpload}>
-                          Upload Marketing Options
-                        </button>
-                      </Box>
-                      <Box ml={2}>
-                        <h5>General Files</h5>
-                        <p style={{ textAlign: "justify" }}>Choose a file to upload for all teams</p>
-                        <input
-                          type="file"
-                          id="defaultFileInput"
-                          onChange={handleDefaultFileChange}
-                        />
-                        <button onClick={handlecorndefaultFileUpload}>
-                          Upload Default File
-                        </button>
-                      </Box> */}
                     </div>
                     <br></br>
                     <Container>
                       <Paper elevation={3} style={{ padding: "20px" }}>
                         <Typography variant="h5" gutterBottom>
-                          List of Files in Uploads Folder:
+                          All Files
                         </Typography>
+                        
                         <Typography variant="h6" gutterBottom>
-                          Team Files:
+                          General Files:
+                        </Typography>
+                        <List>
+                          {defaultfiles
+                            .filter((fileName) => fileName !== "metadata.json" && fileName !== "Thumbs.db")
+                            .map((fileName, index) => (
+                              <ListItem key={index}>
+                                <ListItemText primary={fileName} />
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  size="small"
+                                  onClick={() =>
+                                    handleDownload(`downloadDefaultFile/${fileName}`)
+                                  }
+                                >
+                                  Download
+                                </Button>
+                              </ListItem>
+                            ))}
+                        </List>
+
+                        <Typography variant="h6" gutterBottom>
+                          Insurance Files:
+                        </Typography>
+                        <List>
+                          {insurancefiles
+                            .filter((fileName) => fileName !== "metadata.json" && fileName !== "Thumbs.db")
+                            .map((fileName, index) => (
+                              <ListItem key={index}>
+                                <ListItemText primary={fileName} />
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  size="small"
+                                  onClick={() =>
+                                    handleDownload(`downloadInsuranceFile/${fileName}`)
+                                  }
+                                >
+                                  Download
+                                </Button>
+                              </ListItem>
+                            ))}
+                        </List>
+
+                        <Typography variant="h6" gutterBottom>
+                          Marketing Files:
+                        </Typography>
+                        <List>
+                          {marketingfiles
+                            .filter((fileName) => fileName !== "metadata.json" && fileName !== "Thumbs.db")
+                            .map((fileName, index) => (
+                              <ListItem key={index}>
+                                <ListItemText primary={fileName} />
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  size="small"
+                                  onClick={() =>
+                                    handleDownload(`downloadMarketingFile/${fileName}`)
+                                  }
+                                >
+                                  Download
+                                </Button>
+                              </ListItem>
+                            ))}
+                        </List>
+
+                        <Typography variant="h6" gutterBottom>
+                          Team Specific Files:
                         </Typography>
                         {deleteStatusMessaget && (
                           <div className="status-message">
@@ -2727,8 +2711,6 @@ function CornAdminPage() {
                                   variant="contained"
                                   color="primary"
                                   size="small"
-                                  // href={`/api/downloadTeamFile/${teamName}/${fileName}`}
-                                  // download
                                   onClick={() =>
                                     handleDownload(
                                       `downloadTeamFile/${selectedUser.teamName}/${fileName}`
@@ -2747,141 +2729,6 @@ function CornAdminPage() {
                                 >
                                   Delete
                                 </Button>
-                              </ListItem>
-                            ))}
-                        </List>
-                        <Typography variant="h6" gutterBottom>
-                          General Files:
-                        </Typography>
-
-                        {deleteStatusMessaged && (
-                          <div className="status-message">
-                            {deleteStatusMessaged}
-                          </div>
-                        )}
-                        <List>
-                          {defaultfiles
-                            .filter((fileName) => fileName !== "metadata.json")
-                            .filter((fileName) => fileName !== "Thumbs.db")
-                            .map((fileName, index) => (
-                              <ListItem key={index}>
-                                <ListItemText primary={fileName} />
-                                <Button
-                                  variant="contained"
-                                  color="primary"
-                                  size="small"
-                                  onClick={() =>
-                                    handleDownload(
-                                      `downloadDefaultFile/${fileName}`
-                                    )
-                                  }
-                                  // href={`/api/downloadDefaultFile/${fileName}`}
-                                  // download
-                                >
-                                  Download
-                                </Button>
-                                <Button
-                                  onClick={() => handledefaultDelete(fileName)}
-                                >
-                                  Delete
-                                </Button>
-
-                                {/* <Link
-                                    href={`/api/deletedefaultFile/${fileName}`}
-                                    delete
-                                  >
-                                    Delete
-                                  </Link> */}
-                              </ListItem>
-                            ))}
-                        </List>
-                        <Typography variant="h6" gutterBottom>
-                          Insurance Files:
-                        </Typography>
-                        {deleteStatusMessagei && (
-                          <div className="status-message">
-                            {deleteStatusMessagei}
-                          </div>
-                        )}
-                        <List>
-                          {insurancefiles
-                            .filter((fileName) => fileName !== "metadata.json")
-                            .filter((fileName) => fileName !== "Thumbs.db")
-                            .map((fileName, index) => (
-                              <ListItem key={index}>
-                                <ListItemText primary={fileName} />
-                                <Button
-                                  variant="contained"
-                                  color="primary"
-                                  size="small"
-                                  onClick={() =>
-                                    handleDownload(
-                                      `downloadInsuranceFile/${fileName}`
-                                    )
-                                  }
-                                  // href={`/api/downloadInsuranceFile/${fileName}`}
-                                  // download
-                                >
-                                  Download
-                                </Button>
-                                <Button
-                                  onClick={() =>
-                                    handleinsuranceDelete(fileName)
-                                  }
-                                >
-                                  Delete
-                                </Button>
-
-                                {/* <Link
-                                    href={`/api/deleteinsuranceFile/${fileName}`}
-                                  >
-                                    Delete
-                                  </Link> */}
-                              </ListItem>
-                            ))}
-                        </List>
-                        <Typography variant="h6" gutterBottom>
-                          Marketing Files:
-                        </Typography>
-                        {deleteStatusMessagem && (
-                          <div className="status-message">
-                            {deleteStatusMessagem}
-                          </div>
-                        )}
-                        <List>
-                          {marketingfiles
-                            .filter((fileName) => fileName !== "metadata.json")
-                            .filter((fileName) => fileName !== "Thumbs.db")
-                            .map((fileName, index) => (
-                              <ListItem key={index}>
-                                <ListItemText primary={fileName} />
-                                <Button
-                                  variant="contained"
-                                  color="primary"
-                                  size="small"
-                                  // href={`/api/downloadMarketingFile/${fileName}`}
-                                  // download
-                                  onClick={() =>
-                                    handleDownload(
-                                      `downloadMarketingFile/${fileName}`
-                                    )
-                                  }
-                                >
-                                  Download
-                                </Button>
-                                <Button
-                                  onClick={() =>
-                                    handlemarketingDelete(fileName)
-                                  }
-                                >
-                                  Delete
-                                </Button>
-
-                                {/* <Link
-                                    href={`/api/deletemarketingFile/${fileName}`}
-                                  >
-                                    Delete
-                                  </Link> */}
                               </ListItem>
                             ))}
                         </List>

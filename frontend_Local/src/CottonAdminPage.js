@@ -45,7 +45,8 @@ import { saveAs } from "file-saver";
 import profileImg from "./profile.jpg";
 import CottonWeatherGraph from "./CottonWeatherChart";
 
-function CottonAdminPage() {
+function CottonAdminPage({ showSuperAdminFeatures = false }) {
+  const token = localStorage.getItem("token");
   const [value, setValue] = useState(1);
   const [value1, setValue1] = useState(0);
   const [cornUsers, setCornUsers] = useState([]);
@@ -84,7 +85,6 @@ function CottonAdminPage() {
   const [profileImageUrl, setProfileImageUrl] = useState(null);
   const [profileImageUrl1, setProfileImageUrl1] = useState(null);
   const [cottonteamMembers, setCottonTeamMembers] = useState([]);
-  const token = localStorage.getItem("token");
 
   let navigate = useNavigate();
 
@@ -2286,41 +2286,9 @@ function CottonAdminPage() {
         <div style={{ display: "flex", flexDirection: "column" }}>
           {!selectedUser && (
             <div>
-              <div id="uploadStatus"></div>
-              <Box ml={2}>
-                <h5>Insurance Selection</h5>
-                <p style={{ textAlign: "justify" }}>
-                  Choose a file that contains details for teams to check
-                  insurance options
-                </p>
-                <input type="file" id="insuranceFileInput1" />
-                <button onClick={handleCottonInsuranceFileUpload}>
-                  Upload Insurance
-                </button>
-              </Box>
-              <Box ml={2}>
-                <h5>Marketing Options</h5>
-                <p style={{ textAlign: "justify" }}>
-                  Choose a file that contains details for teams to check
-                  marketing options
-                </p>
-                <input type="file" id="marketingOptionsFileInput1" />
-                <button onClick={handleCottonMarketingOptionsFileUpload}>
-                  Upload Marketing Options
-                </button>
-              </Box>
-              <Box ml={2}>
-                <h5>General Files</h5>
-                <p style={{ textAlign: "justify" }}>
-                  Choose a file to upload for all teams
-                </p>
-                <input type="file" id="defaultCottonFileInput" />
-                <button onClick={handledefaultFileUpload}>
-                  Upload Default File
-                </button>
-              </Box>
-
-              <p style={{ textAlign: "justify" }}></p>
+              <Typography variant="h6" style={{ padding: "20px" }}>
+                Please select a user from the list to view their details
+              </Typography>
             </div>
           )}
           <Box ml={2}>
@@ -3239,44 +3207,9 @@ function CottonAdminPage() {
                     <Typography variant="h4" backgroundColor="secondary">
                       File Management
                     </Typography>
-                    {/* Hybrid Selection content */}
+                    {/* Team Specific Files Only */}
                     <div>
                       <div id="uploadStatus"></div>
-                      <Box ml={2}>
-                        <h5>Insurance Selection</h5>
-                        <p style={{ textAlign: "justify" }}>
-                          Choose a file that contains details for teams to check
-                          insurance options
-                        </p>
-                        <input type="file" id="insuranceFileInput1" />
-                        <button onClick={handleCottonInsuranceFileUpload}>
-                          Upload Insurance
-                        </button>
-                      </Box>
-                      <Box ml={2}>
-                        <h5>Marketing Options</h5>
-                        <p style={{ textAlign: "justify" }}>
-                          Choose a file that contains details for teams to check
-                          marketing options
-                        </p>
-                        <input type="file" id="marketingOptionsFileInput1" />
-                        <button
-                          onClick={handleCottonMarketingOptionsFileUpload}
-                        >
-                          Upload Marketing Options
-                        </button>
-                      </Box>
-                      <Box ml={2}>
-                        <h5>General Files</h5>
-                        <p style={{ textAlign: "justify" }}>
-                          Choose a file to upload for all teams
-                        </p>
-                        <input type="file" id="defaultCottonFileInput" />
-                        <button onClick={handledefaultFileUpload}>
-                          Upload Default File
-                        </button>
-                      </Box>
-                      <p style={{ textAlign: "justify" }}></p>
                       <Box ml={2}>
                         <h5>Team Specific Files</h5>
                         <p style={{ textAlign: "justify" }}>
@@ -3319,59 +3252,95 @@ function CottonAdminPage() {
                     <Container>
                       <Paper elevation={3} style={{ padding: "20px" }}>
                         <Typography variant="h5" gutterBottom>
-                          List of Files in Uploads Folder:
+                          All Files
+                        </Typography>
+
+                        <Typography variant="h6" gutterBottom>
+                          General Files:
                         </Typography>
                         <List>
                           {cottondefaultfiles
-                            .filter((fileName) => fileName !== "metadata.json")
+                            .filter((fileName) => fileName !== "metadata.json" && fileName !== "Thumbs.db")
                             .map((fileName, index) => (
                               <ListItem key={index}>
                                 <ListItemText primary={fileName} />
-
                                 <Button
                                   variant="contained"
+                                  color="primary"
                                   size="small"
                                   onClick={() =>
-                                    handleDownload(
-                                      `downloadDefaultCottonFile/${fileName}`
-                                    )
+                                    handleDownload(`downloadDefaultCottonFile/${fileName}`)
                                   }
-                                  disabled={
-                                    downloadingFiles[
-                                      `downloadDefaultCottonFile/${fileName}`
-                                    ]
-                                  }
+                                  disabled={downloadingFiles[`downloadDefaultCottonFile/${fileName}`]}
                                 >
-                                  {downloadingFiles[
-                                    `downloadDefaultCottonFile/${fileName}`
-                                  ] ? (
-                                    <CircularProgress
-                                      size={20}
-                                      color="inherit"
-                                    />
+                                  {downloadingFiles[`downloadDefaultCottonFile/${fileName}`] ? (
+                                    <CircularProgress size={20} color="inherit" />
                                   ) : (
                                     "Download"
                                   )}
                                 </Button>
-
-                                <Button
-                                  onClick={() =>
-                                    handlecottondefaultDelete(fileName)
-                                  }
-                                >
-                                  Delete
-                                </Button>
-                                {/* <Link
-                                    href={`/api/deletedefaultFile/${fileName}`}
-                                    delete
-                                  >
-                                    Delete
-                                  </Link> */}
                               </ListItem>
                             ))}
                         </List>
+
                         <Typography variant="h6" gutterBottom>
-                          Team Files:
+                          Insurance Files:
+                        </Typography>
+                        <List>
+                          {cottoninsurancefiles
+                            .filter((fileName) => fileName !== "metadata.json" && fileName !== "Thumbs.db")
+                            .map((fileName, index) => (
+                              <ListItem key={index}>
+                                <ListItemText primary={fileName} />
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  size="small"
+                                  onClick={() =>
+                                    handleDownload(`downloadInsuranceCottonFile/${fileName}`)
+                                  }
+                                  disabled={downloadingFiles[`downloadInsuranceCottonFile/${fileName}`]}
+                                >
+                                  {downloadingFiles[`downloadInsuranceCottonFile/${fileName}`] ? (
+                                    <CircularProgress size={20} color="inherit" />
+                                  ) : (
+                                    "Download"
+                                  )}
+                                </Button>
+                              </ListItem>
+                            ))}
+                        </List>
+
+                        <Typography variant="h6" gutterBottom>
+                          Marketing Files:
+                        </Typography>
+                        <List>
+                          {cottonmarketingfiles
+                            .filter((fileName) => fileName !== "metadata.json" && fileName !== "Thumbs.db")
+                            .map((fileName, index) => (
+                              <ListItem key={index}>
+                                <ListItemText primary={fileName} />
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  size="small"
+                                  onClick={() =>
+                                    handleDownload(`downloadMarketingCottonFile/${fileName}`)
+                                  }
+                                  disabled={downloadingFiles[`downloadMarketingCottonFile/${fileName}`]}
+                                >
+                                  {downloadingFiles[`downloadMarketingCottonFile/${fileName}`] ? (
+                                    <CircularProgress size={20} color="inherit" />
+                                  ) : (
+                                    "Download"
+                                  )}
+                                </Button>
+                              </ListItem>
+                            ))}
+                        </List>
+
+                        <Typography variant="h6" gutterBottom>
+                          Team Specific Files:
                         </Typography>
                         <List>
                           {cottonteamfiles
@@ -3382,12 +3351,6 @@ function CottonAdminPage() {
                             .map((fileName, index) => (
                               <ListItem key={index}>
                                 <ListItemText primary={fileName} />
-                                {/* <Link
-                                  href={`/api/downloadCottonTeamFile/${selectedUser.teamName}/${fileName}`}
-                                  download
-                                >
-                                  Download
-                                </Link> */}
 
                                 <Button
                                   variant="contained"
@@ -3434,122 +3397,9 @@ function CottonAdminPage() {
                               </ListItem>
                             ))}
                         </List>
-                        <Typography variant="h6" gutterBottom>
-                          Insurance Files:
-                        </Typography>
-                        <List>
-                          {cottoninsurancefiles
-                            .filter((fileName) => fileName !== "metadata.json")
-                            .map((fileName, index) => (
-                              <ListItem key={index}>
-                                <ListItemText primary={fileName} />
-                                {/* <Link
-                                  href={`/api/downloadInsuranceCottonFile/${fileName}`}
-                                  download
-                                >
-                                  Download
-                                </Link> */}
-
-                                <Button
-                                  variant="contained"
-                                  size="small"
-                                  onClick={() =>
-                                    handleDownload(
-                                      `downloadInsuranceCottonFile/${fileName}`
-                                    )
-                                  }
-                                  disabled={
-                                    downloadingFiles[
-                                      `downloadInsuranceCottonFile/${fileName}`
-                                    ]
-                                  }
-                                >
-                                  {downloadingFiles[
-                                    `downloadInsuranceCottonFile/${fileName}`
-                                  ] ? (
-                                    <CircularProgress
-                                      size={20}
-                                      color="inherit"
-                                    />
-                                  ) : (
-                                    "Download"
-                                  )}
-                                </Button>
-
-                                <Button
-                                  onClick={() =>
-                                    handlecottoninsuranceDelete(fileName)
-                                  }
-                                >
-                                  Delete
-                                </Button>
-                                {/* <Link
-                                    href={`/api/deleteinsuranceFile/${fileName}`}
-                                  >
-                                    Delete
-                                  </Link> */}
-                              </ListItem>
-                            ))}
-                        </List>
-                        <Typography variant="h6" gutterBottom>
-                          Marketing Files:
-                        </Typography>
-                        <List>
-                          {cottonmarketingfiles
-                            .filter((fileName) => fileName !== "metadata.json")
-                            .map((fileName, index) => (
-                              <ListItem key={index}>
-                                <ListItemText primary={fileName} />
-                                {/* <Link
-                                  href={`/api/downloadMarketingCottonFile/${fileName}`}
-                                  download
-                                >
-                                  Download
-                                </Link> */}
-
-                                <Button
-                                  variant="contained"
-                                  size="small"
-                                  onClick={() =>
-                                    handleDownload(
-                                      `downloadMarketingCottonFile/${fileName}`
-                                    )
-                                  }
-                                  disabled={
-                                    downloadingFiles[
-                                      `downloadMarketingFile/${fileName}`
-                                    ]
-                                  }
-                                >
-                                  {downloadingFiles[
-                                    `downloadMarketingFile/${fileName}`
-                                  ] ? (
-                                    <CircularProgress
-                                      size={20}
-                                      color="inherit"
-                                    />
-                                  ) : (
-                                    "Download"
-                                  )}
-                                </Button>
-
-                                <Button
-                                  onClick={() =>
-                                    handlecottonmarketingDelete(fileName)
-                                  }
-                                >
-                                  Delete
-                                </Button>
-                                {/* <Link
-                                    href={`/api/deletemarketingFile/${fileName}`}
-                                  >
-                                    Delete
-                                  </Link> */}
-                              </ListItem>
-                            ))}
-                        </List>
                       </Paper>
                     </Container>
+                    {/* Hybrid Selection content */}
                   </TabPanel>
                   <TabPanel value={value1} index={9}>
                     <Typography variant="h4" backgroundColor="secondary">
