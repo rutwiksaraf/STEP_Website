@@ -1758,15 +1758,35 @@ function CornAdminPage({ showSuperAdminFeatures = false }) {
           </ListItem>
           {cornUsers.map((user, index) => (
             <ListItemButton
-              button
               key={index}
-              style={{
-                backgroundColor: selectedUser === user ? "#fa4616" : "white",
-              }}
               onClick={() => handleUserClick(user)}
+              sx={{
+                my: 1,
+                mx: 1.5,
+                border:
+                  selectedUser === user
+                    ? "2px solid rgb(255, 255, 255)"
+                    : "2px solid rgb(37, 106, 185)",
+                backgroundColor: selectedUser === user ? "#fa4616" : "#F5F5F5",
+                borderRadius: "8px",
+                color: selectedUser === user ? "white" : "#333",
+                boxShadow:
+                  selectedUser === user
+                    ? "0px 4px 10px rgba(0, 0, 0, 0.2)"
+                    : "none",
+                transition: "all 0.3s ease-in-out",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+                "&:hover": {
+                  backgroundColor:
+                    selectedUser === user ? "#d73a12" : "#E0E0E0",
+                  transform: "scale(1.05)",
+                },
+              }}
             >
-              <ListItemText primary={user.teamName} />{" "}
-              {/* Change to teamName */}
+              <ListItemText primary={user.teamName} />
             </ListItemButton>
           ))}
         </List>
